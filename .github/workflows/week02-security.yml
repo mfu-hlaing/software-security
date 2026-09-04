@@ -1,0 +1,39 @@
+name: Week 2 security gate
+on:
+  push:
+    branches: [wk02]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create report directory
+        run: mkdir -p reports
+      - name: Semgrep - fail on high severity rules
+        run: >-
+          docker run --rm -v "$PWD:/src" semgrep/semgrep:latest
+          semgrep scan --config p/default --config p/owasp-top-ten
+          --severity ERROR --error --json --output /src/reports/semgrep.json
+          /src/project/starter-app /src/labs/week02-sdlc-tooling/vulnerable-repo
+      - name: Trivy - fail on HIGH or CRITICAL dependencies
+        if: always()
+        run: >-
+          docker run --rm -v "$PWD:/src" aquasec/trivy:latest
+          fs --scanners vuln --severity HIGH,CRITICAL --exit-code 1
+          --format json --output /src/reports/trivy.json /src/project/starter-app
+      - name: Gitleaks - fail on any exposed secret
+        if: always()
+        run: >-
+          docker run --rm -v "$PWD:/src" zricethezav/gitleaks:latest
+          detect --no-git -s /src/project/starter-app --redact
+          --report-format json --report-path /src/reports/gitleaks.json --exit-code 1
+      - name: Preserve findings even when the gate fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: week02-security-findings
+          path: reports/
