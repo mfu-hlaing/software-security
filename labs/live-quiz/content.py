@@ -343,6 +343,7 @@ def _root_of(course_slug: str | None) -> str | None:
 # the main document for six of nineteen weeks was simply absent from the
 # platform while appearing complete on disk.
 PUBLIC_FILES = {
+    "memory-workshop": "memory-workshop.md",
     "verification-guide": "verification-guide.md",
     "worksheet": "worksheet.md",
     "readme": "README.md",
@@ -372,6 +373,7 @@ SLIDES_DIR = "slides"
 # kind added to PUBLIC_FILES can never render as a bare slug.
 KIND_LABELS = {
     "verification-guide": "Strict artifact verification guide",
+    "memory-workshop": "Ownership and allocation workshop",
     "worksheet": "Worksheet",
     "readme": "Overview",
     "slides": "Lecture slides",

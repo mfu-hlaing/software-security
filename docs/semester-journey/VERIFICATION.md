@@ -11,7 +11,7 @@
 
 ## Private runtime
 
-- **15 services** running; **151 HTTPS requests** passed across journey pages, linked materials, simulations and the target pairs.
+- **15 services** running; **152 HTTPS requests** passed across journey pages, linked materials, simulations and the target pairs.
 - API: vulnerable object exposure; defended 401/403/200 ladder; vulnerable privileged-field binding versus defended server-owned fields.
 - Chatbot: benign greeting on both services; potentially executable text remains escaped in the guarded HTML output.
 - DevSecOps: unauthenticated request succeeds in the deliberately fail-open demo and is denied in the defended one; non-admin denied and seeded admin still allowed.
@@ -33,3 +33,9 @@ A temporary harness copy added a length check before the fixed-size copy. The sa
 ## Signing exercise
 
 The verifier's input rejection and exact Cosign identity/issuer arguments passed five tests using a local CLI stub. No registry artifact was signed, no OIDC authentication was performed, and no real signature/provenance verification is claimed. The learner must supply an owned registry artifact and approved signing identity as explained in the supplement.
+
+## Ownership and allocation extension — continuation
+
+The two original native exercises ran using toolbox image `sha256:e0c9c710a8454351bc1d0359bb6a9d7160b08d5d28055519cb03f29ee9af7c64` on Linux ARM64. The non-root, network-free runner checked **15 cases**: expected use-after-free and heap-buffer-overflow reports, defended ordinary/boundary inputs, arithmetic rejection, resource rejection and malformed-input rejection. `verification/memory-workshop.json` records each checked result; `verification/memory-workshop-reports.txt` contains the two actual sanitizer reports. Leak detection is disabled; no exhaustive or concurrency claim is made.
+
+After adding the workshop to the public content registry and Week 11 journey, the relevant content/journey suites passed **154 tests**. The learning image was rebuilt and recreated; the local HTTPS smoke passed **152 requests** including the new workshop, with all 15 services healthy. The earlier full-suite result remains the baseline result; the new continuation used targeted tests and runtime verification.

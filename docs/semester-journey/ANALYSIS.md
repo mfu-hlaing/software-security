@@ -18,7 +18,7 @@ Each week now follows: explain → trace → predict → experiment → defend �
 |---|---|---|
 | Week 7 mock | Six challenges; omits the ECB oracle present in Week 9 | Explicitly distinguishes practice from assessed coverage |
 | Week 10 API | Vulnerable orders route performs no auth check; defended code trusts a toy client identity header | Teaches authorization while explicitly requiring verified identity for production |
-| Week 11 memory | Shipped routines demonstrate stack overflow and format string flaws | Labels UAF/integer-overflow discussion as extensions; does not claim those experiments exist |
+| Week 11 memory | Shipped routines demonstrate stack overflow and format string flaws | Adds a separate optional ownership/allocation workshop with two native bugs, defended counterparts and 15 bounded checks |
 | Week 12 resolver | Simulation, not a deployed malicious registry | Teaches its stated resolver assumptions and real-tool limits |
 | Week 12 signing | Legacy script uses wildcard signer filters and local image examples | Adds strict, digest-bound verification guide and executable verifier |
 | Week 14 AI | Deterministic mock, not a model service or MCP server | Separates observed mock results from real-agent security claims |
@@ -57,4 +57,4 @@ The existing AWS pilot uses one VPN edge and dedicated team hosts. This work doe
 
 ## Remaining deeper expansions
 
-The 19-week journey is a guided companion, not a claim that every advanced topic now has a full production-grade environment. Future bounded additions should include a verified-identity API exercise, distributed rate-limit behavior, an actual private package registry, native UAF/FFI exercises, real-model prompt-injection evaluation, and isolated CI runners. Each needs its own threat model, cost/capacity decision and positive/negative test evidence. The current release labels these limits rather than simulating a successful experiment.
+The 19-week journey is a guided companion, not a claim that every advanced topic now has a full production-grade environment. Future bounded additions should include a verified-identity API exercise, distributed rate-limit behavior, an actual private package registry, native FFI and asynchronous-ownership exercises, real-model prompt-injection evaluation, and isolated CI runners. Each needs its own threat model, cost/capacity decision and positive/negative test evidence. The current release labels these limits rather than simulating a successful experiment.

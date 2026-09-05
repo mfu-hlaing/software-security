@@ -1,0 +1,139 @@
+{
+  "checks": 15,
+  "observations": [
+    {
+      "program": "ownership",
+      "arguments": [
+        "vulnerable"
+      ],
+      "exit_code": 1,
+      "observed": "heap-use-after-free"
+    },
+    {
+      "program": "ownership",
+      "arguments": [
+        "defended"
+      ],
+      "exit_code": 0,
+      "observed": "value=42"
+    },
+    {
+      "program": "allocation",
+      "arguments": [
+        "vulnerable",
+        "536870913"
+      ],
+      "exit_code": 1,
+      "observed": "heap-buffer-overflow"
+    },
+    {
+      "program": "allocation",
+      "arguments": [
+        "defended",
+        "1"
+      ],
+      "exit_code": 0,
+      "observed": "bytes=8"
+    },
+    {
+      "program": "allocation",
+      "arguments": [
+        "defended",
+        "2"
+      ],
+      "exit_code": 0,
+      "observed": "bytes=16"
+    },
+    {
+      "program": "allocation",
+      "arguments": [
+        "defended",
+        "1024"
+      ],
+      "exit_code": 0,
+      "observed": "bytes=8192"
+    },
+    {
+      "program": "allocation",
+      "arguments": [
+        "defended",
+        "1025"
+      ],
+      "exit_code": 5,
+      "observed": "workshop resource limit"
+    },
+    {
+      "program": "allocation",
+      "arguments": [
+        "defended",
+        "536870911"
+      ],
+      "exit_code": 5,
+      "observed": "workshop resource limit"
+    },
+    {
+      "program": "allocation",
+      "arguments": [
+        "defended",
+        "536870912"
+      ],
+      "exit_code": 4,
+      "observed": "would wrap"
+    },
+    {
+      "program": "allocation",
+      "arguments": [
+        "defended",
+        "536870913"
+      ],
+      "exit_code": 4,
+      "observed": "would wrap"
+    },
+    {
+      "program": "allocation",
+      "arguments": [
+        "defended",
+        "4294967295"
+      ],
+      "exit_code": 4,
+      "observed": "would wrap"
+    },
+    {
+      "program": "allocation",
+      "arguments": [
+        "defended",
+        "0"
+      ],
+      "exit_code": 2,
+      "observed": ""
+    },
+    {
+      "program": "allocation",
+      "arguments": [
+        "defended",
+        "-1"
+      ],
+      "exit_code": 2,
+      "observed": ""
+    },
+    {
+      "program": "allocation",
+      "arguments": [
+        "defended",
+        "abc"
+      ],
+      "exit_code": 2,
+      "observed": ""
+    },
+    {
+      "program": "allocation",
+      "arguments": [
+        "defended",
+        "4294967296"
+      ],
+      "exit_code": 2,
+      "observed": ""
+    }
+  ],
+  "scope": "Fixed inputs under ASan; not a proof of all-path safety."
+}
