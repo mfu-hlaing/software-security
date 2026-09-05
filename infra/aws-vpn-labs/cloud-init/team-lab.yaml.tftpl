@@ -64,23 +64,40 @@ runcmd:
     attempts=0
     until DEBIAN_FRONTEND=noninteractive \
       apt-get -o Acquire::ForceIPv4=true -o Acquire::Retries=3 update -qq \
-      && apt-cache show awscli docker.io >/dev/null 2>&1; do
+      && apt-cache show docker.io >/dev/null 2>&1 \
+      && apt-cache show curl >/dev/null 2>&1 \
+      && apt-cache show git >/dev/null 2>&1 \
+      && apt-cache show unzip >/dev/null 2>&1; do
       attempts=$((attempts + 1))
       [ "$attempts" -lt 180 ] || { echo "edge NAT was not ready after fifteen minutes" >&2; exit 1; }
       sleep 5
     done
-  - |
-    set -eu
+
     export DEBIAN_FRONTEND=noninteractive
     apt-get install -y --no-install-recommends \
-      awscli ca-certificates curl docker.io git openssl
+      ca-certificates curl docker.io git openssl unzip
     if ! apt-get install -y --no-install-recommends docker-compose-v2; then
       apt-get install -y --no-install-recommends docker-compose-plugin
     fi
     systemctl enable --now docker
     docker compose version
-  - |
-    set -eu
+
+    # Ubuntu Noble does not provide the AWS CLI package in every enabled mirror
+    # set. Install one reviewed AWS CLI v2 artifact directly from AWS and pin its
+    # digest; it is used only for the one-action IMDS shutdown below.
+    aws_cli_version=2.36.33
+    curl -fsSL --retry 5 --proto '=https' --tlsv1.2 \
+      "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-$aws_cli_version.zip" \
+      -o /tmp/awscliv2.zip
+    printf '%s  %s\n' \
+      d1d0c36d2582925e52022d8675e7fdaed8bb871af97ce2ff7c69e8bd81b123a0 \
+      /tmp/awscliv2.zip | sha256sum -c -
+    unzip -q /tmp/awscliv2.zip -d /tmp/awscli-installer
+    /tmp/awscli-installer/aws/install \
+      --bin-dir /usr/local/bin \
+      --install-dir /usr/local/aws-cli
+    aws --version
+
     # IMDS was required for cloud-init to receive this user-data. It is v2-only
     # with hop-limit 1 during bootstrap. Use a one-action role to disable the
     # endpoint before any intentionally vulnerable container starts.
@@ -109,8 +126,7 @@ runcmd:
       sleep 2
     done
     echo "IMDS_DISABLED instance=$instance_id"
-  - |
-    set -eu
+
     install -d -o root -g root -m 0755 /opt/software-security
     cd /opt/software-security
     git init -q
@@ -121,8 +137,7 @@ runcmd:
     git checkout --quiet --detach FETCH_HEAD
     # Refuse a dirty or locally overlaid source tree before Docker sees it.
     [ -z "$(git status --porcelain)" ]
-  - |
-    set -eu
+
     cd /opt/software-security/deploy/internal-labs
     umask 077
     cat > .env <<EOF
