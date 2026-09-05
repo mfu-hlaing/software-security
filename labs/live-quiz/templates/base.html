@@ -50,7 +50,7 @@
                   else (session is defined and session.get('teacher_id') is not none)) -%}
 <!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{% block title %}KOSEN·KMITL{% endblock %}</title>
+<title>{% block title %}Outsiders Security Academy{% endblock %}</title>
 {#- Lecturers share these URLs in LINE, Teams and Discord. With no description
     and no card tags every one of them unfurled as a bare link, and search
     engines synthesised their own snippet for a site whose entire point is being
@@ -66,7 +66,7 @@
       'infrastructure: every worksheet, lab guide, exam paper and CTF brief, '
       'free to read with no account.', true) -%}
 <meta name="description" content="{{ _desc }}">
-<meta property="og:site_name" content="KOSEN·KMITL">
+<meta property="og:site_name" content="Outsiders Security Academy">
 <meta property="og:type" content="website">
 <meta property="og:title" content="{{ self.title() | trim }}">
 <meta property="og:description" content="{{ _desc }}">
@@ -79,7 +79,7 @@
     the client's Host header, so a forged one would make this page declare a
     canonical URL on someone else's domain. -#}
 <link rel="canonical" href="{{ site_origin }}{{ request.path }}">
-<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/static/outsiders-mark.svg" type="image/svg+xml">
 <link rel="alternate icon" href="/static/favicon.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
 <link rel="stylesheet" href="/static/style.css?v={{ asset_v }}"></head>
@@ -129,8 +129,8 @@
   <div class="lx-tier2">
     <div class="lx-wrap lx-tier2-in">
 
-      <a class="lx-logo" href="/" aria-label="KOSEN·KMITL — home">
-        <span class="mark"><span class="word"><span class="k">KOSEN</span><span class="dot">·</span><span class="m">KMITL</span></span></span>
+      <a class="lx-logo" href="/campus" aria-label="Outsiders — home">
+        <img src="/static/outsiders-mark.svg" alt="" width="37" height="37"><span class="outsiders-shell-word">OUTSIDERS</span>
       </a>
 
       {#- `section` marks the current item. Tier 1 already did this for courses;
@@ -138,6 +138,7 @@
           state-blind. Carried by aria-current AND weight+underbar, never by
           colour alone. -#}
       <nav class="lx-nav" aria-label="Course material">
+        <a class="lx-nav-a" href="/campus">Academy</a>
         <a class="lx-nav-a{% if section == 'learn' %} lx-nav-a--here{% endif %}"
            href="/learn"{% if section == 'learn' %} aria-current="page"{% endif %}>Courses</a>
         {% if mastery_course_slug %}
@@ -237,10 +238,9 @@
 
   </div>
   <div class="lx-wrap">
-    <p class="lx-foot-legal">KOSEN·KMITL — course material is public and free to
-      read. Graded work is unlocked with a one-time code handed out on paper in
-      class; there are no student accounts and no student passwords on this
-      site.</p>
+    <p class="lx-foot-legal">Outsiders Security Academy — a student-built companion to the original course materials.
+      Graded work retains the lecturer’s one-time-code process. Personal practice uses separate
+      student accounts and assigned VPN identities. Course authors retain credit for their materials.</p>
   </div>
 </footer>
 

@@ -71,3 +71,10 @@ infra/aws-vpn-labs/operator-known-hosts
 **/*.tfstate.*
 crash.log
 crash.*.log
+# Personal deployment artifacts and identities never enter source control.
+deploy/personal-labs/generated/
+deploy/personal-labs/.env
+deploy/personal-labs/*.key
+deploy/personal-labs/*.token
+deploy/personal-labs/roster*.json
+labs/live-quiz/learners.db*

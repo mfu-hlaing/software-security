@@ -116,6 +116,9 @@ app.register_blueprint(routes_content.bp)
 import routes_semester
 app.register_blueprint(routes_semester.bp)
 
+import routes_campus
+app.register_blueprint(routes_campus.bp)
+
 # Worksheet submission + rubric grading (/work, /submit) — the last piece off
 # Google. Uploads live on disk beside the DB, NOT inside it: worksheet PDFs with
 # embedded screenshots would otherwise make the nightly SQLite dump enormous.

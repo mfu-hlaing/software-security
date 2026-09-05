@@ -1,0 +1,25 @@
+[Unit]
+Description=Outsiders personal practice and source-grounded AI guide
+Requires=docker.service
+After=docker.service lab-egress-guard.service
+PartOf=docker.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/software-security/deploy/personal-labs
+ExecStartPre=/bin/sh /opt/software-security/deploy/personal-labs/install-guard.sh
+ExecStart=/usr/bin/python3 /opt/software-security/deploy/personal-labs/broker.py
+Restart=on-failure
+RestartSec=5
+UMask=0077
+MemoryMax=160M
+TasksMax=32
+CPUQuota=50%
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/outsiders /run/docker.sock
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

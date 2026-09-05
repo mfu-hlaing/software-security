@@ -2429,3 +2429,8 @@ body.lx-page {
   .mx-stage, .mx-week-card, .mx-practice-question, .mx-layer, .mx-model-lane,
   .mx-checkpoint { break-inside: avoid; box-shadow: none; }
 }
+
+/* Original student-team branding; keep course attribution in the footer. */
+.lx-logo{gap:9px}.outsiders-shell-word{font-size:17px;font-weight:800;letter-spacing:.04em}
+
+.lx-logo,.lx-logo:visited{color:#b4f3a5}
