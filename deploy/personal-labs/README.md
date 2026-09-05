@@ -44,6 +44,8 @@ The three-slot host has 1424 MiB of declared service ceilings including a 160-Mi
 
 Prices: [AWS EC2](https://aws.amazon.com/ec2/pricing/on-demand/), [regional EC2 price catalog](https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonEC2/current/ap-southeast-1/index.csv), [EBS](https://aws.amazon.com/ebs/pricing/), [IPv4](https://aws.amazon.com/vpc/pricing/), [DeepSeek](https://api-docs.deepseek.com/quick_start/pricing/).
 
+The personal installer also rebuilds NoteVault from the selected application checkout. Existing running targets retain their current image until they stop. For demo-state preservation during an upgrade, verify a consistent SQLite backup through the running target before stopping it; abort the upgrade on any backup failure. Target storage remains disposable during ordinary use.
+
 ## Rollback and account lifecycle
 
 The installer records prior learning/gateway image IDs and consistent learning/CA volume archives under `/var/backups/outsiders/TIMESTAMP/`, readable only by root. To roll back, stop the broker and each exact `outsiders-pN-app`, stop/remove the personal relay containers, retag the recorded previous images, and start the legacy Compose service set. Keep the existing data and CA volumes. Restore an archive only if data restoration is needed; verify it before overwriting a volume. Do not use `down -v`.

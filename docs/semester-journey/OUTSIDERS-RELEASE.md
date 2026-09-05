@@ -4,6 +4,8 @@ The private AWS pilot now serves all 19 weeks and gives five learners their own 
 
 Open [Team 1 academy](https://learn.team1.labs.test:8443/campus) or [Team 2 academy](https://learn.team2.labs.test:8443/campus) using the assigned WireGuard profile and trusted course CA. **My workspace** uses the student's exact ID plus their individual password. A different student's VPN cannot use that account or target. Names, IDs, passwords and client VPN keys are deliberately absent from this public release record.
 
+The subsequent [live demo and NoteVault UI upgrade](DEMO-UI-VERIFICATION.md) records the current redirect fix, visual release, fresh infrastructure plan and targeted checks.
+
 ## What learners get
 
 - An original Outsiders SVG mark, dark forest and cream theme, responsive layout and reduced-motion support.

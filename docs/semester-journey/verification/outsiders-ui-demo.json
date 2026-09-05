@@ -1,0 +1,514 @@
+{
+  "release": "dc18b82",
+  "notevault_image_release": "941aa8d",
+  "verified_at_utc": "2026-09-05T12:46:58.505751+00:00",
+  "infra": {
+    "verified_at_utc": "2026-09-05T12:46:32.046314+00:00",
+    "terraform_validate": {
+      "valid": true,
+      "errors": 0,
+      "warnings": 0
+    },
+    "terraform_plan": {
+      "exit_code": 0,
+      "proposed_changes": 0,
+      "observed_refresh": [
+        "Team host IMDS disabled by the intended bootstrap step; metadata_options lifecycle ignores this change",
+        "Provider normalized empty root-volume tags from null to an empty map"
+      ]
+    },
+    "teams": [
+      {
+        "team": 1,
+        "broker_active": true,
+        "containers": [
+          {
+            "name": "software-security-internal-labs-learning-1",
+            "running": true,
+            "oom_killed": false,
+            "memory_mib": 512
+          },
+          {
+            "name": "outsiders-p1-app",
+            "running": true,
+            "oom_killed": false,
+            "memory_mib": 160
+          },
+          {
+            "name": "software-security-internal-labs-caddy-1",
+            "running": true,
+            "oom_killed": false,
+            "memory_mib": 128
+          },
+          {
+            "name": "software-security-internal-labs-personal-3-relay-1",
+            "running": true,
+            "oom_killed": false,
+            "memory_mib": 32
+          },
+          {
+            "name": "software-security-internal-labs-personal-1-relay-1",
+            "running": true,
+            "oom_killed": false,
+            "memory_mib": 32
+          },
+          {
+            "name": "software-security-internal-labs-personal-2-relay-1",
+            "running": true,
+            "oom_killed": false,
+            "memory_mib": 32
+          },
+          {
+            "name": "software-security-internal-labs-learning-relay-1",
+            "running": true,
+            "oom_killed": false,
+            "memory_mib": 48
+          }
+        ],
+        "memory_available_mib": 1163,
+        "commit": "dc18b82"
+      },
+      {
+        "team": 2,
+        "broker_active": true,
+        "containers": [
+          {
+            "name": "software-security-internal-labs-learning-1",
+            "running": true,
+            "oom_killed": false,
+            "memory_mib": 512
+          },
+          {
+            "name": "software-security-internal-labs-caddy-1",
+            "running": true,
+            "oom_killed": false,
+            "memory_mib": 128
+          },
+          {
+            "name": "software-security-internal-labs-personal-1-relay-1",
+            "running": true,
+            "oom_killed": false,
+            "memory_mib": 32
+          },
+          {
+            "name": "software-security-internal-labs-personal-2-relay-1",
+            "running": true,
+            "oom_killed": false,
+            "memory_mib": 32
+          },
+          {
+            "name": "software-security-internal-labs-learning-relay-1",
+            "running": true,
+            "oom_killed": false,
+            "memory_mib": 48
+          }
+        ],
+        "memory_available_mib": 1227,
+        "commit": "dc18b82"
+      }
+    ]
+  },
+  "identity": {
+    "verified_at_utc": "2026-09-05T12:46:58.505751+00:00",
+    "team": 1,
+    "slot": 1,
+    "tls_ca_and_hostname_verified": true,
+    "notevault_login_status": 302,
+    "notevault_redirect_location": "/",
+    "note_created_in_browser": true,
+    "cross_student_forged_headers_denied": true,
+    "cross_team_tcp_denied": true
+  },
+  "egress": {
+    "team": 1,
+    "targets": [
+      {
+        "slot": 1,
+        "runtime_limits": true,
+        "outbound_denials": {
+          "internet": true,
+          "metadata": true,
+          "broker": true,
+          "host": true,
+          "other_slot": true,
+          "external_dns": true
+        }
+      }
+    ]
+  },
+  "resources": {
+    "team": 1,
+    "resources": [
+      {
+        "path": "/learn/software-security/week01-threat-modeling/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week01-threat-modeling/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week01-threat-modeling/template",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week01-threat-modeling/worksheet",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week02-sdlc-tooling/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week02-sdlc-tooling/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week02-sdlc-tooling/worksheet",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week03-cryptography/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week03-cryptography/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week03-cryptography/worksheet",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week04-injection/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week04-injection/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week04-injection/worksheet",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week05-xss-client-side/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week05-xss-client-side/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week05-xss-client-side/worksheet",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week06-authn-authz/attack",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week06-authn-authz/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week06-authn-authz/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week06-authn-authz/worksheet",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week07-review-midterm-prep/mock-ctf",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week07-review-midterm-prep/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week07-review-midterm-prep/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week08-midterm-written/exam",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week08-midterm-written/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week08-midterm-written/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week09-midterm-practical/ctf",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week09-midterm-practical/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week09-midterm-practical/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week10-api-security/attack",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week10-api-security/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week10-api-security/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week10-api-security/worksheet",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week11-memory-safety-exploitation/memory-workshop",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week11-memory-safety-exploitation/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week11-memory-safety-exploitation/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week11-memory-safety-exploitation/worksheet",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week12-supply-chain/dependency-confusion",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week12-supply-chain/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week12-supply-chain/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week12-supply-chain/verification-guide",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week12-supply-chain/worksheet",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week13-cloud-container/harden",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week13-cloud-container/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week13-cloud-container/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week13-cloud-container/worksheet",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week14-ai-llm-security/attack",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week14-ai-llm-security/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week14-ai-llm-security/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week14-ai-llm-security/worksheet",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week15-devsecops-pipeline/pipeline",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week15-devsecops-pipeline/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week15-devsecops-pipeline/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week15-devsecops-pipeline/worksheet",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week16-capstone/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week16-capstone/scrimmage",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week16-capstone/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week16-capstone/worksheet",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week17-review-final-prep/mock-ctf",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week17-review-final-prep/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week17-review-final-prep/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week18-final-written/exam",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week18-final-written/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week18-final-written/slides",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week19-final-ctf-capstone/ctf",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week19-final-ctf-capstone/readme",
+        "status": 200
+      },
+      {
+        "path": "/learn/software-security/week19-final-ctf-capstone/slides",
+        "status": 200
+      },
+      {
+        "path": "/sim/aes-modes",
+        "status": 200
+      },
+      {
+        "path": "/sim/csrf-intent",
+        "status": 200
+      },
+      {
+        "path": "/sim/fuzz-verdict",
+        "status": 200
+      },
+      {
+        "path": "/sim/gate-check",
+        "status": 200
+      },
+      {
+        "path": "/sim/hash-crack",
+        "status": 200
+      },
+      {
+        "path": "/sim/iam-evaluation",
+        "status": 200
+      },
+      {
+        "path": "/sim/iam-scope",
+        "status": 200
+      },
+      {
+        "path": "/sim/jwt-forge",
+        "status": 200
+      },
+      {
+        "path": "/sim/mass-assign",
+        "status": 200
+      },
+      {
+        "path": "/sim/path-traversal",
+        "status": 200
+      },
+      {
+        "path": "/sim/prompt-guard",
+        "status": 200
+      },
+      {
+        "path": "/sim/resolver-confusion",
+        "status": 200
+      },
+      {
+        "path": "/sim/session-policy",
+        "status": 200
+      },
+      {
+        "path": "/sim/sqli-parse",
+        "status": 200
+      },
+      {
+        "path": "/sim/stack-frame",
+        "status": 200
+      },
+      {
+        "path": "/sim/stride-drill",
+        "status": 200
+      },
+      {
+        "path": "/sim/triage-drill",
+        "status": 200
+      },
+      {
+        "path": "/sim/trust-boundary",
+        "status": 200
+      },
+      {
+        "path": "/sim/xss-context",
+        "status": 200
+      },
+      {
+        "path": "/static/campus.css?v=1788605365",
+        "status": 200
+      },
+      {
+        "path": "/static/outsiders-mark.svg",
+        "status": 200
+      }
+    ]
+  },
+  "learning_rooms_http_200": 19,
+  "notevault_workflow_tests": {
+    "local_passed": 8,
+    "aws_team1_passed": 8,
+    "aws_team2_passed": 8
+  },
+  "browser": {
+    "note_created": true,
+    "search_returned_own_note": true,
+    "narrow_viewport_no_page_overflow": true,
+    "scout_source_linked_answer": true
+  },
+  "limitations": [
+    "Earlier 798-test platform suite is baseline evidence, not a full rerun after the visual update",
+    "Cold Terraform provisioning was not repeated; validate and authenticated plan succeeded",
+    "The first target backup failed before a reset; the captured demo note was recreated; subsequent verified SQLite backups/restores retained four total notes",
+    "The temporary local viewing bridge is not a student access URL and does not activate the macOS system VPN"
+  ]
+}
