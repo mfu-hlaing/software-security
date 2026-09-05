@@ -1,0 +1,1383 @@
+[
+  {
+    "number": 1,
+    "id": "week01",
+    "slug": "week01-threat-modeling",
+    "title": "Map trust before fixing code",
+    "kind": "Foundation",
+    "prerequisites": [],
+    "foundation": "A trust boundary is where data moves between parties with different control or privilege. Think of a reception desk: a visitor can request a file, but cannot decide which locked cabinet the employee may open. Confidentiality concerns who reads the file; integrity concerns who changes it; availability concerns whether legitimate people can use it.",
+    "core": "Draw NoteVault as browser, application, storage and operator. On each arrow write the actual data: session cookie, note identifier, file name, query or upload bytes. STRIDE supplies six prompts: spoofing identity, tampering, repudiation, disclosure, denial of service and elevation of privilege. A useful threat names the attacker, their input, the operation it reaches and its impact.",
+    "advanced": "Compare a single flaw with a chain: unsafe upload → overwrite a file writable by the app → influence a later privileged operation. A network diagram alone misses application authority. Prioritize by reachability and impact; explain assumptions that would change the ranking. A container narrows privileges but does not make an arbitrary-write primitive harmless.",
+    "flow": [
+      "Browser chooses filename",
+      "Upload handler receives bytes",
+      "Path resolution selects destination",
+      "App identity authorizes filesystem write",
+      "Later reader consumes file"
+    ],
+    "trace": [
+      "Locate the upload handler in the Week 1 source and list every attacker-controlled value.",
+      "Mark the point where a name becomes a filesystem path; distinguish string concatenation from canonical path containment.",
+      "Write one permitted path and one rejected path as test cases before proposing a control."
+    ],
+    "exercise": [
+      "Draw the normal “upload my attachment” flow without running an attack.",
+      "Use the trust-boundary simulation to change one assumption; predict the next reachable component.",
+      "Compare a server-generated filename with an allowlist and explain residual file-type and storage risks."
+    ],
+    "evidence": [
+      "DFD with named data and boundaries",
+      "Three ranked threats with preconditions",
+      "One normal-use and one misuse test for each proposed control"
+    ],
+    "transfer": "Publish a NoteVault risk register and keep its threat identifiers beside future patches.",
+    "questions": [
+      {
+        "stem": "Which change most reduces an upload worker’s blast radius?",
+        "options": [
+          "Give the worker the whole application directory",
+          "Use a dedicated writable upload directory and a restricted process identity",
+          "Encrypt the URL"
+        ],
+        "answer": 1,
+        "why": "A restricted identity and storage boundary reduce what a compromised writer can change. URL encryption does not constrain filesystem access."
+      },
+      {
+        "stem": "What makes a threat actionable?",
+        "options": [
+          "A vulnerability name alone",
+          "The number of boxes in the diagram",
+          "An attacker-controlled value, reachable operation and affected asset"
+        ],
+        "answer": 2,
+        "why": "Those details let another person reproduce the reasoning and design a check at the relevant boundary."
+      }
+    ],
+    "simulations": [
+      "trust-boundary",
+      "stride-drill",
+      "path-traversal"
+    ],
+    "command_steps": []
+  },
+  {
+    "number": 2,
+    "id": "week02",
+    "slug": "week02-sdlc-tooling",
+    "title": "Turn scanner output into evidence",
+    "kind": "Foundation",
+    "prerequisites": [
+      1
+    ],
+    "foundation": "A scanner is a sensor with a field of view. SAST reads source, DAST sends requests to a running app, SCA inventories dependencies, secret scanning searches for credential patterns, and fuzzing mutates inputs while watching behavior. None is a complete security verdict.",
+    "core": "Follow one finding from rule to file, reachable function, input and effect. Separate a false positive from a real weakness that is currently unreachable. For a real leaked credential, deleting the text is insufficient: revoke or rotate it and investigate exposure. Fuzzing needs an input harness and an observable failure, often aided by a sanitizer.",
+    "advanced": "Assess both false negatives and false positives. An empty scan can mean a clean target, the wrong path, a disabled rule or a tool failure. Preserve tool version, configuration, exit status and commit. A CI policy must handle scanner errors separately from “no findings”; suppressions need an owner, scope and expiry.",
+    "flow": [
+      "Commit",
+      "Scanner configuration",
+      "Rule or harness",
+      "Finding or crash",
+      "Human triage",
+      "Regression test",
+      "Release decision"
+    ],
+    "trace": [
+      "Open labs/week02-sdlc-tooling/scan.sh and identify which files and tools it actually scans.",
+      "Read harness.c before fuzzing: locate the length check and the write the generated bytes can reach.",
+      "Trace one Semgrep finding into the vulnerable function rather than copying its severity label."
+    ],
+    "exercise": [
+      "Run the provided scan in your local lab checkout and preserve the original output.",
+      "Classify one true finding and one ambiguous result with source evidence.",
+      "Patch one root cause, rerun the relevant tool and add a normal-use regression test."
+    ],
+    "evidence": [
+      "Before/after reports with tool versions and exit codes",
+      "Triage table: weakness, reachability, decision, owner",
+      "Reproducer or minimized crash input stored only in the lab"
+    ],
+    "transfer": "Add a repeatable security check to NoteVault; make a deliberate bad change fail the check.",
+    "questions": [
+      {
+        "stem": "The scanner crashes and emits an empty JSON file. Can the release pass?",
+        "options": [
+          "Yes, zero JSON findings means safe",
+          "No; the scan did not finish, so its result is unknown",
+          "Only if the file is small"
+        ],
+        "answer": 1,
+        "why": "A failed sensor cannot establish the absence of findings. Treat execution success as a separate gate."
+      },
+      {
+        "stem": "A secret was removed in the latest commit. What remains?",
+        "options": [
+          "Nothing",
+          "Rotate the exposed credential and inspect relevant history and access",
+          "Rename the variable"
+        ],
+        "answer": 1,
+        "why": "The old credential may still exist in history, caches or copies. Removal does not invalidate it."
+      }
+    ],
+    "simulations": [
+      "triage-drill",
+      "fuzz-verdict"
+    ],
+    "command_steps": []
+  },
+  {
+    "number": 3,
+    "id": "week03",
+    "slug": "week03-cryptography",
+    "title": "Choose the right cryptographic job",
+    "kind": "Foundation",
+    "prerequisites": [
+      1,
+      2
+    ],
+    "foundation": "Encoding changes representation and is reversible without a secret. Encryption hides content using a key. A hash compresses data into a fingerprint; it is not a password-storage strategy by itself. Passwords need a deliberately expensive, salted password KDF so each guess costs work.",
+    "core": "ECB encrypts equal plaintext blocks identically under one key, revealing repetition. An authenticated-encryption scheme such as AES-GCM protects confidentiality and detects modification when used correctly. The receiver must verify the tag before using plaintext. TLS protects the channel and authenticates the endpoint when certificate validation is performed.",
+    "advanced": "Compare threat models: a stolen database, compromised application process and malicious network peer are different attackers. A salt is public and unique per password; a key is secret. AEAD nonce uniqueness must survive restarts and concurrency. A secure primitive still fails when keys are hardcoded, nonces repeat or a client ignores certificate errors.",
+    "flow": [
+      "Password input",
+      "Salted KDF",
+      "Stored verifier",
+      "Constant-purpose verification",
+      "Session issued after success"
+    ],
+    "trace": [
+      "Read vulnerable_crypto.py and label each operation as encoding, hashing or encryption.",
+      "Compare repeated blocks in the AES-mode simulation; separate the visible pattern from plaintext recovery.",
+      "Inspect solution_skeleton.py and name where key material and nonces originate."
+    ],
+    "exercise": [
+      "Run the worksheet’s local hash exercise; record guesses and elapsed work rather than promising a fixed cracking time.",
+      "Change plaintext repetition in the AES simulation and predict the ciphertext pattern.",
+      "Create a tamper test for your authenticated-encryption code and a correct-password/wrong-password pair."
+    ],
+    "evidence": [
+      "Hash/KDF comparison with parameters",
+      "Ciphertext tamper rejection plus successful round trip",
+      "Key and nonce lifecycle explanation"
+    ],
+    "transfer": "Replace NoteVault password storage with a vetted password API and document key rotation assumptions.",
+    "questions": [
+      {
+        "stem": "Which value must be kept secret in an AEAD design?",
+        "options": [
+          "The algorithm name",
+          "The key",
+          "Every nonce"
+        ],
+        "answer": 1,
+        "why": "The key is secret. Nonces usually are public but must satisfy the mode’s requirements, including uniqueness for GCM."
+      },
+      {
+        "stem": "A tag check fails after decryption. What should consume the plaintext?",
+        "options": [
+          "The HTML renderer",
+          "Only the logger",
+          "Nothing; reject the message"
+        ],
+        "answer": 2,
+        "why": "Unauthenticated plaintext must not affect application decisions or output."
+      }
+    ],
+    "simulations": [
+      "aes-modes",
+      "hash-crack"
+    ],
+    "command_steps": []
+  },
+  {
+    "number": 4,
+    "id": "week04",
+    "slug": "week04-injection",
+    "title": "Keep data out of executable syntax",
+    "kind": "Web security",
+    "prerequisites": [
+      1,
+      2,
+      3
+    ],
+    "foundation": "Injection occurs when an application lets input change the instructions sent to an interpreter. A SQL value should be a value, not part of the query grammar. A shell argument should be an argument, not a new command. Validation helps enforce business rules, but cannot replace that separation.",
+    "core": "Trace request parameter → handler → SQL or process API. Parameterized queries bind values separately from SQL text. For operating-system operations, use a library or an argument-list API without a shell, plus an allowlist appropriate to the task. Database identifiers such as sort columns often need an explicit allowlist because value placeholders cannot represent arbitrary grammar.",
+    "advanced": "Investigate second-order injection: a value safely stored now can be unsafely interpolated later. Compare a query fix with database least privilege and timeouts. A control is incomplete if it blocks a single payload but preserves the same unsafe interpreter boundary. Explain why a WAF is not a substitute for a safe query API.",
+    "flow": [
+      "HTTP value",
+      "Handler",
+      "Query construction",
+      "Database parser",
+      "Execution permissions",
+      "Response"
+    ],
+    "trace": [
+      "Open vulnerable_app.py and solution_app.py in labs/week04-injection.",
+      "Point to the line where the vulnerable version builds a query or shell command.",
+      "Track how the solution passes values and which business values it allows."
+    ],
+    "exercise": [
+      "Use the SQL parse simulation to predict how one input changes query structure.",
+      "Run the supplied bounded lab requests against the local vulnerable and defended services.",
+      "Test a normal name containing punctuation to ensure your fix preserves legitimate behavior."
+    ],
+    "evidence": [
+      "Request and raw response before/after",
+      "Patch tied to the interpreter boundary",
+      "Normal, malicious and malformed-input test cases"
+    ],
+    "transfer": "Convert NoteVault search and export operations to safe APIs and add regression cases.",
+    "questions": [
+      {
+        "stem": "A user selects a sort column. What is a sound approach?",
+        "options": [
+          "Concatenate any column text",
+          "Map a small set of allowed choices to fixed column names",
+          "Treat the table name as a password"
+        ],
+        "answer": 1,
+        "why": "Column identifiers are SQL grammar. Map allowed UI choices to server-owned identifiers."
+      },
+      {
+        "stem": "One attack string is blocked by a regex. What proves the root cause is fixed?",
+        "options": [
+          "The regex has many alternatives",
+          "Values now travel separately from interpreter syntax and regression tests pass",
+          "The page uses HTTPS"
+        ],
+        "answer": 1,
+        "why": "HTTPS protects transport. The injection boundary must still separate data from code."
+      }
+    ],
+    "simulations": [
+      "sqli-parse"
+    ],
+    "command_steps": []
+  },
+  {
+    "number": 5,
+    "id": "week05",
+    "slug": "week05-xss-client-side",
+    "title": "Understand the browser’s execution context",
+    "kind": "Web security",
+    "prerequisites": [
+      4
+    ],
+    "foundation": "A browser treats text differently depending on where it lands: HTML text, an attribute, a URL or JavaScript. XSS turns untrusted content into code in another person’s browser. CSRF is different: a third-party page causes a request to carry the victim’s ambient credentials, even if the attacker cannot read the response.",
+    "core": "Follow user content through storage and rendering to its final sink. Use safe text APIs and context-appropriate encoding; restrict URL schemes. CSP reduces what injected code can execute but does not repair unsafe rendering. A CSRF token tied to the user’s session helps the server distinguish an intended state-changing request from a cross-site one; SameSite is additional protection.",
+    "advanced": "Compare stored, reflected and DOM-based flows. An HttpOnly cookie prevents JavaScript reading the cookie, but injected script may still act as the user. XSS can defeat many CSRF protections by running in the trusted origin. The supplied fixed Week 5 app intentionally leaves CSRF observable: build the complete token-backed protection in your own project.",
+    "flow": [
+      "User text",
+      "Storage or URL",
+      "Template/DOM sink",
+      "Browser parsing context",
+      "Script capability",
+      "User-authorized action"
+    ],
+    "trace": [
+      "Compare vulnerable_app.py and fixed_app.py in labs/week05-xss-client-side.",
+      "Locate each renderer and label its output context.",
+      "Trace the transfer request separately from content rendering; identify its intent check."
+    ],
+    "exercise": [
+      "Change only the sink in the XSS-context simulation and explain the outcome.",
+      "Compare same-site, cross-site and token-bearing requests in the CSRF simulation.",
+      "Retest rendering with ordinary angle brackets and links; then verify state-changing requests reject missing or mismatched tokens."
+    ],
+    "evidence": [
+      "Source-to-sink table with output contexts",
+      "XSS blocked and benign content still visible",
+      "Separate CSRF request matrix; do not claim CSP proves intent"
+    ],
+    "transfer": "Harden NoteVault rendering and state-changing routes as two distinct tasks.",
+    "questions": [
+      {
+        "stem": "HttpOnly cookies are enabled. Can XSS still cause a state change?",
+        "options": [
+          "No, the script cannot read cookies",
+          "Yes, same-origin script can often send credentialed requests",
+          "Only without TLS"
+        ],
+        "answer": 1,
+        "why": "HttpOnly limits direct cookie reads; it does not remove the page’s ability to make authenticated requests."
+      },
+      {
+        "stem": "Why test CSRF separately from XSS?",
+        "options": [
+          "They have different failure mechanisms",
+          "CSRF only affects JavaScript files",
+          "XSS is always a server crash"
+        ],
+        "answer": 0,
+        "why": "CSRF abuses ambient credentials and missing intent checks. XSS abuses executable rendering contexts."
+      }
+    ],
+    "simulations": [
+      "xss-context",
+      "csrf-intent"
+    ],
+    "command_steps": []
+  },
+  {
+    "number": 6,
+    "id": "week06",
+    "slug": "week06-authn-authz",
+    "title": "Authorize each action on each object",
+    "kind": "Web security",
+    "prerequisites": [
+      3,
+      4,
+      5
+    ],
+    "foundation": "Authentication answers “who is making this request?” Authorization answers “may that identity perform this action on this object?” A valid login does not authorize every record. A session connects later requests to the authenticated identity and needs an explicit creation, expiry and revocation lifecycle.",
+    "core": "Derive the subject from a verified session or token, load the object and check its owner or policy before returning data or mutating it. JWT payloads are readable encoded claims: decoding is not verification. Verify the expected algorithm, signature and applicable issuer, audience and time claims. Rotate session identifiers after login and privilege changes.",
+    "advanced": "Explore logout and revocation for self-contained tokens, object ownership changes and permission caching. OAuth 2.0 delegates access; OIDC adds an identity layer. Neither makes application-specific authorization automatic. Write a subject × action × object matrix covering anonymous, owner, non-owner and administrator requests.",
+    "flow": [
+      "Request credentials",
+      "Session/token verification",
+      "Trusted subject",
+      "Object lookup",
+      "Policy decision",
+      "Allow or deny",
+      "Audit event"
+    ],
+    "trace": [
+      "Compare vulnerable_app.py and solution_app.py in labs/week06-authn-authz.",
+      "Trace the object identifier separately from the identity source.",
+      "Locate token verification and ownership checks; identify whether every relevant route calls them."
+    ],
+    "exercise": [
+      "Use the session-policy simulation to test expiry, logout and owner changes.",
+      "Modify a JWT claim in the browser simulation; predict why decoding still works but verification should fail.",
+      "Run owner and non-owner cases against the same object; confirm the legitimate owner still succeeds."
+    ],
+    "evidence": [
+      "Authorization matrix and HTTP outcomes",
+      "Session lifecycle diagram",
+      "Token-tampering rejection with valid-token success"
+    ],
+    "transfer": "Apply central authorization rules to every NoteVault note, export and administrative route.",
+    "questions": [
+      {
+        "stem": "A UUID replaces a sequential order ID. Has object authorization been fixed?",
+        "options": [
+          "Yes, UUIDs are unguessable",
+          "No, the server still needs an authorization check for that object",
+          "Only if the UUID is long"
+        ],
+        "answer": 1,
+        "why": "Harder discovery does not establish permission. Leaked or shared identifiers must remain safe to use."
+      },
+      {
+        "stem": "Where should the trusted subject come from?",
+        "options": [
+          "A verified session or appropriately validated token",
+          "A user_id field in the request body",
+          "The page title"
+        ],
+        "answer": 0,
+        "why": "A caller must not choose their own trusted identity."
+      }
+    ],
+    "simulations": [
+      "session-policy",
+      "jwt-forge"
+    ],
+    "command_steps": []
+  },
+  {
+    "number": 7,
+    "id": "week07",
+    "slug": "week07-review-midterm-prep",
+    "title": "Rebuild the first-half mental model",
+    "kind": "Review",
+    "prerequisites": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "foundation": "Review means retrieving ideas before rereading them. Start with one NoteVault request and explain what can go wrong at each boundary. If a term is missing, return to that week after making your best prediction.",
+    "core": "Use the chain input → boundary → sink → impact → control → test. Classify a missed question as a vocabulary gap, a flow-tracing gap or a testing gap. The Week 7 mock is practice with hints; it is not identical in coverage to the Week 9 assessed CTF. In particular, the mock omits the ECB-oracle task.",
+    "advanced": "Interleave similar-looking failures: SQLi versus XSS, encoding versus encryption, authentication versus authorization. Explain why a plausible but misplaced control fails. Design an unfamiliar case by changing the data source or privilege boundary while keeping the same root cause.",
+    "flow": [
+      "Retrieve from memory",
+      "Predict a failure",
+      "Test in practice",
+      "Explain the discrepancy",
+      "Repair one gap",
+      "Revisit tomorrow"
+    ],
+    "trace": [
+      "Select one route from each of Weeks 4–6 without opening its solution first.",
+      "Annotate untrusted input, the sensitive operation and the decision that should precede it.",
+      "Compare your annotations with the lecture after completing the attempt."
+    ],
+    "exercise": [
+      "Build a six-row revision map without notes.",
+      "Run the published mock CTF at its stated practice pace; record hint use privately.",
+      "Create a one-page revision sheet with one concrete example per concept; exam use depends on instructor rules."
+    ],
+    "evidence": [
+      "Six-topic retrieval map",
+      "Error log with next practice actions",
+      "One improved explanation after a second attempt"
+    ],
+    "transfer": "Revisit NoteVault’s top three original risks and explain how the first six releases changed them.",
+    "questions": [
+      {
+        "stem": "You recognized the term but cannot trace its code. What is the next useful practice?",
+        "options": [
+          "Reread the glossary only",
+          "Annotate a small request-to-sink flow and predict an outcome",
+          "Memorize a longer payload"
+        ],
+        "answer": 1,
+        "why": "Flow tracing targets the identified gap rather than repeating already-known vocabulary."
+      },
+      {
+        "stem": "Does a successful mock guarantee all midterm challenge types were covered?",
+        "options": [
+          "Yes",
+          "No; compare the published mock and actual assessment brief"
+        ],
+        "answer": 1,
+        "why": "Practice formats can differ. Week 7’s mock lacks the ECB-oracle task present in Week 9."
+      }
+    ],
+    "simulations": [
+      "sqli-parse",
+      "session-policy"
+    ],
+    "command_steps": []
+  },
+  {
+    "number": 8,
+    "id": "week08",
+    "slug": "week08-midterm-written",
+    "title": "Prepare for written reasoning",
+    "kind": "Assessment preparation",
+    "prerequisites": [
+      7
+    ],
+    "foundation": "Written answers make your reasoning inspectable. State what the attacker controls, where it reaches an unsafe operation and which security property fails. Use the question’s requested format and evidence rather than a memorized paragraph.",
+    "core": "The current midterm lecture specifies 120 minutes and four sections: concepts 30, spot-the-vulnerability 20, applied SQL injection 30, and design 20. Applied SQL injection asks for a payload and its reasoning; the design section assesses defences. This journey supplies original ungraded preparation, not solutions to the exam paper.",
+    "advanced": "Practice answering an unfamiliar snippet with precise assumptions. Distinguish what the snippet proves from missing surrounding context. Budget time per mark, leave a clear chain of reasoning, and check that your answer responds to the actual task. Follow the instructor’s current examination rules.",
+    "flow": [
+      "Read prompt",
+      "Identify requested evidence",
+      "Trace relevant code",
+      "State mechanism",
+      "Give scoped answer",
+      "Check assumptions"
+    ],
+    "trace": [
+      "Use a previously practiced local route, not a live examination question.",
+      "Hide the comments and explain which expression mixes data with instructions.",
+      "Then explain where a safe API would change that flow."
+    ],
+    "exercise": [
+      "Write a 90-second explanation of each first-half concept from memory.",
+      "Create your own small vulnerable query example and predict how parsing changes.",
+      "Complete a timed practice answer and check whether it includes the requested mechanism and evidence."
+    ],
+    "evidence": [
+      "Original practice answers",
+      "Self-review against the command words in each prompt",
+      "Two remaining gaps with linked revision weeks"
+    ],
+    "transfer": "Explain one NoteVault fix orally without showing the patch first.",
+    "questions": [
+      {
+        "stem": "An exam prompt asks for a concrete mechanism. Is “sanitize input” sufficient?",
+        "options": [
+          "Yes",
+          "No, name the exact boundary and operation",
+          "Only with a CWE number"
+        ],
+        "answer": 1,
+        "why": "A label does not show how input affects execution or how a specific control prevents it."
+      },
+      {
+        "stem": "Which material governs allowed notes during the exam?",
+        "options": [
+          "A practice-page suggestion",
+          "Your browser bookmarks",
+          "The instructor’s current exam rules"
+        ],
+        "answer": 2,
+        "why": "Revision tools do not create permission to use them in an assessment."
+      }
+    ],
+    "simulations": [],
+    "command_steps": []
+  },
+  {
+    "number": 9,
+    "id": "week09",
+    "slug": "week09-midterm-practical",
+    "title": "Practice disciplined sandbox investigation",
+    "kind": "Assessment preparation",
+    "prerequisites": [
+      7,
+      8
+    ],
+    "foundation": "A practical security investigation is a sequence of small experiments. Establish a normal baseline, change one input, capture the raw result and explain the mechanism. A surprising response is evidence to investigate, not automatically proof of every suspected bug.",
+    "core": "The published midterm practical has seven challenges over injection, authentication/access, cryptography and stored XSS. Use the supplied course targets. Preserve flag/proof, payload or command, and a one-line mitigation as separate fields. Team practice here does not change the individual assessment’s no-collaboration rule.",
+    "advanced": "Bound requests and distinguish target downtime from rejection of your hypothesis. Record timestamps, target identity and preconditions. If an exploit fails, inspect the response and code before widening the test. Shared training flags and device-local progress are not identity-bound assessment evidence.",
+    "flow": [
+      "Confirm assigned target",
+      "Establish baseline",
+      "Make one hypothesis",
+      "Run bounded test",
+      "Capture proof",
+      "Explain mitigation"
+    ],
+    "trace": [
+      "Read the published CTF brief’s target list before using any tool.",
+      "Map each practice endpoint to its Week 3–6 source.",
+      "Track the exact request and response that establishes the claimed behavior."
+    ],
+    "exercise": [
+      "Use the Week 7 mock for untimed rehearsal first.",
+      "Repeat a previously solved training scenario under a short timebox without copying prior commands.",
+      "Write a handoff that another learner can reproduce in their own assigned sandbox."
+    ],
+    "evidence": [
+      "Target and scope record",
+      "Three-field evidence per practice case",
+      "Troubleshooting log distinguishing tool, network and application failures"
+    ],
+    "transfer": "Rehearse one NoteVault attack→fix demonstration from a clean local start.",
+    "questions": [
+      {
+        "stem": "The target returns no response. What should you establish first?",
+        "options": [
+          "Whether the expected service is reachable and healthy",
+          "That the payload bypassed authorization",
+          "That TLS is unnecessary"
+        ],
+        "answer": 0,
+        "why": "Network or service failure is not proof of an application-level bypass."
+      },
+      {
+        "stem": "Can local journey completion count as a graded flag capture?",
+        "options": [
+          "Yes",
+          "No, assessment evidence follows the instructor’s separate process"
+        ],
+        "answer": 1,
+        "why": "The journey stores self-tracking on the device and does not establish identity or a capture."
+      }
+    ],
+    "simulations": [],
+    "command_steps": []
+  },
+  {
+    "number": 10,
+    "id": "week10",
+    "slug": "week10-api-security",
+    "title": "Protect API objects, fields and capacity",
+    "kind": "Modern stack",
+    "prerequisites": [
+      6
+    ],
+    "foundation": "An API is a program-facing doorway to the same business data a web page uses. Three different permissions matter: which object you can access, which fields you can change, and how much work the service will do for you. A mobile app hiding an option does not stop a caller from sending it.",
+    "core": "In vulnerable_api.py, get_orders() reads the URL user ID and returns orders without even calling current_user(). The defended version adds an owner/admin check, an allowlist for user-creation fields and a small in-memory rate limiter. Its X-User-Id header is a teaching stand-in, not real authentication; an external caller can forge it.",
+    "advanced": "Replace the teaching identity with a verified subject and consider distributed rate limits, trusted proxy configuration, pagination and request size/complexity limits. GraphQL requires authorization in resolvers and budgets for expensive queries. Avoid treating every repeated 401 as an account lockout decision: per-IP and per-account limits have different failure modes. Behind the shared lab relay, this demo keys its limiter on the relay IP, so teammates share the counter; do not interpret it as per-student enforcement.",
+    "flow": [
+      "HTTP request",
+      "Verified subject",
+      "Route and object ID",
+      "Object authorization",
+      "Field allowlist",
+      "Resource budget",
+      "JSON response"
+    ],
+    "trace": [
+      "Open vulnerable_api.py:get_orders and confirm the missing identity and ownership check.",
+      "Compare solution_api.py:get_orders and ALLOWED_CREATE_FIELDS.",
+      "Trace rate_limited() and explain why its process-local state is a teaching limitation."
+    ],
+    "exercise": [
+      "Run the API pair locally or use the configured private API target.",
+      "Collect the defended 401/403/200 ladder: no identity, wrong owner, correct owner.",
+      "Send a harmless privileged-field test to the supplied lab user-creation endpoint; compare stored results.",
+      "Run seven wrong-password requests only against your own lab and inspect when 429 begins."
+    ],
+    "evidence": [
+      "Authorization ladder with raw status and JSON",
+      "Before/after field-binding evidence",
+      "Bounded limiter transcript and a note about production identity"
+    ],
+    "transfer": "Add request schema and subject/action/object checks to NoteVault’s API; test unauthorized reads and writes.",
+    "questions": [
+      {
+        "stem": "The defended demo accepts X-User-Id: 3. Is it ready for real authentication?",
+        "options": [
+          "Yes, the header is on HTTPS",
+          "No, bind identity to a verified session or token",
+          "Yes, integer parsing proves identity"
+        ],
+        "answer": 1,
+        "why": "TLS does not stop the caller choosing header values. The teaching API isolates authorization logic using a deliberately simplified identity."
+      },
+      {
+        "stem": "Why allowlist writable fields?",
+        "options": [
+          "New privileged fields stay unwritable unless deliberately enabled",
+          "It automatically encrypts the database",
+          "It makes ownership checks optional"
+        ],
+        "answer": 0,
+        "why": "An allowlist is closed to newly added server-controlled properties; object authorization is still needed."
+      },
+      {
+        "stem": "Two app processes each track attempts in memory. What can change?",
+        "options": [
+          "A caller may receive a separate allowance per process",
+          "The database becomes encrypted",
+          "All users are automatically admins"
+        ],
+        "answer": 0,
+        "why": "A local counter is not a shared global quota. Production rate policies need consistent enforcement."
+      }
+    ],
+    "simulations": [
+      "mass-assign"
+    ],
+    "command_steps": [
+      {
+        "title": "Start the local pair",
+        "command": "cd labs/week10-api-security\ndocker compose up",
+        "expect": "Leave this terminal running. The worksheet publishes the vulnerable API at 8080 and defended API at 8081. These are local-checkout commands; private HTTPS targets have different URLs."
+      },
+      {
+        "title": "Separate authentication from ownership",
+        "command": "curl -i http://localhost:8081/api/users/3/orders\ncurl -i -H 'X-User-Id: 1' http://localhost:8081/api/users/3/orders\ncurl -i -H 'X-User-Id: 1' http://localhost:8081/api/users/1/orders",
+        "expect": "Expected statuses: 401, 403, 200. The toy header makes the authorization decision visible, but does not authenticate real users."
+      },
+      {
+        "title": "Observe a bounded resource policy",
+        "command": "for i in $(seq 1 7); do\n  curl -s -o /dev/null -w '%{http_code}\\n' \\\n    -H 'Content-Type: application/json' \\\n    -d '{\"username\":\"alice\",\"password\":\"wrong\"}' \\\n    http://localhost:8081/api/login\ndone",
+        "expect": "From a fresh limiter state: five 401 responses, then two 429 responses. Prior attempts in the 60-second window change this sequence. Behind a relay, the demo shares a per-relay limit across the team."
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "id": "week11",
+    "slug": "week11-memory-safety-exploitation",
+    "title": "See the bytes behind memory safety",
+    "kind": "Modern stack",
+    "prerequisites": [
+      2,
+      4
+    ],
+    "foundation": "A C array has a fixed capacity. Copying more bytes than fit can overwrite neighboring state; the terminating zero byte counts too. A crash tells you an operation violated a runtime condition, but you still need to explain the exact read or write that crossed its bounds.",
+    "core": "The supplied parse_input routine has char buf[64] and an unchecked strcpy. The fuzzer first bounds its scratch copy to 4095 bytes, then passes the resulting string to the smaller buffer: the safe first copy does not fix the second one. AddressSanitizer helps locate invalid access. A canary detects some stack corruption; NX and ASLR constrain exploitation rather than remove the bug.",
+    "advanced": "Compare byte length, Unicode characters and embedded NULs. safe.rs demonstrates a memory-safe alternative, but Rust’s unsafe blocks and FFI need separate review and memory safety does not guarantee authorization or availability. Use-after-free and integer overflow are lecture extensions; the shipped binary directly demonstrates stack overflow and format-string flaws.",
+    "flow": [
+      "Fuzzer bytes",
+      "Bounded scratch buffer",
+      "NUL-terminated string",
+      "parse_input",
+      "Unchecked smaller copy",
+      "Sanitizer finding",
+      "Bounds-safe rewrite"
+    ],
+    "trace": [
+      "Read fuzz_harness.c: distinguish tmp[4096] from buf[64].",
+      "Determine the largest non-NUL payload that fits including the terminator.",
+      "Compare the vulnerable routine with safe.rs and identify how failure is represented."
+    ],
+    "exercise": [
+      "Use the stack-frame simulation before compiling a vulnerable binary.",
+      "Inside the isolated toolbox/VM, compile the harness with the worksheet’s sanitizer flags and a bounded fuzz run.",
+      "Replay and minimize the crashing input; save the sanitizer report.",
+      "Retest the memory-safe rewrite with boundary lengths and normal inputs."
+    ],
+    "evidence": [
+      "Minimal crash and sanitizer source location",
+      "Boundary-case table including 63 and 64 non-NUL bytes",
+      "Rewrite tests and explanation of mitigation limits"
+    ],
+    "transfer": "Audit native dependencies in NoteVault and remove or isolate unsafe parsing boundaries.",
+    "questions": [
+      {
+        "stem": "A 64-byte C buffer stores a string of 64 non-NUL bytes plus its terminator. Does it fit?",
+        "options": [
+          "Yes",
+          "No, it needs 65 bytes",
+          "Only with ASLR"
+        ],
+        "answer": 1,
+        "why": "The terminator is a byte too. At most 63 non-NUL bytes fit in this buffer as a C string."
+      },
+      {
+        "stem": "Does NX repair the unchecked copy?",
+        "options": [
+          "Yes",
+          "No, it constrains execution of some memory pages",
+          "Only on weekends"
+        ],
+        "answer": 1,
+        "why": "The invalid write remains. Mitigations and root-cause removal are distinct."
+      },
+      {
+        "stem": "Does an embedded NUL matter to strcpy?",
+        "options": [
+          "No, it copies the whole supplied byte length",
+          "Yes, copying stops at the first NUL",
+          "It changes the CPU architecture"
+        ],
+        "answer": 1,
+        "why": "String-copy length follows C-string termination, not the fuzzer’s original byte count."
+      }
+    ],
+    "simulations": [
+      "stack-frame"
+    ],
+    "command_steps": [
+      {
+        "title": "Inspect before executing",
+        "command": "cd labs/week11-memory-safety-exploitation\nsed -n '1,120p' fuzz_harness.c",
+        "expect": "Find the 4096-byte scratch buffer, the 64-byte destination and the unchecked strcpy. Reading the file does not execute the vulnerable binary."
+      },
+      {
+        "title": "Compile inside the course toolbox or disposable VM",
+        "command": "clang -g -fsanitize=address,fuzzer fuzz_harness.c -o fuzz\n./fuzz -max_total_time=20 -max_len=128",
+        "expect": "Run only inside the isolated compiler environment described by the worksheet. The fuzzer may discover a stack-buffer-overflow and write crash-*; discovery and timing vary. A quiet 20-second run does not prove safety."
+      },
+      {
+        "title": "Exercise the memory-safe example inside that environment",
+        "command": "rustc safe.rs -o safe\nprintf 'hello\\n' | ./safe",
+        "expect": "Record actual output, then inspect safe.rs to choose relevant boundary inputs. Do not claim a safe-language port fixes business authorization or every possible unsafe/FFI boundary."
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "id": "week12",
+    "slug": "week12-supply-chain",
+    "title": "Verify what entered the build",
+    "kind": "Modern stack",
+    "prerequisites": [
+      2,
+      3
+    ],
+    "foundation": "A release contains more code than your team wrote. Direct dependencies bring transitive dependencies, and the build tool decides where packages come from. An SBOM is an inventory, a signature connects bytes to a signer, and provenance describes how an artifact was produced. Each answers a different question.",
+    "core": "The shipped dependency-confusion exercise is a bounded resolver simulation with a stated version-selection rule, not a live malicious-package registry. Real package managers have their own resolution semantics. Compare registry scoping and locked hashes with merely choosing a version. Verification must check artifact digest, expected signer and issuer, not just that some signature exists.",
+    "advanced": "A valid signature from an unexpected identity must fail policy. An SBOM may omit dynamically fetched components; identify its scope. SLSA build claims require evidence about the build process, not just a signed file. The legacy sign.sh uses wildcard identity filters and a local image example: treat those as incomplete teaching scaffolds, not production release policy.",
+    "flow": [
+      "Dependency declaration",
+      "Resolver and registry policy",
+      "Locked components",
+      "Build",
+      "SBOM and provenance",
+      "Signature",
+      "Identity/digest verification",
+      "Release gate"
+    ],
+    "trace": [
+      "Read dependency-confusion.md and state the simulator’s assumed resolver rule.",
+      "Inspect sca_scan.sh and distinguish findings from component inventory.",
+      "Read sign.sh: explain why wildcard identity and issuer matching accept more signers than your release policy should."
+    ],
+    "exercise": [
+      "Change registry scope in the resolver simulation and predict the chosen package.",
+      "Generate an SBOM for your own built artifact using the worksheet’s local tools.",
+      "Use the strict signing-verification supplement with your own registry digest and expected identity.",
+      "Verify the right artifact succeeds and a wrong identity or modified digest is rejected; preserve exit status."
+    ],
+    "evidence": [
+      "Resolver assumptions and scoped configuration",
+      "SBOM tied to a specific artifact digest",
+      "Positive and negative signature-policy transcripts"
+    ],
+    "transfer": "Attach NoteVault’s SBOM, exact digest and provenance to the release; require the expected signer.",
+    "questions": [
+      {
+        "stem": "A trusted registry contains a signed image. What else must policy establish?",
+        "options": [
+          "Only that the tag is short",
+          "The expected artifact digest, signer identity and issuer",
+          "That the SBOM has a colorful logo"
+        ],
+        "answer": 1,
+        "why": "Signature presence alone does not establish that this is the artifact and signer your release intended."
+      },
+      {
+        "stem": "Does an SBOM certify zero vulnerabilities?",
+        "options": [
+          "Yes",
+          "No, it inventories components within its generation scope",
+          "Only if saved as JSON"
+        ],
+        "answer": 1,
+        "why": "Inventory enables analysis; it is not a guarantee of safety or completeness."
+      },
+      {
+        "stem": "Is the course resolver simulation a universal package-manager specification?",
+        "options": [
+          "No; inspect the real resolver and registry semantics",
+          "Yes"
+        ],
+        "answer": 0,
+        "why": "The model makes one mechanism visible while deliberately simplifying ecosystem behavior."
+      }
+    ],
+    "simulations": [
+      "resolver-confusion"
+    ],
+    "command_steps": [
+      {
+        "title": "Inspect the resolver policy",
+        "command": "cd labs/week12-supply-chain\ncat dependency-confusion.md",
+        "expect": "Identify the model’s candidate-selection rule and registry assumptions before changing the simulation."
+      },
+      {
+        "title": "Verify your own signed registry artifact",
+        "command": "bash verify-release.sh \"$RELEASE_IMAGE\" \"$EXPECTED_IDENTITY\" \"$EXPECTED_ISSUER\"",
+        "expect": "First configure the three values using the strict verification guide. A complete digest and exact identity/issuer are required. This reads the registry; it does not create or sign an artifact."
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "id": "week13",
+    "slug": "week13-cloud-container",
+    "title": "Constrain runtime authority",
+    "kind": "Modern stack",
+    "prerequisites": [
+      1,
+      3,
+      12
+    ],
+    "foundation": "Cloud security is about who can do what to which resource under which conditions. Container security asks what a compromised process can reach and change. Running as non-root helps, but mounted secrets, a Docker socket, broad network access or a privileged cloud identity can still grant substantial power.",
+    "core": "Read IAM Action, Resource and Condition separately. Explicit deny can override allow; a narrow action on every resource can still be broader than intended. The worksheet’s container hunt has six manual issues, not all recognized by a scanner. Trivy does not replace reasoning over the standalone IAM policy. A read-only filesystem needs explicit writable locations for legitimate state.",
+    "advanced": "Trace the course’s deployment: VPN peer /32 → edge forwarding policy → team security group → HTTPS proxy → fixed relay → isolated target. TLS protects transport; VPN and policy restrict reachability. Container isolation is not a complete hostile-code boundary. Document cloud metadata access, egress, state ownership, backups and revocation.",
+    "flow": [
+      "VPN peer identity",
+      "Network policy",
+      "TLS hostname",
+      "Fixed upstream relay",
+      "Restricted process",
+      "Explicit storage and cloud permissions"
+    ],
+    "trace": [
+      "Compare iam-policy-insecure.json and iam-policy-leastpriv.json.",
+      "Inspect the vulnerable Dockerfile and identify which instruction creates each risk.",
+      "Read the private deployment compose file: find published ports, networks, writable mounts and process identity."
+    ],
+    "exercise": [
+      "Use the IAM-scope simulation to narrow actions and resources independently.",
+      "Scan the lab configuration and manually review every issue the tool misses.",
+      "Harden a local image and retest one required write path plus one forbidden write.",
+      "Document own-team access and cross-team denial as separate deployment tests."
+    ],
+    "evidence": [
+      "Before/after IAM policy with allowed and denied examples",
+      "Manual Dockerfile review plus scan result",
+      "Network and storage access matrix"
+    ],
+    "transfer": "Deploy NoteVault with explicit writable storage, least privilege and a tested restore procedure.",
+    "questions": [
+      {
+        "stem": "The app is non-root but mounts the Docker socket. Is authority necessarily narrow?",
+        "options": [
+          "Yes",
+          "No, daemon access can confer extensive host control",
+          "Only with a small image"
+        ],
+        "answer": 1,
+        "why": "Effective authority includes sockets and services a process can access, not just its Unix UID."
+      },
+      {
+        "stem": "Does HTTPS make a vulnerable target private?",
+        "options": [
+          "Yes",
+          "No; reachability still depends on VPN, firewall or authentication policy",
+          "Only on port 443"
+        ],
+        "answer": 1,
+        "why": "TLS authenticates/protects a connection. It does not by itself decide who may reach the service."
+      },
+      {
+        "stem": "A scanner reports only three of six manual issues. What follows?",
+        "options": [
+          "Discard the manual findings",
+          "Review the missing issues using source and configuration evidence",
+          "Claim all six were scanned"
+        ],
+        "answer": 1,
+        "why": "Tool coverage and security coverage are different. Preserve which method supports each finding."
+      }
+    ],
+    "simulations": [
+      "iam-scope",
+      "iam-evaluation"
+    ],
+    "command_steps": [
+      {
+        "title": "Review policy and build instructions",
+        "command": "cd labs/week13-cloud-container\ncat iam-policy-insecure.json\ncat iam-policy-leastpriv.json\ncat Dockerfile.insecure\ncat Dockerfile.hardened",
+        "expect": "Compare Action, Resource and Condition explicitly. The IAM JSON review is manual; do not report it as a Trivy result."
+      },
+      {
+        "title": "Scan the local configuration",
+        "command": "docker run --rm -v \"$PWD:/src:ro\" aquasec/trivy:latest \\\n  config --severity MEDIUM,HIGH,CRITICAL /src",
+        "expect": "Capture the actual Trivy version/image digest, exit status and report. The legacy scan.sh swallows errors with “|| true”, so its final exit status is not proof the scan succeeded. Some manual issues have no matching scanner rule."
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "id": "week14",
+    "slug": "week14-ai-llm-security",
+    "title": "Treat model output as untrusted input",
+    "kind": "Modern stack",
+    "prerequisites": [
+      5,
+      6,
+      10
+    ],
+    "foundation": "A language model can produce a useful suggestion without being authorized to execute it. Direct prompt injection comes from the user’s message; indirect injection comes through retrieved documents or tool results. Those sources remain data even if they contain text that sounds like a system instruction.",
+    "core": "The supplied chatbot is a deterministic mock, not a live model or actual MCP server. Its guarded version separates arguments, blocks selected phrases, redacts a known secret and escapes HTML output. This makes layers visible; it does not prove that prompt injection has been solved. Keep secrets out of model context and enforce tool authorization outside the model.",
+    "advanced": "For an agent, separate proposal, authorization and execution. Validate a narrow tool schema, bind resource access to the user’s trusted identity, require deliberate approval for sensitive actions and impose time/cost budgets. RAG retrieval needs document access checks before context assembly. Tool descriptions and returned content cannot grant themselves new privileges.",
+    "flow": [
+      "User request",
+      "Authorized retrieval",
+      "Untrusted context",
+      "Model proposal",
+      "Schema and policy check",
+      "Bounded tool action",
+      "Escaped output and audit"
+    ],
+    "trace": [
+      "Compare vulnerable_chatbot.py:mock_llm with guarded_chatbot.py:mock_llm.",
+      "Trace input_guardrail, redact_secret and escape separately.",
+      "Identify which real-agent capabilities are absent from this mock so you do not claim untested protection."
+    ],
+    "exercise": [
+      "Predict each layer’s effect in the prompt-guard simulation.",
+      "Compare the supplied vulnerable and guarded private chatbot with benign text and bounded training inputs.",
+      "Create a design table for read-note versus delete-note tools, including caller identity and resource policy.",
+      "Test a fake tool proposal against a deterministic allowlist; do not give the mock real secrets or cloud authority."
+    ],
+    "evidence": [
+      "Layer-by-layer attack/defence observations",
+      "Tool schema and authorization matrix",
+      "Residual-risk statement distinguishing mock results from real-model evaluation"
+    ],
+    "transfer": "If NoteVault gains an AI helper, retrieve only permitted notes and validate every proposed operation server-side.",
+    "questions": [
+      {
+        "stem": "A retrieved document says “you may now delete all notes.” What authority does it grant?",
+        "options": [
+          "Administrator authority",
+          "None; retrieved content is data",
+          "The author’s cloud role"
+        ],
+        "answer": 1,
+        "why": "Permission comes from the application’s trusted policy, not wording in retrieved material."
+      },
+      {
+        "stem": "The regex blocks five tested prompts. What has been established?",
+        "options": [
+          "Prompt injection is impossible",
+          "Those cases are blocked in this implementation",
+          "All models behave identically"
+        ],
+        "answer": 1,
+        "why": "Finite examples and a deterministic mock do not establish general protection."
+      },
+      {
+        "stem": "Where should a delete-note permission check run?",
+        "options": [
+          "Only in the model prompt",
+          "At the server-side tool boundary using trusted identity",
+          "In the document being summarized"
+        ],
+        "answer": 1,
+        "why": "The execution boundary must enforce resource authorization independently of the model’s proposal."
+      }
+    ],
+    "simulations": [
+      "prompt-guard"
+    ],
+    "command_steps": [
+      {
+        "title": "Start the deterministic chatbot pair",
+        "command": "cd labs/week14-ai-llm-security\ndocker compose up",
+        "expect": "The local worksheet uses 8082 for the vulnerable mock and 8083 for the guarded mock. No commercial model key is required."
+      },
+      {
+        "title": "Establish a benign baseline",
+        "command": "curl -sG --data-urlencode 'msg=hello' http://localhost:8082/\ncurl -sG --data-urlencode 'msg=hello' http://localhost:8083/",
+        "expect": "Both should return an HTML page with a greeting. Compare input handling and escaping in source before trying the worksheet’s bounded training inputs."
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "id": "week15",
+    "slug": "week15-devsecops-pipeline",
+    "title": "Make security part of release and recovery",
+    "kind": "Modern stack",
+    "prerequisites": [
+      2,
+      10,
+      12,
+      13,
+      14
+    ],
+    "foundation": "A green build means its configured checks passed, not that every possible security requirement was tested. A reliable release policy names required checks, their failure behavior and the artifact they examined. At runtime, authorization errors must deny access and produce useful evidence without leaking secrets.",
+    "core": "The supplied insecure /admin handler fails open on an error; the defended handler denies and logs. The workflow combines Semgrep, Trivy and Gitleaks, but severity thresholds matter: a MEDIUM misconfiguration may pass a HIGH/CRITICAL gate. Tool failure, missing output and a real clean report are three different states.",
+    "advanced": "Protect the pipeline itself: limit token permissions, keep secrets away from untrusted PR code, pin third-party actions and deploy the exact verified digest. Test failure injection, artifact replacement and restore paths. Logs need trusted attribution, bounded fields and no tokens or note content. Trust forwarded client headers only from a configured proxy.",
+    "flow": [
+      "Commit",
+      "Build and tests",
+      "Security scans",
+      "Explicit policy gate",
+      "Verified artifact digest",
+      "Deploy",
+      "Runtime deny/log",
+      "Alert and recovery"
+    ],
+    "trace": [
+      "Compare insecure_service.py:admin and secure_service.py:admin.",
+      "Trace the exception path as carefully as the valid-admin path.",
+      "Read security-ci.yml and locate severity thresholds, exit-code handling and permissions."
+    ],
+    "exercise": [
+      "Call the supplied /admin endpoint with no token, a non-admin token and the seeded admin token.",
+      "Record denied requests and the corresponding structured event in the defended service.",
+      "In your own test repository, introduce a known fixture finding and verify the required CI check fails.",
+      "Simulate scanner failure and confirm release does not treat missing evidence as a clean report."
+    ],
+    "evidence": [
+      "Runtime deny/allow matrix and redacted log excerpts",
+      "CI failing run then passing fixed run",
+      "Artifact digest and gate policy with scanner-error handling"
+    ],
+    "transfer": "Gate NoteVault releases and demonstrate one detection, one prevented regression and one recovery.",
+    "questions": [
+      {
+        "stem": "A MEDIUM finding passes a HIGH/CRITICAL gate. What happened?",
+        "options": [
+          "The tool necessarily failed",
+          "The configured policy did not block that severity",
+          "The code has no weakness"
+        ],
+        "answer": 1,
+        "why": "Check policy scope before interpreting a green status as proof of safety."
+      },
+      {
+        "stem": "An unexpected authorization exception occurs. What should the handler do?",
+        "options": [
+          "Grant access to preserve uptime",
+          "Deny and log a safe diagnostic",
+          "Return all credentials for debugging"
+        ],
+        "answer": 1,
+        "why": "An error must not create permission. Record useful diagnostics without exposing secrets."
+      },
+      {
+        "stem": "Why record an artifact digest after scanning?",
+        "options": [
+          "To bind the release to the bytes that were checked",
+          "To make logs longer",
+          "To avoid authorization tests"
+        ],
+        "answer": 0,
+        "why": "Scanning one build and deploying different bytes breaks the evidence chain."
+      }
+    ],
+    "simulations": [
+      "gate-check"
+    ],
+    "command_steps": [
+      {
+        "title": "Start the fail-open/fail-closed pair",
+        "command": "cd labs/week15-devsecops-pipeline\ndocker compose up",
+        "expect": "The local worksheet uses 8090 and 8091. Keep the service logs visible while testing."
+      },
+      {
+        "title": "Compare the error path",
+        "command": "curl -i http://localhost:8090/admin\ncurl -i http://localhost:8091/admin",
+        "expect": "The vulnerable demo returns 200 without credentials; the defended demo denies with 403. Record a safe excerpt, not real secrets."
+      },
+      {
+        "title": "Keep legitimate admin behavior",
+        "command": "curl -i -H 'Authorization: bob-token' http://localhost:8091/admin\ncurl -i -H 'Authorization: alice-token' http://localhost:8091/admin",
+        "expect": "The seeded non-admin is denied with 403 and seeded admin succeeds with 200. These fixed demo tokens are not production credentials."
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "id": "week16",
+    "slug": "week16-capstone",
+    "title": "Tell one complete security story",
+    "kind": "Studio",
+    "prerequisites": [
+      1,
+      6,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "foundation": "A capstone connects a threat to observable behavior, its source-level cause, a fix and evidence that the fix works. The audience should be able to follow one request through your system and understand both the harm and the control.",
+    "core": "Bring six artifacts: threat model, vulnerability report, fixed code, SBOM, signed artifact and CI pipeline. Week 16 is an ungraded work-in-progress studio with a 10-minute demonstration and 5-minute Q&A. It rehearses the substance of the final; Week 19 changes delivery to a pre-submitted recording and a short live Q&A.",
+    "advanced": "Have a teammate reproduce your evidence from a clean checkout. Include normal-use tests, residual risks and rollback. A security claim without a reproducible test should be labeled as a design proposal, not a demonstrated outcome. Separate the project rubric from the CTF leaderboard.",
+    "flow": [
+      "Threat identifier",
+      "Reproducer",
+      "Root-cause source",
+      "Patch",
+      "Negative and positive tests",
+      "Verified build",
+      "Demonstration"
+    ],
+    "trace": [
+      "Choose one NoteVault route and show its caller, policy, query and response.",
+      "Link the vulnerable and fixed revisions rather than switching undocumented files.",
+      "Show the security test that fails before the fix and passes after it."
+    ],
+    "exercise": [
+      "Rehearse the studio demonstration using the published worksheet timings.",
+      "Ask a peer to identify one unstated assumption and reproduce one result.",
+      "Turn feedback into a short ordered repair list before final recording."
+    ],
+    "evidence": [
+      "Six-artifact project checklist",
+      "Reproducible attack→fix story",
+      "Written peer review with concrete next actions"
+    ],
+    "transfer": "Create a release candidate with a documented start, test, reset and restore procedure.",
+    "questions": [
+      {
+        "stem": "An attack stops working after a patch, but every normal request also fails. Is the fix demonstrated?",
+        "options": [
+          "Yes",
+          "No, preserve legitimate behavior as well",
+          "Only if CI is green"
+        ],
+        "answer": 1,
+        "why": "A useful security fix enforces the boundary while allowing intended use."
+      },
+      {
+        "stem": "What should a design-only control be called?",
+        "options": [
+          "A verified protection",
+          "A proposal awaiting implementation and tests",
+          "A captured flag"
+        ],
+        "answer": 1,
+        "why": "Evidence should distinguish implemented behavior from planned work."
+      }
+    ],
+    "simulations": [],
+    "command_steps": []
+  },
+  {
+    "number": 17,
+    "id": "week17",
+    "slug": "week17-review-final-prep",
+    "title": "Connect the modern stack to foundations",
+    "kind": "Review",
+    "prerequisites": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "foundation": "Reuse the first-half pattern across new technology: an API object needs authorization, a native buffer needs bounds, a package needs a trustworthy origin and a model tool needs permission. The vocabulary changes; the discipline of identifying boundaries remains.",
+    "core": "The Week 17 mock has eight challenges and differs from Week 19’s twelve-challenge graded brief. It does not directly assess DevSecOps or the capstone. Revise those through written design and the project, rather than assuming a mock CTF covers every final requirement. The Week 18 paper emphasizes Weeks 10–15.",
+    "advanced": "Construct attack chains across application, build and runtime authority, then place independent controls at each transition. Explain residual risk when one control fails. Use spaced reattempts: a correct explanation today should still be reproducible after a day and again after a week.",
+    "flow": [
+      "Recall a boundary",
+      "Map its modern equivalent",
+      "Compare control placement",
+      "Run unfamiliar practice",
+      "Explain residual risk",
+      "Schedule reattempt"
+    ],
+    "trace": [
+      "Map Week 6 ownership checks to Week 10 API handlers.",
+      "Map Week 5 unsafe output to Week 14 model output rendering.",
+      "Map Week 2 scanner evidence to Week 15 release policy."
+    ],
+    "exercise": [
+      "Make a six-topic modern-stack revision map without notes.",
+      "Complete the published mock as practice and maintain a private error log.",
+      "Add a separate DevSecOps design drill and a capstone evidence review."
+    ],
+    "evidence": [
+      "Cross-week control map",
+      "Mock coverage checklist with gaps explicitly named",
+      "Reattempt log for weak explanations"
+    ],
+    "transfer": "Review the whole NoteVault release against its original risk register and current architecture.",
+    "questions": [
+      {
+        "stem": "Does the Week 17 mock cover every final requirement?",
+        "options": [
+          "Yes",
+          "No, compare its coverage and separately revise DevSecOps and the project"
+        ],
+        "answer": 1,
+        "why": "The mock and final have different challenge coverage; written design and project evidence need their own preparation."
+      },
+      {
+        "stem": "Which connection best transfers Week 5 reasoning to an AI feature?",
+        "options": [
+          "Model output still needs safe rendering at its destination",
+          "A model response is always trusted",
+          "Prompt text replaces server authorization"
+        ],
+        "answer": 0,
+        "why": "An output’s source does not make it safe for HTML, SQL, shell or tool execution."
+      }
+    ],
+    "simulations": [
+      "gate-check",
+      "prompt-guard"
+    ],
+    "command_steps": []
+  },
+  {
+    "number": 18,
+    "id": "week18",
+    "slug": "week18-final-written",
+    "title": "Design defensible systems under constraints",
+    "kind": "Assessment preparation",
+    "prerequisites": [
+      17
+    ],
+    "foundation": "The written final emphasizes explaining where a control belongs and why it works. Begin with assets and trust assumptions, then describe the policy, enforcement point and verification plan. A tool name by itself is not a design.",
+    "core": "The current final lecture specifies 150 minutes and 100 points: modern-stack concepts 30, spot-the-vulnerability 20, applied design 30, and design/DevSecOps 20. It emphasizes Weeks 10–15; Week 16 adds no separately examined theory. Unlike the midterm’s SQL section, the final blueprint focuses on applied design rather than payload writing.",
+    "advanced": "Compare options using the attacker model and operational constraints: centralized versus process-local rate limits, exact artifact identities versus mutable tags, and prevention versus detection. State a residual risk and a test that could falsify your claim. Do not invent facts absent from a scenario.",
+    "flow": [
+      "Scenario",
+      "Assets and assumptions",
+      "Threat path",
+      "Control placement",
+      "Failure behavior",
+      "Verification",
+      "Residual risk"
+    ],
+    "trace": [
+      "Use your own API, build or tool-policy example for preparation.",
+      "Trace an ordinary request and one rejected request through the proposed design.",
+      "Name the exact artifact or log evidence you would inspect."
+    ],
+    "exercise": [
+      "Write an original design for a small private note API with a background summarizer.",
+      "Review it for identity, authorization, supply chain, error handling and resource budgets.",
+      "Timebox a practice answer and remove claims that lack an enforcement point or test."
+    ],
+    "evidence": [
+      "Original design answer",
+      "Control-to-test table",
+      "Revision priorities for the final attempt"
+    ],
+    "transfer": "Defend NoteVault’s deployment and release choices orally, including one remaining limitation.",
+    "questions": [
+      {
+        "stem": "“Use SLSA” appears in a design. What is still needed?",
+        "options": [
+          "Nothing",
+          "A concrete build policy, evidence and verification point",
+          "A different acronym"
+        ],
+        "answer": 1,
+        "why": "A framework name does not implement or demonstrate controls."
+      },
+      {
+        "stem": "A scenario omits the identity provider. What should your answer do?",
+        "options": [
+          "Invent a known provider and claim it is deployed",
+          "State the assumption and specify the verification requirement",
+          "Ignore identity"
+        ],
+        "answer": 1,
+        "why": "Explicit assumptions make a design assessable without pretending missing facts are known."
+      }
+    ],
+    "simulations": [],
+    "command_steps": []
+  },
+  {
+    "number": 19,
+    "id": "week19",
+    "slug": "week19-final-ctf-capstone",
+    "title": "Demonstrate, hand over and keep learning",
+    "kind": "Final preparation",
+    "prerequisites": [
+      16,
+      17,
+      18
+    ],
+    "foundation": "The final has two distinct outputs: the team CTF evidence and the secured project. A live scoreboard motivates play; the published submission requirements determine grading. Your project should remain understandable after the presentation ends.",
+    "core": "The published graded CTF brief has twelve challenges totaling 150 points. Preserve proof, method and mitigation per challenge. Submit the recorded project walkthrough before the session and prepare for a three-minute live Q&A. The combined Week 18 written and Week 19 CTF assessment bucket is 25% of the course, not Week 19 alone.",
+    "advanced": "Prepare an operational handover: exact release digest, dependency inventory, verification policy, configuration requirements, backup/restore proof, revocation and residual risks. Distinguish team-shared practice infrastructure from the instructor’s seeded assessment environment. Turn unresolved issues into specific, bounded follow-on investigations.",
+    "flow": [
+      "Final evidence",
+      "Project recording",
+      "Live explanation",
+      "Reproducible release",
+      "Operational handover",
+      "Next learning question"
+    ],
+    "trace": [
+      "Follow a NoteVault request end to end on the demonstrated release.",
+      "Show which commit, image digest and tests support that release.",
+      "Trace how an operator disables access or restores project state."
+    ],
+    "exercise": [
+      "Rehearse a concise explanation of a randomly chosen project control.",
+      "Check the published final brief and complete its required evidence fields.",
+      "Validate your recording, repository links and handover instructions before submission."
+    ],
+    "evidence": [
+      "CTF proof/method/mitigation records in the required process",
+      "Pre-submitted recording and six project artifacts",
+      "Operational handover and residual-risk list"
+    ],
+    "transfer": "Choose one next investigation: verified identity for the toy API, stronger build provenance, or a real-model evaluation with tightly scoped tools.",
+    "questions": [
+      {
+        "stem": "Should the CTF scoreboard be assumed to equal the course grade?",
+        "options": [
+          "Yes",
+          "No, use the published graded brief and rubric"
+        ],
+        "answer": 1,
+        "why": "Leaderboard points and assessed evidence can differ."
+      },
+      {
+        "stem": "What makes a release handover reproducible?",
+        "options": [
+          "Only a screenshot",
+          "Exact revision/digest, configuration requirements and tested start/verify/restore steps",
+          "A project slogan"
+        ],
+        "answer": 1,
+        "why": "Another operator needs the artifact identity and procedures that reproduce its behavior."
+      }
+    ],
+    "simulations": [],
+    "command_steps": []
+  }
+]

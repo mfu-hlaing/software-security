@@ -1,0 +1,14 @@
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 405489672
+INFO: Loaded 1 modules   (6 inline 8-bit counters): 6 [0xaaaadbde2f10, 0xaaaadbde2f16),
+INFO: Loaded 1 PC tables (6 PCs): 6 [0xaaaadbde2f18,0xaaaadbde2f78),
+INFO: A corpus is not provided, starting from an empty corpus
+#2	INITED cov: 4 ft: 5 corp: 1/1b exec/s: 0 rss: 44Mb
+#3	NEW    cov: 4 ft: 6 corp: 2/3b lim: 4 exec/s: 0 rss: 44Mb L: 2/2 MS: 1 CopyPart-
+#42	REDUCE cov: 4 ft: 6 corp: 2/2b lim: 4 exec/s: 0 rss: 44Mb L: 1/1 MS: 4 CopyPart-ShuffleBytes-CrossOver-CrossOver-
+#6613	NEW    cov: 5 ft: 7 corp: 3/66b lim: 68 exec/s: 0 rss: 45Mb L: 64/64 MS: 1 InsertRepeatedBytes-
+#2097152	pulse  cov: 5 ft: 7 corp: 3/66b lim: 128 exec/s: 1048576 rss: 244Mb
+#4194304	pulse  cov: 5 ft: 7 corp: 3/66b lim: 128 exec/s: 1048576 rss: 384Mb
+#8388608	pulse  cov: 5 ft: 7 corp: 3/66b lim: 128 exec/s: 838860 rss: 384Mb
+#8849653	DONE   cov: 5 ft: 7 corp: 3/66b lim: 128 exec/s: 804513 rss: 384Mb
+Done 8849653 runs in 11 second(s)

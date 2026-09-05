@@ -1,0 +1,586 @@
+{
+  "checked_at": "2026-09-05T06:23:08.345831+00:00",
+  "scope": "Public course lectures and student guides only; metadata crawl, no answer keys or student records.",
+  "documents": [
+    {
+      "week": 1,
+      "slug": "week01-threat-modeling",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week01-threat-modeling/readme",
+      "status": 200,
+      "sha256": "4990ad1409f03907c11b30d427feb64b11060896df9a0f9eb34c3a52eff94dbf",
+      "bytes": 10652,
+      "title": "Week 1 \u2014 Security Mindset &amp; Threat Modeling \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 1,
+      "slug": "week01-threat-modeling",
+      "kind": "worksheet",
+      "url": "https://learn.zcr.ai/learn/software-security/week01-threat-modeling/worksheet",
+      "status": 200,
+      "sha256": "57f795eb749f9261bf38d35ae3d1ade24a9b4c8ad8f92e20909d6fed3d88bc45",
+      "bytes": 22048,
+      "title": "Worksheet 1 \u2014 Security Mindset &amp; Threat Modeling (3 hrs) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 1,
+      "slug": "week01-threat-modeling",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week01-threat-modeling/slides",
+      "status": 200,
+      "sha256": "096283e69688a157764a1e4d5436f4734c915a4787b3b39c6a2c51739638db50",
+      "bytes": 19234,
+      "title": "Week 1 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 2,
+      "slug": "week02-sdlc-tooling",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week02-sdlc-tooling/readme",
+      "status": 200,
+      "sha256": "de16d915d266f4fec8c18188fa8b2ecbd84759b8126f4a1bf8b9bf06c4382488",
+      "bytes": 11278,
+      "title": "Week 2 \u2014 Secure SDLC &amp; Tooling \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 2,
+      "slug": "week02-sdlc-tooling",
+      "kind": "worksheet",
+      "url": "https://learn.zcr.ai/learn/software-security/week02-sdlc-tooling/worksheet",
+      "status": 200,
+      "sha256": "f4e0c5c90d730eda551a3ad1ae731d5032db742944e164487c99a56651646f15",
+      "bytes": 17821,
+      "title": "Worksheet 2 \u2014 Secure SDLC &amp; Tooling (3 hrs) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 2,
+      "slug": "week02-sdlc-tooling",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week02-sdlc-tooling/slides",
+      "status": 200,
+      "sha256": "09fd44a1c5d6da126a005062ca13cf7bc4b657ed0d73bbeffdff4ad7b6922ac9",
+      "bytes": 16364,
+      "title": "Week 2 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 3,
+      "slug": "week03-cryptography",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week03-cryptography/readme",
+      "status": 200,
+      "sha256": "5fcfa91d6baf9682f4ad75ed0a378ed20fb4be9dc13b92a95f145193928616cf",
+      "bytes": 9083,
+      "title": "Week 3 \u2014 Cryptography Used Correctly (and Misused) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 3,
+      "slug": "week03-cryptography",
+      "kind": "worksheet",
+      "url": "https://learn.zcr.ai/learn/software-security/week03-cryptography/worksheet",
+      "status": 200,
+      "sha256": "aef75725d4847ebe216ee72d9b3df868af18c23e6b0dc4755c4cb8872f12a8f4",
+      "bytes": 18827,
+      "title": "Worksheet 3 \u2014 Cryptography Used Correctly (and Misused) (3 hrs) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 3,
+      "slug": "week03-cryptography",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week03-cryptography/slides",
+      "status": 200,
+      "sha256": "e9db3b5329f15f23f96da5934ef50fcbb4ffeee5c50e33dfed070e287655b98d",
+      "bytes": 16387,
+      "title": "Week 3 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 4,
+      "slug": "week04-injection",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week04-injection/readme",
+      "status": 200,
+      "sha256": "8f06c5e073503c91a353dc120c456dbbc290150cc22c0335ab70d43f60746972",
+      "bytes": 9375,
+      "title": "Week 4 \u2014 Injection &amp; Input Handling \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 4,
+      "slug": "week04-injection",
+      "kind": "worksheet",
+      "url": "https://learn.zcr.ai/learn/software-security/week04-injection/worksheet",
+      "status": 200,
+      "sha256": "e5022235c1472cc3c41484782a0a1b216063593a0c4d7d1b04ee5a616e5fe198",
+      "bytes": 20997,
+      "title": "Worksheet 4 \u2014 Injection &amp; Input Handling (3 hrs) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 4,
+      "slug": "week04-injection",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week04-injection/slides",
+      "status": 200,
+      "sha256": "f595d5ad436967f3e8c2bd13e04de817dabf5de179ec2faa312dae0099557873",
+      "bytes": 20310,
+      "title": "Week 4 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 5,
+      "slug": "week05-xss-client-side",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week05-xss-client-side/readme",
+      "status": 200,
+      "sha256": "a05be1c5c23e3ffce992f0f6817fa71a38d1b0e8c26e2258a913c22dfa163145",
+      "bytes": 9515,
+      "title": "Week 5 \u2014 Cross-Site Scripting (XSS) &amp; Client-Side Risks \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 5,
+      "slug": "week05-xss-client-side",
+      "kind": "worksheet",
+      "url": "https://learn.zcr.ai/learn/software-security/week05-xss-client-side/worksheet",
+      "status": 200,
+      "sha256": "e4ad3f935e014880c9654ca283bd187e5eaf768a841b4bb31ba9fdddd02a19b6",
+      "bytes": 20392,
+      "title": "Worksheet 5 \u2014 Cross-Site Scripting &amp; Client-Side Risks (3 hrs) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 5,
+      "slug": "week05-xss-client-side",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week05-xss-client-side/slides",
+      "status": 200,
+      "sha256": "12da885ec8ba5b4220852881182ec572bd21a7d5b4699f617bbee72936fa684e",
+      "bytes": 17685,
+      "title": "Week 5 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 6,
+      "slug": "week06-authn-authz",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week06-authn-authz/readme",
+      "status": 200,
+      "sha256": "ed6388e4217c9e1020163f6348b0d3a9ec4a816341676d9049a1e6e622366c3d",
+      "bytes": 10069,
+      "title": "Week 6 \u2014 Authentication, Sessions &amp; Access Control \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 6,
+      "slug": "week06-authn-authz",
+      "kind": "worksheet",
+      "url": "https://learn.zcr.ai/learn/software-security/week06-authn-authz/worksheet",
+      "status": 200,
+      "sha256": "14dfb6f54b69a85f9b87c3c46db8810abf6ec0fe8d2f2e8e3d0a35988494ca52",
+      "bytes": 21818,
+      "title": "Worksheet 6 \u2014 Authentication, Sessions &amp; Access Control (3 hrs) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 6,
+      "slug": "week06-authn-authz",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week06-authn-authz/slides",
+      "status": 200,
+      "sha256": "84f1fa5c7894d847c78b6bcc39915b78fa22ee4a32df0b198778c031bdcb42b5",
+      "bytes": 19833,
+      "title": "Week 6 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 7,
+      "slug": "week07-review-midterm-prep",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week07-review-midterm-prep/readme",
+      "status": 200,
+      "sha256": "0e04f5e237cc5ef7e9d267199ce3faadb78bbbb5f646e6be4f2fe0aade801a63",
+      "bytes": 8936,
+      "title": "Week 7 \u2014 Reflection &amp; Review (pre-Midterm) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 7,
+      "slug": "week07-review-midterm-prep",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week07-review-midterm-prep/slides",
+      "status": 200,
+      "sha256": "0272a11463ee317d00fd0802a495c82c04b1e4684fcddf9561dad7001a9a2c35",
+      "bytes": 9317,
+      "title": "Week 7 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 7,
+      "slug": "week07-review-midterm-prep",
+      "kind": "mock-ctf",
+      "url": "https://learn.zcr.ai/learn/software-security/week07-review-midterm-prep/mock-ctf",
+      "status": 200,
+      "sha256": "23d763234be7bf9050e60c59737fd874202271a4924375bba30308afcc5f4839",
+      "bytes": 8511,
+      "title": "Week 7 \u2014 Mock CTF (Midterm dry-run) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 8,
+      "slug": "week08-midterm-written",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week08-midterm-written/readme",
+      "status": 200,
+      "sha256": "def10e93fde42db4be3b0d3ad830d742e3c86568284fed68519f4c6b6ac64ce9",
+      "bytes": 7250,
+      "title": "Week 8 \u2014 Midterm: Written / Concept Exam \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 8,
+      "slug": "week08-midterm-written",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week08-midterm-written/slides",
+      "status": 200,
+      "sha256": "1d21f732a9ba7d4e58aa1827689c8896f58a3550677e76a30382a7358e20f89a",
+      "bytes": 8050,
+      "title": "Week 8 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 8,
+      "slug": "week08-midterm-written",
+      "kind": "exam",
+      "url": "https://learn.zcr.ai/learn/software-security/week08-midterm-written/exam",
+      "status": 200,
+      "sha256": "7f26f4f4a5122369ee33ea58bfdc9e1ec3e5414860948d0c05c6f312f24d27ce",
+      "bytes": 11551,
+      "title": "Midterm \u2014 Written Exam (Week 8) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 9,
+      "slug": "week09-midterm-practical",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week09-midterm-practical/readme",
+      "status": 200,
+      "sha256": "9104d8a8bf0b5c9a41b41bff9f5728f8c236de8a3dbc8ba0623c161c41354f69",
+      "bytes": 7044,
+      "title": "Week 9 \u2014 Midterm: Hands-on CTF Practical \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 9,
+      "slug": "week09-midterm-practical",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week09-midterm-practical/slides",
+      "status": 200,
+      "sha256": "4944f57916410a60c07e9d7b8c48ef76aca25e1c78cd8a41860712f990b75933",
+      "bytes": 7814,
+      "title": "Week 9 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 9,
+      "slug": "week09-midterm-practical",
+      "kind": "ctf",
+      "url": "https://learn.zcr.ai/learn/software-security/week09-midterm-practical/ctf",
+      "status": 200,
+      "sha256": "cb854113f10a4de92dbf73fed49bffbc4696d1acd9178f0f073bc1a4372e4206",
+      "bytes": 8972,
+      "title": "Midterm \u2014 Hands-on CTF Practical (Week 9) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 10,
+      "slug": "week10-api-security",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week10-api-security/readme",
+      "status": 200,
+      "sha256": "479efec96150e7703a53f8b0b93907072e240ae1e31a1de13f1329089424e9e5",
+      "bytes": 10035,
+      "title": "Week 10 \u2014 API Security \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 10,
+      "slug": "week10-api-security",
+      "kind": "worksheet",
+      "url": "https://learn.zcr.ai/learn/software-security/week10-api-security/worksheet",
+      "status": 200,
+      "sha256": "3a30ac4e230b1481f52210d982ee3689e0689854752ba12411ff2ba1f4eeb13f",
+      "bytes": 18094,
+      "title": "Worksheet 10 \u2014 API Security (3 hrs) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 10,
+      "slug": "week10-api-security",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week10-api-security/slides",
+      "status": 200,
+      "sha256": "16ea92acbe10fd9e444c8391afda56b960b1ebad4ff225678937ac5c483d9e86",
+      "bytes": 14719,
+      "title": "Week 10 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 11,
+      "slug": "week11-memory-safety-exploitation",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week11-memory-safety-exploitation/readme",
+      "status": 200,
+      "sha256": "1afc7ea8e0d8c0537bf1d7a73ce6e2f72014a5687224d65b823ecc36395cc3bd",
+      "bytes": 10909,
+      "title": "Week 11 \u2014 Memory-Safety &amp; Exploitation \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 11,
+      "slug": "week11-memory-safety-exploitation",
+      "kind": "worksheet",
+      "url": "https://learn.zcr.ai/learn/software-security/week11-memory-safety-exploitation/worksheet",
+      "status": 200,
+      "sha256": "ef1f8a9a17ae55530cd01fda223e30aad4fd0a2c9e0037b1314a627602b66bcb",
+      "bytes": 20322,
+      "title": "Worksheet 11 \u2014 Memory-Safety &amp; Exploitation (3 hrs) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 11,
+      "slug": "week11-memory-safety-exploitation",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week11-memory-safety-exploitation/slides",
+      "status": 200,
+      "sha256": "2792cc4601405989db19e68f8b1acc424c510386c6cba2d0f5ca86c7d03658a7",
+      "bytes": 13820,
+      "title": "Week 11 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 12,
+      "slug": "week12-supply-chain",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week12-supply-chain/readme",
+      "status": 200,
+      "sha256": "cceabb317f0ed38405f14638ce80d33464a7a2bc4e82eff9ce7dffed1357c007",
+      "bytes": 10245,
+      "title": "Week 12 \u2014 Software Supply-Chain Security \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 12,
+      "slug": "week12-supply-chain",
+      "kind": "worksheet",
+      "url": "https://learn.zcr.ai/learn/software-security/week12-supply-chain/worksheet",
+      "status": 200,
+      "sha256": "89333b01703e22de73c2bf637edd4f27dc72d93684bd7656cf535963a7c572b6",
+      "bytes": 20475,
+      "title": "Worksheet 12 \u2014 Software Supply-Chain Security (3 hrs) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 12,
+      "slug": "week12-supply-chain",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week12-supply-chain/slides",
+      "status": 200,
+      "sha256": "a78940ac7ca556424c234796901978a4a053054a8050eb2e0afb61f3cc0f9798",
+      "bytes": 16074,
+      "title": "Week 12 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 13,
+      "slug": "week13-cloud-container",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week13-cloud-container/readme",
+      "status": 200,
+      "sha256": "49212e159300b85c1704bcce3c8912a9f9c4834e30920d674d5c9637ab9a194d",
+      "bytes": 9771,
+      "title": "Week 13 \u2014 Cloud &amp; Container Security \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 13,
+      "slug": "week13-cloud-container",
+      "kind": "worksheet",
+      "url": "https://learn.zcr.ai/learn/software-security/week13-cloud-container/worksheet",
+      "status": 200,
+      "sha256": "f9c6c59ddf4463e98d8ba1e8349a6228391b5c035972fc8b57bb22ac22d61f6e",
+      "bytes": 19829,
+      "title": "Worksheet 13 \u2014 Cloud &amp; Container Security (4 hrs) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 13,
+      "slug": "week13-cloud-container",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week13-cloud-container/slides",
+      "status": 200,
+      "sha256": "17cce00057aa7e36a9c7be34499109dcfaa0e72e57ad15f5684b309751ea6a1e",
+      "bytes": 13653,
+      "title": "Week 13 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 14,
+      "slug": "week14-ai-llm-security",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week14-ai-llm-security/readme",
+      "status": 200,
+      "sha256": "7f27f42df23f7d008dbe61224b885ca86d79b1501279eeaec9efcf17ab52d84f",
+      "bytes": 9945,
+      "title": "Week 14 \u2014 Security of AI / LLM-Powered Applications \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 14,
+      "slug": "week14-ai-llm-security",
+      "kind": "worksheet",
+      "url": "https://learn.zcr.ai/learn/software-security/week14-ai-llm-security/worksheet",
+      "status": 200,
+      "sha256": "eddcb2e765fee8c952562256de19f057f03ae795d06686f0127e0fc51a4ea93d",
+      "bytes": 19314,
+      "title": "Worksheet 14 \u2014 Security of AI / LLM-Powered Applications (4 hrs) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 14,
+      "slug": "week14-ai-llm-security",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week14-ai-llm-security/slides",
+      "status": 200,
+      "sha256": "cac9c7696b134d6443137d93084878d9418b77941e77f8e4a0b6454877b9d20a",
+      "bytes": 15845,
+      "title": "Week 14 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 15,
+      "slug": "week15-devsecops-pipeline",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week15-devsecops-pipeline/readme",
+      "status": 200,
+      "sha256": "d3c2e85bfcc28359e10096f84de569fcb50559019145dee362192e330d1fbc4c",
+      "bytes": 10093,
+      "title": "Week 15 \u2014 DevSecOps: Putting It Together \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 15,
+      "slug": "week15-devsecops-pipeline",
+      "kind": "worksheet",
+      "url": "https://learn.zcr.ai/learn/software-security/week15-devsecops-pipeline/worksheet",
+      "status": 200,
+      "sha256": "a4b8bb02a4715269a4afb166674c8a1a6e11f06c63d0cae5ddd5136a91821b76",
+      "bytes": 21557,
+      "title": "Worksheet 15 \u2014 DevSecOps: Putting It Together (4 hrs) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 15,
+      "slug": "week15-devsecops-pipeline",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week15-devsecops-pipeline/slides",
+      "status": 200,
+      "sha256": "46ce6d847dfd2abce00357f7927de5f106f69c8e5aa2b53f26cb52bcb6920d04",
+      "bytes": 15112,
+      "title": "Week 15 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 16,
+      "slug": "week16-capstone",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week16-capstone/readme",
+      "status": 200,
+      "sha256": "a40e2d115bd0612e772d4391fd69a4aeaf0a604b1ae11b41c9d7e840871ba5ce",
+      "bytes": 9173,
+      "title": "Week 16 \u2014 Capstone Studio &amp; CTF Warm-up \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 16,
+      "slug": "week16-capstone",
+      "kind": "worksheet",
+      "url": "https://learn.zcr.ai/learn/software-security/week16-capstone/worksheet",
+      "status": 200,
+      "sha256": "60905ecf79fac6ad875c00c1cee6a562d8e71335d106118b53308f1d980298c1",
+      "bytes": 17897,
+      "title": "Worksheet 16 \u2014 Capstone Studio &amp; CTF Warm-up (4 hrs) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 16,
+      "slug": "week16-capstone",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week16-capstone/slides",
+      "status": 200,
+      "sha256": "f031cb250a195a18f7b9334c08de173f7ff10731ef5c6c5b30493f4e9c242522",
+      "bytes": 10031,
+      "title": "Week 16 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 16,
+      "slug": "week16-capstone",
+      "kind": "scrimmage",
+      "url": "https://learn.zcr.ai/learn/software-security/week16-capstone/scrimmage",
+      "status": 200,
+      "sha256": "00fbb2f9bdbbca419954e3b30e92a31aa6cd5828825270d1a0fbadacc2f2ae0e",
+      "bytes": 8518,
+      "title": "Week 16 \u2014 CTF Scrimmage (Final tournament warm-up) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 17,
+      "slug": "week17-review-final-prep",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week17-review-final-prep/readme",
+      "status": 200,
+      "sha256": "84ec40ee689dc17b1f934dbfb4507fa6ea580cd1929aa7be9b590de013f48614",
+      "bytes": 8717,
+      "title": "Week 17 \u2014 Reflection &amp; Review (pre-Final) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 17,
+      "slug": "week17-review-final-prep",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week17-review-final-prep/slides",
+      "status": 200,
+      "sha256": "0dd6bd76f772318a350603967d2be5f600de4fd413fc5d39b4cbbe507376850d",
+      "bytes": 9799,
+      "title": "Week 17 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 17,
+      "slug": "week17-review-final-prep",
+      "kind": "mock-ctf",
+      "url": "https://learn.zcr.ai/learn/software-security/week17-review-final-prep/mock-ctf",
+      "status": 200,
+      "sha256": "ed716919aa4f62e84e20d860b76442bc82485e361d766c3787f70c8afffc2403",
+      "bytes": 8870,
+      "title": "Week 17 \u2014 Mock CTF (Final dry-run) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 18,
+      "slug": "week18-final-written",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week18-final-written/readme",
+      "status": 200,
+      "sha256": "bd6c631fcfa64c699e29ffcb204b7e6e266dd163d6effb25a924eefc14092015",
+      "bytes": 6910,
+      "title": "Week 18 \u2014 Final: Written Exam \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 18,
+      "slug": "week18-final-written",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week18-final-written/slides",
+      "status": 200,
+      "sha256": "9cece2e615b51dfc7555e40bcda661ca6702e22cb4a919847eedf12f1c4a1a04",
+      "bytes": 8060,
+      "title": "Week 18 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 18,
+      "slug": "week18-final-written",
+      "kind": "exam",
+      "url": "https://learn.zcr.ai/learn/software-security/week18-final-written/exam",
+      "status": 200,
+      "sha256": "10d5754d05574f957830b91b0dd260bda3082b2ff42d3d2322bc131ef6d53cf1",
+      "bytes": 10415,
+      "title": "Final \u2014 Written Exam (Week 18) \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 19,
+      "slug": "week19-final-ctf-capstone",
+      "kind": "readme",
+      "url": "https://learn.zcr.ai/learn/software-security/week19-final-ctf-capstone/readme",
+      "status": 200,
+      "sha256": "4adb86a8bdd4e01905b763c0c6701af3050f943143be04e68add598cc450c1fe",
+      "bytes": 8091,
+      "title": "Week 19 \u2014 Final: Capstone CTF Tournament + Project Demos \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 19,
+      "slug": "week19-final-ctf-capstone",
+      "kind": "slides",
+      "url": "https://learn.zcr.ai/learn/software-security/week19-final-ctf-capstone/slides",
+      "status": 200,
+      "sha256": "ff301c761a30232f13a882ba9e1129dda59a27bbb59e17a1752ce343a9abf5f1",
+      "bytes": 7857,
+      "title": "Week 19 \u2014 KOSEN\u00b7KMITL"
+    },
+    {
+      "week": 19,
+      "slug": "week19-final-ctf-capstone",
+      "kind": "ctf",
+      "url": "https://learn.zcr.ai/learn/software-security/week19-final-ctf-capstone/ctf",
+      "status": 200,
+      "sha256": "9c71c6a2b38068e1df4fd65d182ad43c977aadf015265aa9adf00f17e4e9a69a",
+      "bytes": 8452,
+      "title": "Final \u2014 Capstone CTF Tournament (Week 19) \u2014 KOSEN\u00b7KMITL"
+    }
+  ]
+}

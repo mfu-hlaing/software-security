@@ -343,6 +343,7 @@ def _root_of(course_slug: str | None) -> str | None:
 # the main document for six of nineteen weeks was simply absent from the
 # platform while appearing complete on disk.
 PUBLIC_FILES = {
+    "verification-guide": "verification-guide.md",
     "worksheet": "worksheet.md",
     "readme": "README.md",
     # non-lab weeks — this is their primary material
@@ -370,6 +371,7 @@ SLIDES_DIR = "slides"
 # "slides" on the next click. The fallback de-hyphenates and capitalises, so a
 # kind added to PUBLIC_FILES can never render as a bare slug.
 KIND_LABELS = {
+    "verification-guide": "Strict artifact verification guide",
     "worksheet": "Worksheet",
     "readme": "Overview",
     "slides": "Lecture slides",

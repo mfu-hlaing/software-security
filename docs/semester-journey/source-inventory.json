@@ -1,0 +1,1498 @@
+[
+  {
+    "week": 1,
+    "slug": "week01-threat-modeling",
+    "documents": [
+      {
+        "path": "labs/week01-threat-modeling/README.md",
+        "sha256": "d5fb079f4c571fe96859adc03c3979d9b0c260d4ee7df5bf10268c13112fb3a9",
+        "words": 405,
+        "headings": [
+          "Week 1 \u2014 Security Mindset & Threat Modeling",
+          "\u2705 This week \u2014 what to do",
+          "Objectives",
+          "\ud83c\udfb2 Signature game \u2014 \"Elevation of Privilege\"",
+          "Lab 0 \u2014 Environment setup (do once)",
+          "Lab 1 \u2014 Threat-model a sample app",
+          "Deliverable",
+          "References"
+        ]
+      },
+      {
+        "path": "labs/week01-threat-modeling/worksheet.md",
+        "sha256": "2af2f25ec1c8167af39f7341a686b23847be58bc4d9ba1331152d2e7d4b7da69",
+        "words": 1835,
+        "headings": [
+          "Worksheet 1 \u2014 Security Mindset & Threat Modeling (3 hrs)",
+          "Part 1 \u2014 Student Information",
+          "Part 2 \u2014 Lecture Questions",
+          "Part 3 \u2014 Hands-on Lab (180 min)",
+          "Part 4 \u2014 Reflection",
+          "Grading rubric (100)",
+          "Evidence & Integrity (required)",
+          "\ud83e\udd16 Audit the AI (required)",
+          "\ud83e\udde0 Comprehension & Prompt (required)"
+        ]
+      },
+      {
+        "path": "slides/week01.md",
+        "sha256": "e54f3cf15e72256197ce8fbe0bc6e934a00947fe237fc345c10a1fe90ed8e37f",
+        "words": 2403,
+        "headings": [
+          "Week 1",
+          "Security Mindset & Threat Modeling",
+          "Today",
+          "How this course works",
+          "What does \"secure\" mean?",
+          "Classify the incident",
+          "Attacker vs. defender mindset",
+          "Trust boundaries & attack surface",
+          "Worked example: the `/upload` endpoint",
+          "Try it \u2014 same input, opposite outcomes",
+          "STRIDE",
+          "STRIDE applied to `/upload`",
+          "Now without the bullet list",
+          "The landscape you'll use all term",
+          "Secure by Design",
+          "\ud83c\udfb2 Game \u2014 Elevation of Privilege",
+          "Lab 0 \u2014 Environment setup (once)",
+          "Lab 1 \u2014 Threat-model a sample app",
+          "Using AI in this course",
+          "Key takeaways",
+          "Questions?"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week01-threat-modeling.md",
+        "sha256": "c1d52666e8b5a5c646c08f0b66261e6d7f196d41a7c6bf03247af0aa09386a79",
+        "words": 3662,
+        "headings": [
+          "Lesson Plan \u2014 Week 1: Security Mindset & Threat Modeling",
+          "1. Session objectives",
+          "2. Key ideas (the through-line)",
+          "3. Prior knowledge and preparation",
+          "4. Lecture \u2014 120 min",
+          "5. Laboratory \u2014 180 min",
+          "6. Assessment for this week",
+          "7. Materials",
+          "8. Risks and contingencies",
+          "9. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": [
+      "labs/week01-threat-modeling/docker-compose.yml"
+    ]
+  },
+  {
+    "week": 2,
+    "slug": "week02-sdlc-tooling",
+    "documents": [
+      {
+        "path": "labs/week02-sdlc-tooling/README.md",
+        "sha256": "5e4be421d9f394219aaa601ebdce60a7af882850b6a564febd338ddc5ddd63d7",
+        "words": 496,
+        "headings": [
+          "Week 2 \u2014 Secure SDLC & Tooling",
+          "\u2705 This week \u2014 what to do",
+          "Objectives",
+          "\ud83c\udfc1 Signature game \u2014 \"Bug Triage Race\"",
+          "SAST",
+          "Secret scanning \u2014 --no-git is required, and the path must be vulnerable-repo/",
+          "Mini-lab \u2014 \"Fuzzing Race\" (intro)",
+          "run inside labs/toolbox (Apple clang has no libFuzzer runtime)",
+          "expect an AddressSanitizer heap-buffer-overflow within seconds + a crash-* reproducer file",
+          "Deliverable",
+          "References"
+        ]
+      },
+      {
+        "path": "labs/week02-sdlc-tooling/worksheet.md",
+        "sha256": "17683e709ce347a4654ac7a0afb0e6c4eeaeeb6e87a44d1533a3b0bf86a539d4",
+        "words": 1334,
+        "headings": [
+          "Worksheet 2 \u2014 Secure SDLC & Tooling (3 hrs)",
+          "Part 1 \u2014 Student Information",
+          "Part 2 \u2014 Lecture Questions",
+          "Part 3 \u2014 Hands-on Lab (180 min)",
+          "Part 4 \u2014 Reflection",
+          "Grading rubric (100)",
+          "Evidence & Integrity (required)",
+          "\ud83e\udd16 Audit the AI (required)",
+          "\ud83e\udde0 Comprehension & Prompt (required)"
+        ]
+      },
+      {
+        "path": "slides/week02.md",
+        "sha256": "06d8a0242a80c2ceba0bc9625e6bd2070cfe5d4b0520299b3ddff9d490658ffd",
+        "words": 1775,
+        "headings": [
+          "Week 2",
+          "Secure SDLC, Tooling & Fuzzing",
+          "Today",
+          "Recap \u2014 Week 1",
+          "Security across the SDLC",
+          "The tooling families",
+          "SAST vs DAST in one line",
+          "Worked example: what each tool catches",
+          "Fuzzing \u2014 how real CVEs are found",
+          "run inside labs/toolbox \u2014 Apple clang has no libFuzzer runtime",
+          "How fuzzing finds it",
+          "Try it \u2014 what actually crashes this harness",
+          "Triage: not every finding is a bug",
+          "Try it \u2014 which bug is this, really?",
+          "Tools you'll meet",
+          "\ud83c\udfc1 Game \u2014 Bug Triage Race",
+          "\ud83d\udc1d Mini-game \u2014 Fuzzing Race",
+          "Lab 2 \u2014 deliverable",
+          "Key takeaways",
+          "Questions?"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week02-sdlc-tooling.md",
+        "sha256": "d0dc3e35b5f681cdb4ed8fb21ae477fa40b133980678bb025f5be6b9c95c61bf",
+        "words": 3146,
+        "headings": [
+          "Lesson Plan \u2014 Week 2: Secure SDLC, Tooling & Fuzzing",
+          "1. Session objectives",
+          "2. Key ideas (the through-line)",
+          "3. Prior knowledge and preparation",
+          "4. Lecture \u2014 120 min",
+          "5. Laboratory \u2014 180 min",
+          "6. Assessment for this week",
+          "7. Materials",
+          "8. Risks and contingencies",
+          "9. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": [
+      "labs/week02-sdlc-tooling/scan.sh",
+      "labs/week02-sdlc-tooling/harness.c"
+    ]
+  },
+  {
+    "week": 3,
+    "slug": "week03-cryptography",
+    "documents": [
+      {
+        "path": "labs/week03-cryptography/README.md",
+        "sha256": "09caf509f302f9dd5b667890b26f4bddeaec6eef96e905366e78428984628c96",
+        "words": 233,
+        "headings": [
+          "Week 3 \u2014 Cryptography Used Correctly (and Misused)",
+          "\u2705 This week \u2014 what to do",
+          "Objectives",
+          "\ud83d\udd13 Signature game \u2014 \"Capture the Hash\"",
+          "Deliverable",
+          "References"
+        ]
+      },
+      {
+        "path": "labs/week03-cryptography/worksheet.md",
+        "sha256": "b1c690b07b0dea3a8938e8a71f75c300260143959b374f39248f272b0c81af83",
+        "words": 1417,
+        "headings": [
+          "Worksheet 3 \u2014 Cryptography Used Correctly (and Misused) (3 hrs)",
+          "Part 1 \u2014 Student Information",
+          "Part 2 \u2014 Lecture Questions",
+          "Part 3 \u2014 Hands-on Lab (180 min)",
+          "or locally:",
+          "Part 4 \u2014 Reflection",
+          "Grading rubric (100)",
+          "Evidence & Integrity (required)",
+          "\ud83e\udd16 Audit the AI (required)",
+          "\ud83e\udde0 Comprehension & Prompt (required)"
+        ]
+      },
+      {
+        "path": "slides/week03.md",
+        "sha256": "239a40b8d6d829578abfd03384931b33781848095f233b5d202c59584b2d3518",
+        "words": 1580,
+        "headings": [
+          "Week 3",
+          "Cryptography Used Correctly (and Misused)",
+          "Today",
+          "Recap \u2014 Week 2",
+          "Three things people confuse",
+          "Symmetric vs asymmetric",
+          "Password storage",
+          "Worked example: why ECB leaks",
+          "ECB in one picture",
+          "Capture the Hash \u2014 how cracking works",
+          "strip comments, then crack unsalted MD5 with a wordlist",
+          "Common crypto failures (A04:2025)",
+          "Do this instead",
+          "CWE mapping",
+          "Four fixes \u2014 in the code",
+          "vulnerable_crypto.py                       ->  solution_skeleton.py",
+          "Four decisions, four fixes",
+          "\ud83d\udd13 Game \u2014 Capture the Hash",
+          "Lab 3 \u2014 deliverable",
+          "Key takeaways",
+          "Questions?"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week03-cryptography.md",
+        "sha256": "26db3f5563d35c309318af92e30d87964c749f8cf42e236b90dc6119d5cf0229",
+        "words": 2364,
+        "headings": [
+          "Lesson Plan \u2014 Week 3: Cryptography Used Correctly (and Misused)",
+          "1. Session objectives",
+          "2. Key ideas (the through-line)",
+          "3. Prior knowledge and preparation",
+          "4. Lecture \u2014 120 min",
+          "5. Laboratory \u2014 180 min",
+          "6. Assessment for this week",
+          "7. Materials",
+          "8. Risks and contingencies",
+          "9. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": [
+      "labs/week03-cryptography/vulnerable_crypto.py",
+      "labs/week03-cryptography/solution_skeleton.py",
+      "labs/week03-cryptography/docker-compose.yml"
+    ]
+  },
+  {
+    "week": 4,
+    "slug": "week04-injection",
+    "documents": [
+      {
+        "path": "labs/week04-injection/README.md",
+        "sha256": "4991e41392c5bdf8da53f759a356696dcded4400f33a989846d5d8f7cecad5e6",
+        "words": 272,
+        "headings": [
+          "Week 4 \u2014 Injection & Input Handling",
+          "\u2705 This week \u2014 what to do",
+          "Objectives",
+          "\u2694\ufe0f Signature game \u2014 \"SQLi Warm-up\"",
+          "Run the local target",
+          "Deliverable",
+          "References"
+        ]
+      },
+      {
+        "path": "labs/week04-injection/worksheet.md",
+        "sha256": "36c95491d875fa3e4be09c11573a8b8090158d8f5d50369d4c870358e1438c07",
+        "words": 1566,
+        "headings": [
+          "Worksheet 4 \u2014 Injection & Input Handling (3 hrs)",
+          "Part 1 \u2014 Student Information",
+          "Part 2 \u2014 Lecture Questions",
+          "Part 3 \u2014 Hands-on Lab (150 min)",
+          "Environment setup",
+          "vulnerable app -> http://localhost:8080   (service name: injection-lab, port 8080)",
+          "Part 4 \u2014 Reflection",
+          "Grading rubric (100)",
+          "Evidence & Integrity (required)",
+          "\ud83e\udd16 Audit the AI (required)",
+          "\ud83e\udde0 Comprehension & Prompt (required)"
+        ]
+      },
+      {
+        "path": "slides/week04.md",
+        "sha256": "c5aae1b75461f00e8b1a491b1ebd80957abccfe31ea3b082e551dc7fa14cd8c5",
+        "words": 2521,
+        "headings": [
+          "Week 4",
+          "Injection & Input Handling",
+          "Today",
+          "Recap \u2014 Week 3",
+          "The injection pattern (one idea)",
+          "SQL injection \u2014 how it works",
+          "Try it \u2014 watch the parse tree change",
+          "Auth bypass \u2014 anatomy of one payload",
+          "The fix: parameterize \u2014 data stays data",
+          "concatenation: DB gets ONE finished string, decides grammar AFTER",
+          "parameterized: structure parsed and LOCKED first, value bound AFTER",
+          "SQLi in one picture \u2014 break-out vs. bound value",
+          "Real-world impact",
+          "Validate: allow-list, not block-list",
+          "Demo / attack surface",
+          "Command injection",
+          "The fix: no shell \u2014 pass an argument vector",
+          "vulnerable: shell=True -> the OS shell parses the whole string",
+          "fixed: shell=False + argument array -> no shell, no metacharacters",
+          "Upload \u2192 RCE (a classic chain)",
+          "CWE mapping",
+          "Defenses that actually work",
+          "One value, three interpreters",
+          "\u2694\ufe0f Game \u2014 SQLi Warm-up",
+          "Lab steps",
+          "Deliverable",
+          "Key takeaways",
+          "Questions?"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week04-injection.md",
+        "sha256": "6e41bc47bb1dd03e715671ed5d43666c0affb178ae9d48a03c011acf332596ee",
+        "words": 1464,
+        "headings": [
+          "Lesson Plan \u2014 Week 4: Injection & Input Handling",
+          "1. Session objectives",
+          "2. Key ideas (the through-line)",
+          "3. Prior knowledge and preparation",
+          "4. Lecture \u2014 120 min",
+          "5. Laboratory \u2014 180 min",
+          "6. Assessment for this week",
+          "7. Materials",
+          "8. Risks and contingencies",
+          "9. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": [
+      "labs/week04-injection/solution_app.py",
+      "labs/week04-injection/vulnerable_app.py",
+      "labs/week04-injection/docker-compose.yml"
+    ]
+  },
+  {
+    "week": 5,
+    "slug": "week05-xss-client-side",
+    "documents": [
+      {
+        "path": "labs/week05-xss-client-side/README.md",
+        "sha256": "daa1a7f3edc600c0b49fc99b5387a3c77096978f70584031f33e2594f178b0b3",
+        "words": 249,
+        "headings": [
+          "Week 5 \u2014 Cross-Site Scripting (XSS) & Client-Side Risks",
+          "\u2705 This week \u2014 what to do",
+          "Objectives",
+          "\u26f3 Signature game \u2014 \"XSS Golf\" (Juice Shop)",
+          "Run the local target",
+          "Deliverable",
+          "References"
+        ]
+      },
+      {
+        "path": "labs/week05-xss-client-side/worksheet.md",
+        "sha256": "334bddd331e08a89f62235c456900f26629577c7511897d6d7de86087cbc40de",
+        "words": 1473,
+        "headings": [
+          "Worksheet 5 \u2014 Cross-Site Scripting & Client-Side Risks (3 hrs)",
+          "Part 1 \u2014 Student Information",
+          "Part 2 \u2014 Lecture Questions",
+          "Part 3 \u2014 Hands-on Lab (150 min)",
+          "Environment setup",
+          "vulnerable app -> http://localhost:8080   (service name: xss-lab, port 8080)",
+          "Part 4 \u2014 Reflection",
+          "Grading rubric (100)",
+          "Evidence & Integrity (required)",
+          "\ud83e\udd16 Audit the AI (required)",
+          "\ud83e\udde0 Comprehension & Prompt (required)"
+        ]
+      },
+      {
+        "path": "slides/week05.md",
+        "sha256": "17db61320b7211d3bd0c6f333a4ff377e2c847aa3c6753054144c380ea054732",
+        "words": 1973,
+        "headings": [
+          "Week 5",
+          "XSS & Client-Side Risks",
+          "Today",
+          "Recap \u2014 Week 4",
+          "Browser security model",
+          "XSS = injection into the page",
+          "Three flavors of XSS",
+          "Example payloads",
+          "Try it \u2014 one value, four sinks",
+          "The fix: encode on output \u2014 data renders as text",
+          "vulnerable: raw value concatenated into HTML -> <script> is parsed as a tag",
+          "fixed: escape() for the HTML context -> < becomes &lt;, shown as text",
+          "stored comments: Jinja autoescaping renders {{ c }} as text, not markup",
+          "XSS in one picture",
+          "CSRF \u2014 riding the user's session",
+          "Same cookie, opposite directions",
+          "Real-world: British Airways (2018)",
+          "CWE mapping",
+          "Defenses",
+          "\u26f3 Game \u2014 XSS Golf",
+          "Lab steps",
+          "Deliverable",
+          "Key takeaways",
+          "Questions?"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week05-xss-client-side.md",
+        "sha256": "e8de04966663fe3f6010f7a68959906a80ad8d49483c21a7032acc07a64e1663",
+        "words": 2709,
+        "headings": [
+          "Lesson Plan \u2014 Week 5: XSS & Client-Side Risks",
+          "1. Session objectives",
+          "2. Key ideas (the through-line)",
+          "3. Prior knowledge and preparation",
+          "4. Lecture \u2014 120 min",
+          "5. Laboratory \u2014 180 min",
+          "6. Assessment for this week",
+          "7. Materials",
+          "8. Risks and contingencies",
+          "9. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": [
+      "labs/week05-xss-client-side/vulnerable_app.py",
+      "labs/week05-xss-client-side/fixed_app.py",
+      "labs/week05-xss-client-side/docker-compose.yml"
+    ]
+  },
+  {
+    "week": 6,
+    "slug": "week06-authn-authz",
+    "documents": [
+      {
+        "path": "labs/week06-authn-authz/README.md",
+        "sha256": "d9a4a15b05792e918e5a9eb6b1a320288059da5da1b9a2d23af070664ddca9bd",
+        "words": 307,
+        "headings": [
+          "Week 6 \u2014 Authentication, Sessions & Access Control",
+          "\u2705 This week \u2014 what to do",
+          "Objectives",
+          "\ud83d\uddfa\ufe0f Signature game \u2014 \"IDOR Treasure Hunt + JWT Forgery\"",
+          "Run the local target",
+          "Deliverable",
+          "References"
+        ]
+      },
+      {
+        "path": "labs/week06-authn-authz/worksheet.md",
+        "sha256": "1374988dc8c768b307e9b2a468836cde15465755bd3e28160ddada3f0b8d4683",
+        "words": 1635,
+        "headings": [
+          "Worksheet 6 \u2014 Authentication, Sessions & Access Control (3 hrs)",
+          "Part 1 \u2014 Student Information",
+          "Part 2 \u2014 Lecture Questions",
+          "Part 3 \u2014 Hands-on Lab (150 min)",
+          "Environment setup",
+          "vulnerable app -> http://localhost:8080   (service name: authz-lab, port 8080)",
+          "Burp Suite: put the proxy listener AND the browser proxy on 127.0.0.1:8081.",
+          "NOT 8080 \u2014 the lab app already owns host 8080 (docker-compose.yml, \"8080:5000\").",
+          "Burp's own default listener is 8080, so you must change it: leave it there and",
+          "either the listener refuses to start (\"Address already in use\") or, if it does",
+          "bind, the browser's proxy address is the target's address and every request",
+          "goes straight to the app instead of through Burp \u2014 you intercept nothing.",
+          "Part 4 \u2014 Reflection",
+          "Grading rubric (100)",
+          "Evidence & Integrity (required)",
+          "\ud83e\udd16 Audit the AI (required)",
+          "\ud83e\udde0 Comprehension & Prompt (required)"
+        ]
+      },
+      {
+        "path": "slides/week06.md",
+        "sha256": "d372f6d8dcc7997dfdedb63dc41f89aaa24ef20f7153e5b5196340b6ca2afd69",
+        "words": 2305,
+        "headings": [
+          "Week 6",
+          "Authentication, Sessions & Access Control",
+          "Today",
+          "Recap \u2014 Week 5",
+          "Authn vs Authz",
+          "Sessions",
+          "JWT pitfalls",
+          "The fix: verify the signature \u2014 one check, every endpoint",
+          "vulnerable: 'none' allowed + weak secret -> any forged token passes",
+          "fixed: pin the algorithm, strong secret, require exp + aud",
+          "JWT forgery in one picture",
+          "OAuth2 / OIDC (high level)",
+          "IDOR & broken access control",
+          "The fix: check ownership \u2014 a valid token is not permission",
+          "vulnerable: authenticated, but the result is thrown away -> no Gate 2",
+          "fixed: deny-by-default ownership check on every object access",
+          "One request, two gates",
+          "Access control models",
+          "Exercise \u2014 RBAC",
+          "Reading the attack in the logs",
+          "CWE mapping",
+          "Defenses",
+          "Tool \u2014 Burp Suite workflow",
+          "\ud83d\uddfa\ufe0f Game \u2014 IDOR Treasure Hunt + JWT Forgery",
+          "Lab steps",
+          "Deliverable",
+          "Key takeaways",
+          "Questions?"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week06-authn-authz.md",
+        "sha256": "ba0318f3b5ddc395201dad579a902b5426f9ee7676d05d4fa8ed4705e2a7d64a",
+        "words": 2245,
+        "headings": [
+          "Lesson Plan \u2014 Week 6: Authentication, Sessions & Access Control",
+          "1. Session objectives",
+          "2. Key ideas (the through-line)",
+          "3. Prior knowledge and preparation",
+          "4. Lecture \u2014 120 min",
+          "5. Laboratory \u2014 180 min",
+          "6. Assessment for this week",
+          "7. Materials",
+          "8. Risks and contingencies",
+          "9. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": [
+      "labs/week06-authn-authz/solution_app.py",
+      "labs/week06-authn-authz/vulnerable_app.py",
+      "labs/week06-authn-authz/docker-compose.yml"
+    ]
+  },
+  {
+    "week": 7,
+    "slug": "week07-review-midterm-prep",
+    "documents": [
+      {
+        "path": "labs/week07-review-midterm-prep/README.md",
+        "sha256": "54ede088b8062671b8974ac2e02de264d533831b1321331d4cd23c74c550a21b",
+        "words": 179,
+        "headings": [
+          "Week 7 \u2014 Reflection & Review (pre-Midterm)",
+          "\u2705 This week \u2014 what to do",
+          "\ud83c\udfaf Signature activity \u2014 \"Security Jeopardy\"",
+          "\ud83e\uddea Mock CTF",
+          "Deliverable",
+          "Covers"
+        ]
+      },
+      {
+        "path": "slides/week07.md",
+        "sha256": "6892ae89f5eccdfcf295df2bb8ebfd3948d7f446499ef79cef1efb6bd613b272",
+        "words": 637,
+        "headings": [
+          "Week 7",
+          "Reflection & Review",
+          "Goal today",
+          "Map of the half",
+          "\ud83c\udfaf Security Jeopardy",
+          "\ud83e\uddea Mock CTF",
+          "Common mistakes to avoid",
+          "Deliverable",
+          "Midterm next week"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week07-review-midterm-prep.md",
+        "sha256": "c88bf6a72395868a2b4068bc48302695f1e03d480fc24e0680eea22f6c73d64d",
+        "words": 4530,
+        "headings": [
+          "Lesson Plan \u2014 Week 7: Reflection & Review (pre-Midterm)",
+          "1. Session objectives",
+          "2. Key ideas (the through-line)",
+          "3. Prior knowledge and preparation",
+          "4. Consolidation plan \u2014 the six weeks under review",
+          "5. Session run-sheet \u2014 300 min",
+          "5.1 Cumulative review quiz \u2014 0:00\u20130:30",
+          "5.2 Security Jeopardy \u2014 0:30\u20131:45",
+          "5.3 Mock CTF \u2014 2:00\u20134:30",
+          "5.4 Debrief \u2014 4:30\u20135:00",
+          "6. Common misconceptions to re-test",
+          "7. Exam preparation",
+          "7.1 Week 8 \u2014 written, 120 min, 100 pts",
+          "7.2 Week 9 \u2014 CTF practical, 150 min, 100 pts",
+          "7.3 What today's mock does *not* cover \u2014 say this explicitly",
+          "7.4 Logistics to read out in the debrief",
+          "7.5 Deliverable \u2014 the one-page cheat sheet",
+          "8. Assessment for this week",
+          "9. Materials",
+          "10. Risks and contingencies",
+          "11. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": []
+  },
+  {
+    "week": 8,
+    "slug": "week08-midterm-written",
+    "documents": [
+      {
+        "path": "labs/week08-midterm-written/README.md",
+        "sha256": "ef252fc2cee5ffdab6b1ff4b7a9fe3c29af7706f1277c1a0347e11f875477c29",
+        "words": 157,
+        "headings": [
+          "Week 8 \u2014 Midterm: Written / Concept Exam",
+          "\u2705 This week \u2014 what to do",
+          "Format",
+          "Pairs with"
+        ]
+      },
+      {
+        "path": "slides/week08.md",
+        "sha256": "5bc9f9252167a6e3bc432486f63fbd7e500e225e6046724819bd48b05f0422fc",
+        "words": 452,
+        "headings": [
+          "Week 8",
+          "Midterm \u2014 Written Exam",
+          "Format",
+          "What's assessed",
+          "Tips",
+          "Good luck"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week08-midterm-written.md",
+        "sha256": "083cce21b2b72765944b1fb504fbb22885a354675d8fcf30b3d04da4671ac0db",
+        "words": 2921,
+        "headings": [
+          "Lesson Plan \u2014 Week 8: Midterm, Written Exam",
+          "1. What this paper evidences",
+          "2. Exam blueprint \u2014 what is assessed",
+          "3. Preparation before the day",
+          "4. The 120-minute block \u2014 logistics",
+          "5. Forms A and B, and make-up sittings",
+          "6. Invigilation and academic integrity",
+          "7. Marking",
+          "8. After the exam \u2014 item analysis and the item bank",
+          "9. Assessment for this week",
+          "10. Materials",
+          "11. Risks and contingencies",
+          "12. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": []
+  },
+  {
+    "week": 9,
+    "slug": "week09-midterm-practical",
+    "documents": [
+      {
+        "path": "labs/week09-midterm-practical/README.md",
+        "sha256": "a7e69c8420162ff6354a396a3807670e7a15277be9116e3762cf93a818b16a73",
+        "words": 140,
+        "headings": [
+          "Week 9 \u2014 Midterm: Hands-on CTF Practical",
+          "\u2705 This week \u2014 what to do",
+          "Format",
+          "Pairs with"
+        ]
+      },
+      {
+        "path": "slides/week09.md",
+        "sha256": "1acc07d929bcbe18ac21cbcaf9fa5aeaa8a7b446fe67b309ec8bad05e8800b4c",
+        "words": 419,
+        "headings": [
+          "Week 9",
+          "Midterm \u2014 Hands-on CTF Practical",
+          "Format",
+          "Challenge areas \u2014 100 pts, 7 challenges",
+          "Rules",
+          "Submit your flags"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week09-midterm-practical.md",
+        "sha256": "6e739eb59143783a774f327d64951a65e0d8dc5bccef5d3bf43c3e9028fa7658",
+        "words": 3296,
+        "headings": [
+          "Lesson Plan \u2014 Week 9: Midterm \u2014 Hands-on CTF Practical",
+          "1. Session objectives",
+          "2. What is assessed",
+          "3. Preparation and infrastructure readiness",
+          "3.1 What this sitting actually runs on",
+          "3.2 Per-student flag seeding",
+          "3.3 Room, network, machines",
+          "3.4 Test the day before",
+          "4. Run of show \u2014 the 150-minute block",
+          "5. Scoring \u2014 how points become marks",
+          "6. Academic-integrity controls actually used",
+          "7. After the sitting \u2014 debrief and how results feed the final mark",
+          "8. Materials",
+          "9. Risks and contingencies",
+          "10. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": []
+  },
+  {
+    "week": 10,
+    "slug": "week10-api-security",
+    "documents": [
+      {
+        "path": "labs/week10-api-security/README.md",
+        "sha256": "3878e4abaaa0da73e10bed38e6cac1a2795237ddd40b6722ed7c7e8bf1ad76f1",
+        "words": 312,
+        "headings": [
+          "Week 10 \u2014 API Security",
+          "\u2705 This week \u2014 what to do",
+          "Objectives",
+          "\ud83e\udd77 Signature game \u2014 \"crAPI Raid\"",
+          "Run the local target",
+          "Deliverable",
+          "References"
+        ]
+      },
+      {
+        "path": "labs/week10-api-security/worksheet.md",
+        "sha256": "3583b77cb4c8dc63ad48169e87a1b1a31ec48d9a8c4429b9e0cdbfc39c991d0f",
+        "words": 1251,
+        "headings": [
+          "Worksheet 10 \u2014 API Security (3 hrs)",
+          "Part 1 \u2014 Student Information",
+          "Part 2 \u2014 Lecture Questions",
+          "Part 3 \u2014 Hands-on Lab (145 min)",
+          "Seeded users: alice(id 1) bob(id 2) carol(id 3, admin, balance 9999)",
+          "Task 0 \u2014 Onboarding (15 min)",
+          "Task 1 \u2014 BOLA: read another user's orders (35 min)",
+          "Task 2 \u2014 Mass assignment: self-promote to admin (30 min)",
+          "Task 3 \u2014 Unrestricted resource consumption: brute-force login (25 min)",
+          "Task 4 \u2014 Bonus: crAPI Raid (optional, 20 min)",
+          "Task 5 \u2014 Defend / fix it (20 min)",
+          "Part 4 \u2014 Reflection",
+          "Grading rubric (100)",
+          "Evidence & Integrity (required)",
+          "\ud83e\udd16 Audit the AI (required)",
+          "\ud83e\udde0 Comprehension & Prompt (required)"
+        ]
+      },
+      {
+        "path": "slides/week10.md",
+        "sha256": "b2d797e17fd3dd72ace2c45960e0ef870e27147ac04ac5749f72beef9f4a410b",
+        "words": 1466,
+        "headings": [
+          "Week 10",
+          "API Security",
+          "Today",
+          "Recap \u2014 Web half",
+          "Why APIs are different",
+          "BOLA (API1) \u2014 the #1 API risk",
+          "Mass assignment (API3)",
+          "More of the Top 10",
+          "Defenses",
+          "Complementary: black-box recon cheat-sheet",
+          "Real-world: feature abused as backdoor",
+          "trigger by visiting any non-existent page",
+          "One API, three flaws",
+          "\ud83e\udd77 Today's raid \u2014 the graded target",
+          "Deliverable",
+          "Key takeaways",
+          "Questions?"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week10-api-security.md",
+        "sha256": "4bdd12e706703c726668cd5d3c5933d5d2457b2e63022bc3babca9ac94ff5b94",
+        "words": 2227,
+        "headings": [
+          "Lesson Plan \u2014 Week 10: API Security",
+          "1. Session objectives",
+          "2. Key ideas (the through-line)",
+          "3. Prior knowledge and preparation",
+          "4. Lecture \u2014 120 min",
+          "5. Laboratory \u2014 180 min",
+          "6. Assessment for this week",
+          "7. Materials",
+          "8. Risks and contingencies",
+          "9. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": [
+      "labs/week10-api-security/solution_api.py",
+      "labs/week10-api-security/vulnerable_api.py",
+      "labs/week10-api-security/docker-compose.yml"
+    ]
+  },
+  {
+    "week": 11,
+    "slug": "week11-memory-safety-exploitation",
+    "documents": [
+      {
+        "path": "labs/week11-memory-safety-exploitation/README.md",
+        "sha256": "859ef6b1c14506893fb38fe95974b6b4abeee2c3c9dcfba946171da60497d5dd",
+        "words": 445,
+        "headings": [
+          "Week 11 \u2014 Memory-Safety & Exploitation",
+          "\u2705 This week \u2014 what to do",
+          "Objectives",
+          "\ud83d\udca5 Signature game \u2014 \"Fuzzing Race \u2192 Pwn the Binary\"",
+          "coverage-guided fuzzing",
+          "or",
+          "Deliverable",
+          "References"
+        ]
+      },
+      {
+        "path": "labs/week11-memory-safety-exploitation/worksheet.md",
+        "sha256": "5cad72a1ced9b48835dc9e13c7647e69365ceff66adabb124c4aaa4edb8dad1d",
+        "words": 1519,
+        "headings": [
+          "Worksheet 11 \u2014 Memory-Safety & Exploitation (3 hrs)",
+          "Part 1 \u2014 Student Information",
+          "Part 2 \u2014 Lecture Questions",
+          "Part 3 \u2014 Hands-on Lab (145 min)",
+          "from the repo root, build the toolbox once, then open a shell IN this week's folder:",
+          "--- inside the container ---",
+          "Task 0 \u2014 Onboarding (15 min)",
+          "Task 1 \u2014 Fuzzing Race: find the crash (35 min)",
+          "Task 2 \u2014 Pwn the Binary: ret2win (40 min)",
+          "Task 3 \u2014 Hardened rebuild: watch the exploit break (25 min)",
+          "Task 4 \u2014 Rust rewrite: defend / fix it (30 min)",
+          "Part 4 \u2014 Reflection",
+          "Grading rubric (100)",
+          "Evidence & Integrity (required)",
+          "\ud83e\udd16 Audit the AI (required)",
+          "\ud83e\udde0 Comprehension & Prompt (required)"
+        ]
+      },
+      {
+        "path": "slides/week11.md",
+        "sha256": "0443616f9cb39463ec4f1ee8517ff376f165f8801dd379e7334359e66f45770c",
+        "words": 1347,
+        "headings": [
+          "Week 11",
+          "Memory-Safety & Exploitation",
+          "Today",
+          "Why this still matters",
+          "The stack frame",
+          "Bug classes",
+          "Fuzzing \u2014 how bugs are found today",
+          "Exploiting a stack overflow",
+          "Mitigations raise the bar",
+          "From strcpy to shell \u2014 where each mitigation cuts the chain",
+          "The real fix: memory-safe languages",
+          "\ud83d\udca5 Game \u2014 Fuzzing Race \u2192 Pwn the Binary",
+          "Deliverable",
+          "Key takeaways",
+          "Questions?"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week11-memory-safety-exploitation.md",
+        "sha256": "cefdda3ccf4f8a69621fd73557c4fa798cbe62217a5927e1c8b25e53d58a7278",
+        "words": 2413,
+        "headings": [
+          "Lesson Plan \u2014 Week 11: Memory-Safety & Exploitation",
+          "1. Session objectives",
+          "2. Key ideas (the through-line)",
+          "3. Prior knowledge and preparation",
+          "4. Lecture \u2014 120 min",
+          "5. Laboratory \u2014 180 min",
+          "from the repo root, build the toolbox once, then open a shell IN this week's folder:",
+          "--- inside the container ---",
+          "6. Assessment for this week",
+          "7. Materials",
+          "8. Risks and contingencies",
+          "9. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": [
+      "labs/week11-memory-safety-exploitation/safe.rs",
+      "labs/week11-memory-safety-exploitation/exploit_skeleton.py",
+      "labs/week11-memory-safety-exploitation/vuln.c",
+      "labs/week11-memory-safety-exploitation/fuzz_harness.c"
+    ]
+  },
+  {
+    "week": 12,
+    "slug": "week12-supply-chain",
+    "documents": [
+      {
+        "path": "labs/week12-supply-chain/README.md",
+        "sha256": "2274676b6f187df524ff8afedaa67fcedeea6a7ebc74ef148dae6c3e39392861",
+        "words": 363,
+        "headings": [
+          "Week 12 \u2014 Software Supply-Chain Security",
+          "\u2705 This week \u2014 what to do",
+          "Objectives",
+          "\ud83d\udce6 Signature game \u2014 \"Dependency Confusion Heist\"",
+          "SCA options",
+          "Deliverable",
+          "References"
+        ]
+      },
+      {
+        "path": "labs/week12-supply-chain/worksheet.md",
+        "sha256": "6cdcf84a8713b9a8d0d978ae4305834b12f2959b047a6ca8cf5df6c9d66e55ac",
+        "words": 1533,
+        "headings": [
+          "Worksheet 12 \u2014 Software Supply-Chain Security (3 hrs)",
+          "Part 1 \u2014 Student Information",
+          "Part 2 \u2014 Lecture Questions",
+          "Part 3 \u2014 Hands-on Lab (150 min)",
+          "Task 0 \u2014 Onboarding (15 min)",
+          "Task 1 \u2014 SCA scan: build the remediation worklist (35 min)",
+          "Task 2 \u2014 Dependency Confusion Heist (35 min)",
+          "Task 3 \u2014 SBOM + signing/verification (30 min)",
+          "Task 4 \u2014 Defend / fix it (35 min)",
+          "Part 4 \u2014 Reflection",
+          "Grading rubric (100)",
+          "Evidence & Integrity (required)",
+          "\ud83e\udd16 Audit the AI (required)",
+          "\ud83e\udde0 Comprehension & Prompt (required)"
+        ]
+      },
+      {
+        "path": "slides/week12.md",
+        "sha256": "b860ef39b07a21933f626424f2a28dbefd5a5a00c19280a14f360787d7fbb7e8",
+        "words": 1569,
+        "headings": [
+          "Week 12",
+          "Software Supply-Chain Security",
+          "Today",
+          "The new #1 design risk",
+          "Real supply-chain attacks",
+          "Attack vectors",
+          "Try it \u2014 which package actually installs?",
+          "SCA \u2014 find vulnerable deps",
+          "Integrity: prove what you shipped",
+          "Signing with Cosign (keyless)",
+          "Tooling \u2014 GitHub Advanced Security (GHAS)",
+          "Defenses",
+          "The whole journey, one dependency",
+          "\ud83d\udce6 Game \u2014 Dependency Confusion Heist",
+          "Deliverable",
+          "Key takeaways",
+          "Questions?"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week12-supply-chain.md",
+        "sha256": "6e022ff9e24960129fb4b83802c298c2d10bd7f617703c0de43edf936663e102",
+        "words": 3978,
+        "headings": [
+          "Lesson Plan \u2014 Week 12: Software Supply-Chain Security",
+          "1. Session objectives",
+          "2. Key ideas (the through-line)",
+          "3. Prior knowledge and preparation",
+          "4. Lecture \u2014 120 min",
+          "5. Laboratory \u2014 180 min",
+          "6. Assessment for this week",
+          "7. Materials",
+          "8. Risks and contingencies",
+          "9. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": [
+      "labs/week12-supply-chain/sign.sh",
+      "labs/week12-supply-chain/sca_scan.sh",
+      "labs/week12-supply-chain/app.py"
+    ]
+  },
+  {
+    "week": 13,
+    "slug": "week13-cloud-container",
+    "documents": [
+      {
+        "path": "labs/week13-cloud-container/README.md",
+        "sha256": "a2598e65eb95653a77d19dab54e9cb5f888de7017efb258f90b05bcf5b35a93c",
+        "words": 286,
+        "headings": [
+          "Week 13 \u2014 Cloud & Container Security",
+          "\u2705 This week \u2014 what to do",
+          "Objectives",
+          "\ud83d\udd0d Signature game \u2014 \"Misconfig Hunt\" (CloudGoat-style)",
+          "Deliverable",
+          "References"
+        ]
+      },
+      {
+        "path": "labs/week13-cloud-container/worksheet.md",
+        "sha256": "1c6ee0647a509e805c13b7a1df3a7a34dbf0d752850e05a00dd1299334e75733",
+        "words": 1510,
+        "headings": [
+          "Worksheet 13 \u2014 Cloud & Container Security (4 hrs)",
+          "Part 1 \u2014 Student Information",
+          "Part 2 \u2014 Lecture Questions",
+          "Part 3 \u2014 Hands-on Lab (180 min)",
+          "Environment setup (real commands)",
+          "Option A \u2014 the provided wrapper (trivy config over the Dockerfiles; IAM JSON is reviewed manually, see Task 2):",
+          "Option B \u2014 run Trivy directly (MEDIUM is in the filter on purpose: one of the",
+          "three rules Task 1 asks you to cite is rated MEDIUM, and HIGH,CRITICAL hides it):",
+          "(Optional) build + CVE-scan the hardened image:",
+          "Tasks",
+          "Part 4 \u2014 Reflection",
+          "Grading rubric (100)",
+          "Evidence & Integrity (required)",
+          "\ud83e\udd16 Audit the AI (required)",
+          "\ud83e\udde0 Comprehension & Prompt (required)"
+        ]
+      },
+      {
+        "path": "slides/week13.md",
+        "sha256": "6571da97c16ef4f86c59d35456d997da39578a2048092ade3141256f7e55a928",
+        "words": 1193,
+        "headings": [
+          "Week 13",
+          "Cloud & Container Security",
+          "Today",
+          "Recap & framing",
+          "Shared responsibility",
+          "IAM & least privilege",
+          "Secrets management",
+          "Storage & network exposure",
+          "Container image hardening",
+          "Kubernetes basics (awareness)",
+          "Same app, shipped twice",
+          "\ud83d\udd0d Game \u2014 Misconfig Hunt",
+          "Deliverable",
+          "Key takeaways",
+          "Questions?"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week13-cloud-container.md",
+        "sha256": "d27baadf055068de4ea49008fad79dd4554c00fafce8541f8d22df133bc8336d",
+        "words": 3497,
+        "headings": [
+          "Lesson Plan \u2014 Week 13: Cloud & Container Security",
+          "1. Session objectives",
+          "2. Key ideas (the through-line)",
+          "3. Prior knowledge and preparation",
+          "4. Lecture \u2014 120 min",
+          "5. Laboratory \u2014 180 min",
+          "6. Assessment for this week",
+          "7. Materials",
+          "8. Risks and contingencies",
+          "9. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": [
+      "labs/week13-cloud-container/iam-policy-leastpriv.json",
+      "labs/week13-cloud-container/scan.sh",
+      "labs/week13-cloud-container/iam-policy-insecure.json",
+      "labs/week13-cloud-container/app.py"
+    ]
+  },
+  {
+    "week": 14,
+    "slug": "week14-ai-llm-security",
+    "documents": [
+      {
+        "path": "labs/week14-ai-llm-security/README.md",
+        "sha256": "3d5e47b7cebe2c6d4b8b63d0cc933f9e25ab4784773ea8f2ece246bbfaf0ab9b",
+        "words": 322,
+        "headings": [
+          "Week 14 \u2014 Security of AI / LLM-Powered Applications",
+          "\u2705 This week \u2014 what to do",
+          "Objectives",
+          "\ud83e\uddd9 Signature game \u2014 \"Gandalf Challenge\"",
+          "Deliverable",
+          "References"
+        ]
+      },
+      {
+        "path": "labs/week14-ai-llm-security/worksheet.md",
+        "sha256": "de2d9c382bcf52aaa45ca7b94163a7a861da6d27f9aee056a45682fd8763cec2",
+        "words": 1371,
+        "headings": [
+          "Worksheet 14 \u2014 Security of AI / LLM-Powered Applications (4 hrs)",
+          "Part 1 \u2014 Student Information",
+          "Part 2 \u2014 Lecture Questions",
+          "Part 3 \u2014 Hands-on Lab (180 min)",
+          "Environment setup (real commands)",
+          "Brings up BOTH bots (see docker-compose.yml + attack.md):",
+          "INSECURE bot:  http://localhost:8082",
+          "GUARDED bot:   http://localhost:8083",
+          "Tasks",
+          "Part 4 \u2014 Reflection",
+          "Grading rubric (100)",
+          "Evidence & Integrity (required)",
+          "\ud83e\udd16 Audit the AI (required)",
+          "\ud83e\udde0 Comprehension & Prompt (required)"
+        ]
+      },
+      {
+        "path": "slides/week14.md",
+        "sha256": "ef9408350dc75620a6ab5558d7ee28fd06d22b60cc26dc5f31c75e74d82667bf",
+        "words": 1711,
+        "headings": [
+          "Week 14",
+          "Security of AI / LLM-Powered Applications",
+          "Today",
+          "Why a whole week on AI",
+          "OWASP LLM Top 10 (2025)",
+          "Prompt injection",
+          "Improper output handling",
+          "Real-world incidents",
+          "Agentic-AI / MCP risks (2025+)",
+          "Real MCP/agent incidents (2025)",
+          "No boundary in the context window",
+          "Defenses",
+          "\ud83e\uddd9 Game \u2014 Gandalf Challenge",
+          "Deliverable",
+          "Key takeaways",
+          "Questions?"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week14-ai-llm-security.md",
+        "sha256": "f4c827f7732c818976c9bc19bc54c2353a0229402da78ea06da71dc6964d639e",
+        "words": 2875,
+        "headings": [
+          "Lesson Plan \u2014 Week 14: Security of AI / LLM-Powered Applications",
+          "1. Session objectives",
+          "2. Key ideas (the through-line)",
+          "3. Prior knowledge and preparation",
+          "4. Lecture \u2014 120 min",
+          "5. Laboratory \u2014 180 min",
+          "6. Assessment for this week",
+          "7. Materials",
+          "8. Risks and contingencies",
+          "9. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": [
+      "labs/week14-ai-llm-security/vulnerable_chatbot.py",
+      "labs/week14-ai-llm-security/docker-compose.yml",
+      "labs/week14-ai-llm-security/guarded_chatbot.py"
+    ]
+  },
+  {
+    "week": 15,
+    "slug": "week15-devsecops-pipeline",
+    "documents": [
+      {
+        "path": "labs/week15-devsecops-pipeline/README.md",
+        "sha256": "040dd348997833318fd127e0d4ea64a7ca9eab253e2871311f662395e842e687",
+        "words": 321,
+        "headings": [
+          "Week 15 \u2014 DevSecOps: Putting It Together",
+          "\u2705 This week \u2014 what to do",
+          "Objectives",
+          "\ud83d\udd34\ud83d\udd35 Signature game \u2014 \"Break the Build\" (Red vs Blue)",
+          "Deliverable",
+          "References"
+        ]
+      },
+      {
+        "path": "labs/week15-devsecops-pipeline/worksheet.md",
+        "sha256": "eeb2f1bbb9eeecab2fe0c097ec5197469b2a298b61aa154742d0d84dbc0aa33f",
+        "words": 1762,
+        "headings": [
+          "Worksheet 15 \u2014 DevSecOps: Putting It Together (4 hrs)",
+          "Part 1 \u2014 Student Information",
+          "Part 2 \u2014 Lecture Questions",
+          "Part 3 \u2014 Hands-on Lab (180 min in class)",
+          "Environment setup (real commands)",
+          "--- A) Wire the gate into a repo you own (README-pipeline.md \u00a71) ---",
+          "--- B) Run the sample service locally (logging + fail-closed) ---",
+          "In another shell:",
+          "Tasks",
+          "Part 4 \u2014 Reflection",
+          "Grading rubric (100)",
+          "Evidence & Integrity (required)",
+          "\ud83e\udd16 Audit the AI (required)",
+          "\ud83e\udde0 Comprehension & Prompt (required)"
+        ]
+      },
+      {
+        "path": "slides/week15.md",
+        "sha256": "d1d556403ef732af60e15d6a90cb1a76d5e900464f257765bc80dd9c570b47db",
+        "words": 1525,
+        "headings": [
+          "Week 15",
+          "DevSecOps: Putting It Together",
+          "Today",
+          "The whole course in one pipeline",
+          "A security gate",
+          ".github/workflows/security-ci.yml",
+          "each tool runs TWICE: once to report (SARIF, always), once to gate (fails the build)",
+          "Platform option \u2014 GitHub Advanced Security",
+          "Logging, monitoring, alerting",
+          "Detection tooling",
+          "Alerts \u2014 the confusion matrix",
+          "When something happens (NIST SP 800-86)",
+          "Fail safely",
+          "Vulnerability management & disclosure",
+          "One decision, made twice",
+          "\ud83d\udd34\ud83d\udd35 Game \u2014 Break the Build",
+          "Deliverable",
+          "Key takeaways",
+          "Questions?"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week15-devsecops-pipeline.md",
+        "sha256": "85678e009dcea1b7b8878a8f656f43782c9dad8685590c724d9e090910a458d1",
+        "words": 3956,
+        "headings": [
+          "Lesson Plan \u2014 Week 15: DevSecOps \u2014 Putting It Together",
+          "1. Session objectives",
+          "2. Key ideas (the through-line)",
+          "3. Prior knowledge and preparation",
+          "4. Lecture \u2014 120 min",
+          "5. Laboratory \u2014 180 min",
+          "In another shell:",
+          "6. Assessment for this week",
+          "7. Materials",
+          "8. Risks and contingencies",
+          "9. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": [
+      "labs/week15-devsecops-pipeline/insecure_service.py",
+      "labs/week15-devsecops-pipeline/secure_service.py",
+      "labs/week15-devsecops-pipeline/security-ci.yml",
+      "labs/week15-devsecops-pipeline/docker-compose.yml",
+      "labs/week15-devsecops-pipeline/sample-service.py"
+    ]
+  },
+  {
+    "week": 16,
+    "slug": "week16-capstone",
+    "documents": [
+      {
+        "path": "labs/week16-capstone/README.md",
+        "sha256": "0061ce85f7f69e2b6550107e5fb816cbccb859975e3a3970a2e95af3640725ca",
+        "words": 270,
+        "headings": [
+          "Week 16 \u2014 Capstone Studio & CTF Warm-up",
+          "\u2705 This week \u2014 what to do",
+          "Format",
+          "Bring",
+          "Practice CTF",
+          "References"
+        ]
+      },
+      {
+        "path": "labs/week16-capstone/worksheet.md",
+        "sha256": "88878bf35af4b16168606ea8bf5bbbbec26488b9c84f19fb2238b4e1c2d8a52b",
+        "words": 1331,
+        "headings": [
+          "Worksheet 16 \u2014 Capstone Studio & CTF Warm-up (4 hrs)",
+          "Part 1 \u2014 Student Information",
+          "Part 2 \u2014 Lecture Questions",
+          "Part 3 \u2014 Project Checklist & Demo Rubric",
+          "A) Deliverables checklist (bring all six)",
+          "B) 10-min demo + 5-min Q&A structure",
+          "C) Peer-review rubric (score the team you review, 1\u20135 each)",
+          "Part 4 \u2014 Reflection (Lessons Learned)",
+          "Grading rubric (100)",
+          "Evidence & Integrity (required)",
+          "\ud83e\udd16 Audit the AI (required)",
+          "\ud83e\udde0 Comprehension & Prompt (required)"
+        ]
+      },
+      {
+        "path": "slides/week16.md",
+        "sha256": "98f3e9c5747a6b74e6f7c8d51270750d04f390836674984dfbc7a84d9c7d8dbf",
+        "words": 716,
+        "headings": [
+          "Week 16",
+          "Capstone Studio & CTF Warm-up",
+          "Today",
+          "Capstone \u2014 what good looks like",
+          "The whole term, one lookup table",
+          "Demo format (today, ungraded)",
+          "Peer review rubric",
+          "\ud83c\udfc6 Practice CTF",
+          "Before Week 19",
+          "Next: pre-final review (Week 17)"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week16-capstone.md",
+        "sha256": "fec4930848732caf6e87a05f4d134b39fe2d57f34c6c44a96c370066cc6b3cee",
+        "words": 5125,
+        "headings": [
+          "Lesson Plan \u2014 Week 16: Capstone Studio & CTF Warm-up",
+          "1. Session objectives",
+          "2. Key ideas (the through-line)",
+          "3. What teams bring in, and what they leave with",
+          "4. Studio timetable \u2014 300 min",
+          "4.1 Why the demos must run in parallel",
+          "4.2 Instructor rotation",
+          "5. The work-in-progress review",
+          "5.1 What is checked",
+          "5.2 The feedback format teams receive",
+          "6. CTF warm-up for the Week 19 tournament",
+          "6.1 The board (`scrimmage.md`) \u2014 and how each target actually starts",
+          "6.2 Running it",
+          "6.3 The retro (4:30\u20134:45) \u2014 three questions",
+          "7. Support for teams that are behind",
+          "8. Assessment for this week",
+          "9. Materials",
+          "10. Risks and contingencies",
+          "11. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": []
+  },
+  {
+    "week": 17,
+    "slug": "week17-review-final-prep",
+    "documents": [
+      {
+        "path": "labs/week17-review-final-prep/README.md",
+        "sha256": "dfd40badbe5f5ecc667d3f6373a3990bcb083758211c1be5393188dc66e8eb4b",
+        "words": 142,
+        "headings": [
+          "Week 17 \u2014 Reflection & Review (pre-Final)",
+          "\u2705 This week \u2014 what to do",
+          "\ud83c\udfaf Signature activity \u2014 \"Security Jeopardy: Champions Edition\"",
+          "\ud83e\uddea Mock Final CTF",
+          "Covers"
+        ]
+      },
+      {
+        "path": "slides/week17.md",
+        "sha256": "9f21c24d33111f165ce96e37950d0f56d18c45a505dd0a1eb6563fde4b06e912",
+        "words": 810,
+        "headings": [
+          "Week 17",
+          "Reflection & Review",
+          "Goal today",
+          "Map of the modern stack",
+          "\ud83c\udfaf Jeopardy: Champions Edition",
+          "\ud83e\uddea Mock final CTF",
+          "Exam scope reminder",
+          "Final next week"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week17-review-final-prep.md",
+        "sha256": "c4d1bd5b234f1f412d36784ba673025ea1266a4883888c3e8bf8a76e48f3abfb",
+        "words": 5758,
+        "headings": [
+          "Lesson Plan \u2014 Week 17: Reflection & Review (pre-Final)",
+          "1. Session objectives",
+          "2. Key ideas (the through-line)",
+          "3. Prior knowledge and preparation",
+          "4. Consolidation plan \u2014 the seven weeks under review",
+          "5. Session run-sheet \u2014 300 min",
+          "5.1 Cumulative review quiz \u2014 0:00\u20130:30",
+          "5.2 Security Jeopardy: Champions \u2014 0:30\u20131:45",
+          "5.3 Mock final CTF \u2014 2:00\u20134:30",
+          "5.4 Debrief \u2014 4:30\u20135:00",
+          "6. Common misconceptions to re-test",
+          "7. Exam preparation",
+          "7.1 Week 18 \u2014 written, 150 min, 100 pts",
+          "7.2 Week 19 \u2014 capstone CTF + project demos, 240 min",
+          "7.3 What today's mock does *not* cover \u2014 say this explicitly",
+          "7.4 Logistics to read out in the debrief",
+          "7.5 Deliverable \u2014 a runnable term project (not a cheat sheet)",
+          "8. Assessment for this week",
+          "9. Materials",
+          "10. Risks and contingencies",
+          "11. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": []
+  },
+  {
+    "week": 18,
+    "slug": "week18-final-written",
+    "documents": [
+      {
+        "path": "labs/week18-final-written/README.md",
+        "sha256": "c9771019c6b05341720a183a318c4176cb18fe3e10c39115e802c858fb2b7b37",
+        "words": 102,
+        "headings": [
+          "Week 18 \u2014 Final: Written Exam",
+          "\u2705 This week \u2014 what to do",
+          "Format",
+          "Pairs with"
+        ]
+      },
+      {
+        "path": "slides/week18.md",
+        "sha256": "e939c7edc426a7f10408dfaae3f30c0012426e0236f1000f56778f2098a8c601",
+        "words": 410,
+        "headings": [
+          "Week 18",
+          "Final \u2014 Written Exam",
+          "Format",
+          "What's assessed",
+          "Tips",
+          "Good luck"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week18-final-written.md",
+        "sha256": "da80dc16ce54d610228d6b5336ff971058bc0b1441ed9b4ffc156b01bcb23f48",
+        "words": 3980,
+        "headings": [
+          "Lesson Plan \u2014 Week 18: Final, Written Exam",
+          "1. What this paper evidences",
+          "2. Exam blueprint \u2014 what is assessed",
+          "3. Preparation before the day",
+          "4. The 150-minute block \u2014 logistics",
+          "5. Forms A and B, sections, and make-up sittings",
+          "6. Invigilation and academic integrity",
+          "7. Marking",
+          "8. After the exam \u2014 item analysis and the item bank",
+          "9. Assessment for this week",
+          "10. Materials",
+          "11. Risks and contingencies",
+          "12. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": []
+  },
+  {
+    "week": 19,
+    "slug": "week19-final-ctf-capstone",
+    "documents": [
+      {
+        "path": "labs/week19-final-ctf-capstone/README.md",
+        "sha256": "fb105187beea97963b6df506f4b3e29efcb34ad87fbe1ebca44df9588cab7840",
+        "words": 171,
+        "headings": [
+          "Week 19 \u2014 Final: Capstone CTF Tournament + Project Demos",
+          "\u2705 This week \u2014 what to do",
+          "\ud83c\udfc6 Capstone CTF Tournament",
+          "Final Project Demos",
+          "Bring",
+          "References"
+        ]
+      },
+      {
+        "path": "slides/week19.md",
+        "sha256": "24fc5585c540f7c6961888b1be8e4cc6c5636023c0e5683872c6e876cc02976e",
+        "words": 426,
+        "headings": [
+          "Week 19",
+          "Final \u2014 Capstone CTF + Project Demos",
+          "Two parts",
+          "\ud83c\udfc6 CTF tournament",
+          "\ud83c\udfa4 Final project demo (graded)",
+          "Bring",
+          "Thank you"
+        ]
+      },
+      {
+        "path": "docs/lesson-plans/week19-final-ctf-capstone.md",
+        "sha256": "d16e468ec8917e0b1a042650f585e9f0605595796bb8bc3f61d58d89d585402d",
+        "words": 5702,
+        "headings": [
+          "Lesson Plan \u2014 Week 19: Final \u2014 Capstone CTF Tournament + Project Demos",
+          "1. Session objectives",
+          "2. What is assessed",
+          "2.1 The tournament \u2014 12 challenges, 150 points, 150 minutes, team-based",
+          "2.2 The demo \u2014 graded separately",
+          "3. Preparation and infrastructure readiness",
+          "3.1 What this sitting actually runs on",
+          "3.2 Per-student flag seeding \u2014 and where it does not reach",
+          "3.3 Teams, room, network, machines",
+          "3.4 Test the day before",
+          "4. Run of show \u2014 the 240-minute block",
+          "5. Scoring \u2014 how points become marks",
+          "6. Academic-integrity controls actually used",
+          "7. After the session \u2014 debrief and how results feed the final mark",
+          "8. Materials",
+          "9. Risks and contingencies",
+          "10. Post-teaching reflection"
+        ]
+      }
+    ],
+    "code": []
+  }
+]
