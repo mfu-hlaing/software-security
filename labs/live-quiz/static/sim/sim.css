@@ -7,7 +7,8 @@
 *{box-sizing:border-box}
 body{margin:0;padding:1rem;background:var(--bg);color:var(--fg);
      font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
-h1{font-size:1.1rem;margin:0 0 .25rem}
+h1{font-size:clamp(1.35rem,3vw,1.75rem);line-height:1.25;margin:0 0 .35rem}
+h2{font-size:1rem;line-height:1.35;margin:0 0 .55rem}
 h3{font-size:.85rem;margin:1rem 0 .3rem;text-transform:uppercase;
    letter-spacing:.05em;color:var(--mut)}
 .lead{color:var(--mut);margin:0 0 .9rem;max-width:70ch}

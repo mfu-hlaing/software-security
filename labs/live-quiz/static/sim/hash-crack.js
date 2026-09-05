@@ -95,6 +95,23 @@ function randomSaltHex() {
   return Array.from(bytes).map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
+// Build the few emphasized result fragments with DOM nodes rather than parsing
+// HTML strings.  All values below currently come from our own preset table, but
+// keeping this simulation free of HTML sinks means a future user-authored
+// scenario cannot quietly turn a teaching aid into stored XSS on the platform.
+function appendStrong(parent, value) {
+  const el = document.createElement("strong");
+  el.textContent = value;
+  parent.append(el);
+}
+
+function appendFlag(parent, value, variant) {
+  const el = document.createElement("span");
+  el.className = `hash-crack-flag ${variant}`;
+  el.textContent = value;
+  parent.append(el);
+}
+
 // --- Scenarios -----------------------------------------------------------------
 // Three leaked-DB flavors, identical mechanic: an unsalted MD5 store where one
 // dictionary pass cracks the target AND, for free, anyone who reused the same
@@ -174,11 +191,17 @@ function renderStores() {
   const capA = document.getElementById("store-a-cap");
   const capB = document.getElementById("store-b-cap");
   if (TWIN_USER) {
-    capA.innerHTML = `Target: <strong>${TARGET_USER}</strong>. <span class="hash-crack-flag same">` +
-      `${TWIN_USER} shares this exact hash</span> — crack ${TARGET_USER} and you've read ` +
-      `${TWIN_USER}'s password too, for free.`;
-    capB.innerHTML = `Target: <strong>${TARGET_USER}</strong>. <span class="hash-crack-flag diff">` +
-      `${TWIN_USER}'s entry looks nothing alike</span>, despite the identical password.`;
+    capA.replaceChildren("Target: ");
+    appendStrong(capA, TARGET_USER);
+    capA.append(". ");
+    appendFlag(capA, `${TWIN_USER} shares this exact hash`, "same");
+    capA.append(` — crack ${TARGET_USER} and you've read ${TWIN_USER}'s password too, for free.`);
+
+    capB.replaceChildren("Target: ");
+    appendStrong(capB, TARGET_USER);
+    capB.append(". ");
+    appendFlag(capB, `${TWIN_USER}'s entry looks nothing alike`, "diff");
+    capB.append(", despite the identical password.");
   } else {
     capA.textContent = `Target: ${TARGET_USER}. No other row here happens to share its hash.`;
     capB.textContent = `Target: ${TARGET_USER}.`;
@@ -234,9 +257,12 @@ function updateGuessLive() {
   const targetB = STORE_B.find(u => u.username === TARGET_USER);
   const hitA = md5hex(guess) === targetA.digest;
   const hitB = kdfHex(guess, targetB.salt, COST) === targetB.digest;
-  liveEl.innerHTML =
-    `Store A (${TARGET_USER}): ${hitA ? '<span class="hash-crack-flag same">✓ MATCH</span>' : "no match"} · ` +
-    `Store B (${TARGET_USER}): ${hitB ? '<span class="hash-crack-flag diff">✓ match (found it, the slow way)</span>' : "no match"}`;
+  liveEl.replaceChildren(`Store A (${TARGET_USER}): `);
+  if (hitA) appendFlag(liveEl, "✓ MATCH", "same");
+  else liveEl.append("no match");
+  liveEl.append(` · Store B (${TARGET_USER}): `);
+  if (hitB) appendFlag(liveEl, "✓ match (found it, the slow way)", "diff");
+  else liveEl.append("no match");
 }
 document.getElementById("guess").addEventListener("input", updateGuessLive);
 

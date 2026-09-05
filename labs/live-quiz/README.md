@@ -48,6 +48,58 @@ DB_PATH=./dev.db INVITE_CODE=letmein SECRET_KEY=dev PORT=5057 python app.py
 `DB_PATH` points SQLite at a local file (created on first run) instead of the container's `/data`
 volume; `INVITE_CODE` opens registration for this run; `PORT` picks a free port.
 
+## Guided Weeks 1–6 mastery path
+
+`/learn/software-security/mastery` connects the first six weeks into the same
+five-step learning loop each time: **Learn → Explore → Lab → Defend → Check**.
+It links the canonical slides and worksheets rather than copying them, includes
+all 13 core Weeks 1–6 simulations, and carries one NoteVault defence mission
+through the sequence. Eight existing first-party simulations from later or
+parallel cryptography material appear in explicitly labelled **Beyond Weeks
+1–6 syllabus** panels; they are optional transfer labs, not hidden assessment
+scope. The six practice banks are original, ungraded retrieval practice; they
+do not reuse the graded weekly questions.
+
+Every week also has four visible explanation tiers (**Foundation → Core →
+Advanced → Beyond syllabus**), a code-native attack/defence mechanism map, and
+three evidence-gated mission checkpoints worth 100 + 150 + 250 motivational XP.
+The six ranks total 3000 XP. Checkpoint completion is self-attested and stored
+only as public checkpoint IDs in browser `localStorage`; there is no progress
+POST route, account, identity field, evidence upload, grade, or leaderboard.
+Hints expose a reasoning direction, never a payload, flag, secret, or completed
+patch. The mastery and practice scripts make no network requests, and their CSP
+permits only first-party scripts with `form-action 'none'`.
+
+Shared lab targets are optional. Without configuration, each week links back to
+its repository lab guide for local use. For an internal/VPN deployment, set a
+single base URL:
+
+```bash
+MASTERY_LAB_BASE_URL=https://labs.vpn.internal
+```
+
+This resolves Week 1 as `/week01`, through Week 6 as `/week06`. A week-specific
+URL takes precedence when targets do not share that shape:
+
+```bash
+MASTERY_WEEK04_LAB_URL=http://10.70.4.25:8080
+```
+
+Only absolute `http://` or `https://` values are accepted. The overview and
+weekly pathway use a first-party-script-only CSP for local checkpoint progress.
+Practice has a separate equivalent CSP, makes no network request or database
+write, sets no identity cookie, and may remember only selected option numbers in
+the browser's local storage. “Reset this practice” removes that local state.
+
+Configured lab URLs are instructor-managed, resettable **team sandboxes** or
+focused browser landings. They are not per-student virtual machines and never
+run arbitrary student branches. In particular, Week 2 scanner/fuzzer evidence
+and Week 3 hash/KDF/AEAD evidence require the checked-out repository and local
+tooling; a browser CTA cannot manufacture command output. NoteVault hardening
+is implemented, tested, committed, and submitted through each team's own repo
+workflow. The Week 5 supplied defended app intentionally leaves CSRF observable;
+the complete token-backed CSRF defence belongs in the learner's NoteVault work.
+
 ## Deploying for real classroom/remote use
 
 This needs to be reachable outside `localhost` for remote/hybrid students (unlike this course's

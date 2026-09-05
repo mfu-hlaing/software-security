@@ -1,0 +1,216 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+packages:
+  - wireguard
+  - nftables
+  - dnsmasq
+  - openssh-server
+  - util-linux
+
+write_files:
+  - path: /etc/sysctl.d/90-wireguard-router.conf
+    owner: root:root
+    permissions: "0644"
+    content: |
+      net.ipv4.ip_forward=1
+      net.ipv4.conf.all.src_valid_mark=1
+
+  - path: /etc/wireguard/team1-slots
+    owner: root:root
+    permissions: "0600"
+    content: |
+      ${team_1_peer_cidrs}
+
+  - path: /etc/wireguard/team2-slots
+    owner: root:root
+    permissions: "0600"
+    content: |
+      ${team_2_peer_cidrs}
+
+  - path: /etc/dnsmasq.d/labs.conf
+    owner: root:root
+    permissions: "0644"
+    content: |
+      interface=wg0
+      listen-address=${wireguard_server_ip}
+      bind-dynamic
+      domain-needed
+      bogus-priv
+      no-resolv
+      server=169.254.169.253
+      address=/team1.${internal_domain}/${team_1_host_ip}
+      address=/team2.${internal_domain}/${team_2_host_ip}
+
+  - path: /usr/local/sbin/wg-peer-admin
+    owner: root:root
+    permissions: "0750"
+    content: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+
+      usage() {
+        echo "usage: wg-peer-admin add NAME team1|team2 ADDRESS PUBLIC_KEY" >&2
+        echo "       wg-peer-admin revoke NAME" >&2
+        echo "       wg-peer-admin list" >&2
+        exit 2
+      }
+
+      rebuild() {
+        local temp
+        temp=$(mktemp /etc/wireguard/wg0.conf.XXXXXX)
+        cat /etc/wireguard/wg0.base.conf > "$temp"
+        for peer in /etc/wireguard/peers.d/*.conf; do
+          [ -e "$peer" ] || continue
+          cat "$peer" >> "$temp"
+        done
+        chmod 0600 "$temp"
+        mv "$temp" /etc/wireguard/wg0.conf
+        wg syncconf wg0 <(wg-quick strip wg0)
+      }
+
+      [ "$#" -ge 1 ] || usage
+      exec 9>/run/wg-peer-admin.lock
+      flock 9
+      action=$1
+      shift
+
+      case "$action" in
+        add)
+          [ "$#" -eq 4 ] || usage
+          name=$1
+          team=$2
+          address=$3
+          public_key=$4
+          [[ "$name" =~ ^[a-z0-9][a-z0-9_-]{1,30}$ ]] || {
+            echo "peer name must be a 2-31 character opaque slug" >&2; exit 2;
+          }
+          [[ "$public_key" =~ ^[A-Za-z0-9+/]{43}=$ ]] || {
+            echo "expected a WireGuard public key" >&2; exit 2;
+          }
+          [[ "$address" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || {
+            echo "address must be one configured IPv4 slot without /32" >&2; exit 2;
+          }
+          case "$team" in
+            team1) slots=/etc/wireguard/team1-slots ;;
+            team2) slots=/etc/wireguard/team2-slots ;;
+            *) usage ;;
+          esac
+          cidr="$address/32"
+          grep -Fxq "$cidr" "$slots" || {
+            echo "$cidr is not reserved for $team" >&2; exit 1;
+          }
+          [ ! -e "/etc/wireguard/peers.d/$name.conf" ] || {
+            echo "peer name already exists" >&2; exit 1;
+          }
+          ! grep -Rqs "^AllowedIPs = $cidr$" /etc/wireguard/peers.d || {
+            echo "address is already assigned" >&2; exit 1;
+          }
+          ! grep -Rqs "^PublicKey = $public_key$" /etc/wireguard/peers.d || {
+            echo "public key is already assigned" >&2; exit 1;
+          }
+          umask 077
+          {
+            printf '\n# name=%s team=%s\n' "$name" "$team"
+            printf '[Peer]\nPublicKey = %s\nAllowedIPs = %s\n' "$public_key" "$cidr"
+          } > "/etc/wireguard/peers.d/$name.conf"
+          rebuild
+          echo "added $name as $cidr in $team"
+          ;;
+        revoke)
+          [ "$#" -eq 1 ] || usage
+          name=$1
+          [[ "$name" =~ ^[a-z0-9][a-z0-9_-]{1,30}$ ]] || usage
+          file="/etc/wireguard/peers.d/$name.conf"
+          [ -f "$file" ] || { echo "no such peer" >&2; exit 1; }
+          rm -f -- "$file"
+          rebuild
+          echo "revoked $name"
+          ;;
+        list)
+          [ "$#" -eq 0 ] || usage
+          grep -hE '^# name=' /etc/wireguard/peers.d/*.conf 2>/dev/null || true
+          ;;
+        *) usage ;;
+      esac
+
+runcmd:
+  - |
+    set -eu
+    install -d -m 0700 /etc/wireguard/peers.d
+    umask 077
+    wg genkey > /etc/wireguard/server.key
+    wg pubkey < /etc/wireguard/server.key > /etc/wireguard/server.pub
+    cat > /etc/wireguard/wg0.base.conf <<EOF
+    [Interface]
+    Address = ${wireguard_server_cidr}
+    ListenPort = ${wireguard_port}
+    PrivateKey = $(cat /etc/wireguard/server.key)
+
+    [Peer]
+    # Bootstrap instructor. Additional peer private keys are generated only on
+    # their client devices and public keys are added with wg-peer-admin.
+    PublicKey = ${instructor_public_key}
+    AllowedIPs = ${instructor_cidr}
+    EOF
+    chmod 0600 /etc/wireguard/wg0.base.conf
+    cp /etc/wireguard/wg0.base.conf /etc/wireguard/wg0.conf
+    sysctl --system
+    systemctl enable --now wg-quick@wg0
+  - |
+    set -eu
+    uplink=$(ip route show default | awk 'NR==1 {print $5}')
+    [ -n "$uplink" ]
+    cat > /etc/nftables.conf <<EOF
+    flush ruleset
+    table inet lab_filter {
+      set team1_peers {
+        type ipv4_addr
+        elements = { ${team_1_peer_ips_nft} }
+      }
+      set team2_peers {
+        type ipv4_addr
+        elements = { ${team_2_peer_ips_nft} }
+      }
+      chain input {
+        type filter hook input priority 0; policy drop;
+        ct state established,related accept
+        iifname "lo" accept
+        iifname "$uplink" udp sport 67 udp dport 68 accept
+        udp dport ${wireguard_port} accept
+        iifname "wg0" ip saddr ${instructor_ip} tcp dport 22 accept
+        iifname "wg0" udp dport 53 accept
+        iifname "wg0" tcp dport 53 accept
+        ip protocol icmp icmp type { destination-unreachable, time-exceeded, parameter-problem } accept
+      }
+      chain forward {
+        type filter hook forward priority 0; policy drop;
+        ct state established,related accept
+        iifname "wg0" ip saddr ${instructor_ip} ip daddr { ${team_1_host_ip}, ${team_2_host_ip} } tcp dport { 22, 8443 } accept
+        iifname "wg0" ip saddr @team1_peers ip daddr ${team_1_host_ip} tcp dport 8443 accept
+        iifname "wg0" ip saddr @team2_peers ip daddr ${team_2_host_ip} tcp dport 8443 accept
+        iifname "$uplink" ip saddr { ${team_1_subnet_cidr}, ${team_2_subnet_cidr} } oifname "$uplink" accept
+      }
+      chain output {
+        type filter hook output priority 0; policy accept;
+      }
+    }
+    table ip lab_nat {
+      chain postrouting {
+        type nat hook postrouting priority 100; policy accept;
+        ip saddr { ${team_1_subnet_cidr}, ${team_2_subnet_cidr} } oifname "$uplink" masquerade
+      }
+    }
+    EOF
+    nft -c -f /etc/nftables.conf
+    systemctl enable --now nftables
+    systemctl restart nftables
+    systemctl enable --now dnsmasq
+    systemctl restart dnsmasq
+  - |
+    # The public key is not secret. It is printed to the EC2 system log so the
+    # instructor can build the first client config without public SSH.
+    echo "WIREGUARD_SERVER_PUBLIC_KEY=$(cat /etc/wireguard/server.pub)" | tee /dev/console
+    echo "WIREGUARD_BOOTSTRAP_READY endpoint-port=${wireguard_port} dns=${wireguard_server_ip}" | tee /dev/console
+
+final_message: "WireGuard edge bootstrap finished. Read the server PUBLIC key from the EC2 system log."

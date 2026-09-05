@@ -1,0 +1,27 @@
+# Copy to terraform.tfvars (git-ignored) and replace every marked value.
+# Never put private keys, WireGuard client configs, names, student IDs, or roster
+# data here. Terraform needs public keys only.
+
+aws_region       = "ap-southeast-1"
+availability_zone = "ap-southeast-1a"
+ubuntu_ami_id    = "ami-0123456789abcdef0" # Reviewed Ubuntu 24.04 amd64 AMI in this Region.
+
+instructor_ssh_public_key       = "ssh-ed25519 REPLACE_WITH_INSTRUCTOR_PUBLIC_KEY"
+instructor_wireguard_public_key = "REPLACE_WITH_44_CHARACTER_WIREGUARD_PUBLIC_KEY="
+
+# Pin the exact public commit that contains deploy/internal-labs. Do not use a
+# branch, tag, archive of the workspace root, or an unreviewed fork.
+repository_url = "https://github.com/nutthakorn7/software-security.git"
+repository_ref = "0000000000000000000000000000000000000000"
+
+internal_domain = "labs.test"
+team_1_id       = "cohort-alpha"
+team_2_id       = "cohort-bravo"
+
+# Keep 0.0.0.0/0 only when students roam. Narrow this to stable public CIDRs if
+# the cohort has them; WireGuard still authenticates every peer cryptographically.
+wireguard_source_cidrs = ["0.0.0.0/0"]
+
+# One device per /32. These are authorization identities, not address pools.
+team_1_peer_cidrs = ["10.66.0.10/32", "10.66.0.11/32"]
+team_2_peer_cidrs = ["10.66.0.20/32", "10.66.0.21/32"]

@@ -1,0 +1,156 @@
+#cloud-config
+package_update: false
+package_upgrade: false
+
+write_files:
+  - path: /usr/local/sbin/install-lab-egress-guard
+    owner: root:root
+    permissions: "0750"
+    content: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+      # The app bridges are internal. The separate ingress bridge must be
+      # non-internal for Docker to publish Caddy's 8443, so enforce a second,
+      # explicit source-subnet egress boundary in DOCKER-USER. Same-subnet
+      # app<->fixed-relay and Caddy<->relay traffic remains possible; every new
+      # off-subnet connection from any stack container is rejected.
+      iptables -N LAB-CONTAINER-GUARD 2>/dev/null || true
+      iptables -C DOCKER-USER -j LAB-CONTAINER-GUARD 2>/dev/null || \
+        iptables -I DOCKER-USER 1 -j LAB-CONTAINER-GUARD
+      iptables -F LAB-CONTAINER-GUARD
+      iptables -A LAB-CONTAINER-GUARD -m conntrack --ctstate ESTABLISHED,RELATED -j RETURN
+      for subnet in \
+        172.30.1.0/24 172.30.2.0/24 172.30.4.0/24 172.30.5.0/24 \
+        172.30.6.0/24 172.30.7.0/24 172.30.8.0/24 172.30.254.0/24; do
+        iptables -A LAB-CONTAINER-GUARD -s "$subnet" -d "$subnet" -j RETURN
+        iptables -A LAB-CONTAINER-GUARD -s "$subnet" -j REJECT
+      done
+      iptables -A LAB-CONTAINER-GUARD -d 169.254.169.254/32 -j REJECT
+      iptables -A LAB-CONTAINER-GUARD -d ${vpc_cidr} -j REJECT
+      iptables -A LAB-CONTAINER-GUARD -j RETURN
+
+      # A container can still address its bridge gateway even on an internal
+      # Docker network. Reject container-initiated host connections so a Week 4
+      # command injection cannot reach host-mode Caddy on the bridge address and
+      # replay a different Host/SNI name as an application-layer pivot.
+      iptables -C INPUT -i 'br+' -m conntrack --ctstate NEW -j REJECT 2>/dev/null || \
+        iptables -I INPUT 1 -i 'br+' -m conntrack --ctstate NEW -j REJECT
+      iptables -C INPUT -i docker0 -m conntrack --ctstate NEW -j REJECT 2>/dev/null || \
+        iptables -I INPUT 1 -i docker0 -m conntrack --ctstate NEW -j REJECT
+
+  - path: /etc/systemd/system/lab-egress-guard.service
+    owner: root:root
+    permissions: "0644"
+    content: |
+      [Unit]
+      Description=Block lab containers from metadata, the host, and training VPC
+      Requires=docker.service
+      After=docker.service
+      PartOf=docker.service
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/local/sbin/install-lab-egress-guard
+      RemainAfterExit=yes
+
+      [Install]
+      WantedBy=multi-user.target
+
+runcmd:
+  - |
+    set -eu
+    # Terraform can finish the route before the edge has configured NAT. Use
+    # apt itself (guaranteed on Ubuntu) rather than assuming curl is preinstalled.
+    attempts=0
+    until DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Retries=3 update -qq; do
+      attempts=$((attempts + 1))
+      [ "$attempts" -lt 180 ] || { echo "edge NAT was not ready after fifteen minutes" >&2; exit 1; }
+      sleep 5
+    done
+  - |
+    set -eu
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get install -y --no-install-recommends \
+      awscli ca-certificates curl docker.io git openssl
+    if ! apt-get install -y --no-install-recommends docker-compose-v2; then
+      apt-get install -y --no-install-recommends docker-compose-plugin
+    fi
+    systemctl enable --now docker
+    docker compose version
+  - |
+    set -eu
+    # IMDS was required for cloud-init to receive this user-data. It is v2-only
+    # with hop-limit 1 during bootstrap. Use a one-action role to disable the
+    # endpoint before any intentionally vulnerable container starts.
+    token=$(curl -fsS --retry 5 -X PUT \
+      -H 'X-aws-ec2-metadata-token-ttl-seconds: 60' \
+      http://169.254.169.254/latest/api/token)
+    instance_id=$(curl -fsS \
+      -H "X-aws-ec2-metadata-token: $token" \
+      http://169.254.169.254/latest/meta-data/instance-id)
+    attempts=0
+    until aws ec2 modify-instance-metadata-options \
+      --region ${aws_region} \
+      --instance-id "$instance_id" \
+      --http-endpoint disabled >/dev/null; do
+      attempts=$((attempts + 1))
+      [ "$attempts" -lt 60 ] || { echo "could not disable IMDS; refusing to start labs" >&2; exit 1; }
+      sleep 5
+    done
+    unset token
+    attempts=0
+    while curl -fsS --connect-timeout 1 -X PUT \
+      -H 'X-aws-ec2-metadata-token-ttl-seconds: 1' \
+      http://169.254.169.254/latest/api/token >/dev/null 2>&1; do
+      attempts=$((attempts + 1))
+      [ "$attempts" -lt 30 ] || { echo "IMDS remained reachable; refusing to start labs" >&2; exit 1; }
+      sleep 2
+    done
+    echo "IMDS_DISABLED instance=$instance_id"
+  - |
+    set -eu
+    install -d -o root -g root -m 0755 /opt/software-security
+    cd /opt/software-security
+    git init -q
+    git remote add origin ${repository_url}
+    git fetch --quiet --depth=1 origin ${repository_ref}
+    resolved=$(git rev-parse FETCH_HEAD)
+    [ "$resolved" = "${repository_ref}" ] || { echo "repository ref mismatch" >&2; exit 1; }
+    git checkout --quiet --detach FETCH_HEAD
+    # Refuse a dirty or locally overlaid source tree before Docker sees it.
+    [ -z "$(git status --porcelain)" ]
+  - |
+    set -eu
+    cd /opt/software-security/deploy/internal-labs
+    umask 077
+    cat > .env <<EOF
+    COMPOSE_PROFILES=${team_profile}
+    BIND_ADDRESS=0.0.0.0
+    LEARN_HOST=${learn_host}
+    WEEK01_HOST=${week01_host}
+    WEEK04_HOST=${week04_host}
+    WEEK05_HOST=${week05_host}
+    WEEK06_HOST=${week06_host}
+    TEAM_1_HOST=${team_1_host}
+    TEAM_2_HOST=${team_2_host}
+    TEAM_1_ID=${team_1_id}
+    TEAM_2_ID=${team_2_id}
+    LIVE_QUIZ_SECRET_KEY=$(openssl rand -hex 32)
+    LIVE_QUIZ_INVITE_CODE=$(openssl rand -hex 16)
+    TEAM_1_SALT=$(openssl rand -hex 32)
+    TEAM_2_SALT=$(openssl rand -hex 32)
+    FLAG_SQLI=FLAG{$(openssl rand -hex 16)}
+    FLAG_CMDI=FLAG{$(openssl rand -hex 16)}
+    FLAG_IDOR=FLAG{$(openssl rand -hex 16)}
+    FLAG_JWT=FLAG{$(openssl rand -hex 16)}
+    EOF
+    chmod 0600 .env
+    systemctl daemon-reload
+    systemctl enable --now lab-egress-guard.service
+    docker compose --env-file .env -f compose.yml --profile ${team_profile} config --quiet
+    COMPOSE_PARALLEL_LIMIT=1 docker compose --env-file .env -f compose.yml --profile ${team_profile} build --pull
+    docker compose --env-file .env -f compose.yml --profile ${team_profile} up -d --remove-orphans
+    docker compose --env-file .env -f compose.yml --profile ${team_profile} ps
+    echo "TEAM_LAB_READY profile=${team_profile} host=${learn_host}:8443"
+
+final_message: "Team lab bootstrap complete. IMDS was disabled before the private Compose stack started."

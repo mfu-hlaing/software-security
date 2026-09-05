@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% set section = 'mastery' %}
+{% set page_description = 'Ungraded Week ' ~ week.number ~ ' software-security retrieval practice with immediate rationales.' %}
+{% block title %}Week {{ week.number }} practice · {{ week.title }}{% endblock %}
+
+{% block main %}
+<section class="mx-practice-hero">
+  <div class="lx-wrap">
+    <p class="lx-crumb"><a class="lx-link" href="/learn/{{ course.slug }}/mastery/week/{{ week.number }}">Week {{ week.number }} · {{ week.title }}</a></p>
+    <p class="mx-kicker">Check · private low-stakes retrieval practice</p>
+    <h1 class="lx-h1">{{ bank.title }}</h1>
+    <p class="lx-lead lx-measure">{{ bank.description }}</p>
+    <ul class="mx-practice-facts">
+      <li><strong>{{ bank.questions|length }}</strong> original questions</li>
+      <li><strong>Ungraded</strong> — retry freely</li>
+      <li><strong>No account</strong> — nothing is sent to the server</li>
+      <li><strong>Not a secure assessment</strong> — answers and rationales are intentionally present in the page</li>
+    </ul>
+  </div>
+</section>
+
+<section class="lx-sec mx-practice-shell" data-practice data-bank-id="{{ bank.id }}" data-threshold="{{ bank.pass_threshold }}">
+  <div class="lx-wrap">
+    <div class="mx-scorebar" aria-live="polite">
+      <div>
+        <p class="mx-kicker">Your private progress</p>
+        <p class="mx-score" data-score>0 of {{ bank.questions|length }} answered</p>
+        <p class="mx-score-message" data-score-message>Choose the answer you can justify, then read why each choice works or fails.</p>
+      </div>
+      <button class="mx-reset" type="button" data-reset>Reset this practice</button>
+    </div>
+
+    <ol class="mx-question-list">
+      {% for question in bank.questions %}
+      <li>
+        <article class="mx-practice-question" data-question data-question-id="{{ question.id }}" data-correct-index="{{ question.correct }}">
+          <header>
+            <span class="mx-question-count">Question {{ loop.index }} of {{ bank.questions|length }}</span>
+            <span class="mx-difficulty">{{ question.difficulty }}</span>
+          </header>
+          <h2>{{ question.stem }}</h2>
+          <div class="mx-options" role="group" aria-label="Answer choices for question {{ loop.index }}">
+            {% for option in question.options %}
+            <button class="mx-option" type="button" data-option data-option-index="{{ loop.index0 }}" data-rationale="{{ question.rationales[loop.index0] }}">
+              <span class="mx-option-letter">{{ 'ABCD'[loop.index0] }}</span>
+              <span>{{ option }}</span>
+            </button>
+            {% endfor %}
+          </div>
+          <div class="mx-feedback" data-feedback hidden aria-live="polite"></div>
+          <div class="mx-explanation" data-explanation hidden>
+            <p class="mx-kicker">Connect the idea</p>
+            <p>{{ question.explanation }}</p>
+            <p><strong>Outcome checked:</strong> {{ question.objective }}</p>
+          </div>
+        </article>
+      </li>
+      {% endfor %}
+    </ol>
+
+    <noscript><p class="mx-safety-note">This practice needs the platform's
+      first-party JavaScript to reveal feedback. The lesson, simulations, and lab
+      remain available without JavaScript.</p></noscript>
+
+    <div class="mx-practice-finish" data-finish hidden>
+      <p class="mx-kicker">Practice complete</p>
+      <h2>Use the evidence, not just the score</h2>
+      <p data-finish-message></p>
+      <div class="mx-hero-actions">
+        <a class="mx-primary-link" href="/learn/{{ course.slug }}/mastery/week/{{ week.number }}">Return to Week {{ week.number }}</a>
+        {% if week.number < 6 %}<a class="lx-link" href="/learn/{{ course.slug }}/mastery/week/{{ week.number + 1 }}">Continue to Week {{ week.number + 1 }}</a>{% endif %}
+      </div>
+    </div>
+
+    <p class="mx-privacy-note">Privacy: answers are never submitted. If browser
+      storage is available, this page remembers only this bank's selected option
+      numbers on this device. Reset removes them.</p>
+  </div>
+</section>
+<script src="/static/mastery_practice.js?v={{ asset_v }}" defer></script>
+{% endblock %}

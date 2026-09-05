@@ -166,7 +166,7 @@
         + "so a different filename is all it takes.";
     } else {
       wverdict.className = "verdict bad";
-      wverdict.textContent = "writes outside uploads/ — CWE-501";
+      wverdict.textContent = "writes outside uploads/ — CWE-22 / CWE-73";
       wexplain.textContent = "The filename is attacker-controlled and unsanitized on "
         + "save. This resolves outside uploads/ — arbitrary-file-write, "
         + "unauthenticated, anywhere the process can reach.";
@@ -179,9 +179,9 @@
         + "it through — this is what the read path is supposed to do for a "
         + "legitimate filename.";
     } else {
-      rverdict.textContent = "blocked (403)";
+      rverdict.textContent = "not served (404)";
       rexplain.textContent = "safe_join resolves the same path, notices it falls "
-        + "outside uploads/, and refuses it before ever touching the filesystem. "
+        + "outside uploads/, and the route returns not found before touching the filesystem. "
         + "Same input as the write side, opposite outcome.";
     }
   }

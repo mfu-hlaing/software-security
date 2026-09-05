@@ -35,7 +35,7 @@
                     over an import-time list. It must stay a PROJECTION: raw
                     course dicts carry `root`, an absolute server path.)
                     An explicit kwarg still overrides it.
-      section       OPTIONAL. "learn" | "sim" | "quiz" — marks the current
+      section       OPTIONAL. "learn" | "mastery" | "sim" | "quiz" — marks the current
                     tier-2 item with aria-current.
       nav_teacher   OPTIONAL override. When absent this falls back to
                     session.teacher_id, which auth.py:44 already sets, so the
@@ -140,6 +140,10 @@
       <nav class="lx-nav" aria-label="Course material">
         <a class="lx-nav-a{% if section == 'learn' %} lx-nav-a--here{% endif %}"
            href="/learn"{% if section == 'learn' %} aria-current="page"{% endif %}>Courses</a>
+        {% if mastery_course_slug %}
+        <a class="lx-nav-a{% if section == 'mastery' %} lx-nav-a--here{% endif %}"
+           href="/learn/{{ mastery_course_slug }}/mastery"{% if section == 'mastery' %} aria-current="page"{% endif %}>Weeks 1–6 mastery</a>
+        {% endif %}
         <a class="lx-nav-a{% if section == 'sim' %} lx-nav-a--here{% endif %}"
            href="/sim"{% if section == 'sim' %} aria-current="page"{% endif %}>Simulations</a>
       </nav>
@@ -209,6 +213,7 @@
       <h2 class="lx-foot-h">Free to read</h2>
       <ul class="lx-foot-list">
         <li><a class="lx-foot-a" href="/learn">All courses</a></li>
+        {% if mastery_course_slug %}<li><a class="lx-foot-a" href="/learn/{{ mastery_course_slug }}/mastery">Weeks 1–6 mastery path</a></li>{% endif %}
         <li><a class="lx-foot-a" href="/sim">Interactive simulations</a></li>
       </ul>
     </div>

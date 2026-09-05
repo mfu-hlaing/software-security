@@ -1,0 +1,143 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }}</title><link rel="stylesheet" href="/static/sim/sim.css?v={{ asset_v }}"></head>
+<body>
+<h1>CSRF is a failure to prove request intent</h1>
+<p class="lead">A <code>POST</code> is not automatically CSRF. Change where the
+request begins, whether a victim session exists, the cookie&rsquo;s
+<code>SameSite</code> setting, and the server&rsquo;s token check. The model follows
+the request from browser to server and separately asks whether attacker code can
+read the response.</p>
+
+<p id="preset-title"><b>Try a case first</b></p>
+<div class="preset iam-evaluation-presets" id="presets" role="group"
+     aria-labelledby="preset-title"></div>
+
+<div class="iam-evaluation-verdict" id="summary" role="status" aria-live="polite">
+  <span class="iam-evaluation-badge" id="summary-badge">&mdash;</span>
+  <span class="iam-evaluation-because" id="summary-title"></span>
+  <p class="iam-evaluation-sub" id="summary-detail"></p>
+</div>
+
+<div class="wrap">
+  <div>
+    <div class="card">
+      <h2>Build the browser state</h2>
+      <div class="iam-evaluation-grid">
+        <div class="iam-evaluation-wide">
+          <label for="source">Where does the request begin?</label>
+          <select id="source">
+            <option value="cross-site">attacker.example &rarr; vault.labs.test (cross-site, cross-origin)</option>
+            <option value="same-site">promo.labs.test &rarr; vault.labs.test (same-site, cross-origin)</option>
+            <option value="target-xss">injected script at vault.labs.test (same-origin XSS)</option>
+          </select>
+        </div>
+        <div>
+          <label for="session-state">Victim session at the target</label>
+          <select id="session-state">
+            <option value="signed-in">signed in &mdash; session cookie exists</option>
+            <option value="signed-out">signed out &mdash; no session cookie</option>
+          </select>
+        </div>
+        <div>
+          <label for="same-site">Session cookie attribute</label>
+          <select id="same-site">
+            <option value="strict">SameSite=Strict</option>
+            <option value="lax">SameSite=Lax</option>
+            <option value="none">SameSite=None; Secure</option>
+          </select>
+        </div>
+        <div>
+          <label for="csrf-defense">Server request-intent check</label>
+          <select id="csrf-defense">
+            <option value="token">synchronizer token required</option>
+            <option value="none">no anti-CSRF check</option>
+          </select>
+        </div>
+        <div>
+          <label for="request-token">Token carried in the request</label>
+          <select id="request-token">
+            <option value="missing">missing</option>
+            <option value="wrong">present but wrong</option>
+            <option value="valid">valid for this victim session</option>
+          </select>
+        </div>
+      </div>
+      <p class="hint" id="token-help"></p>
+    </div>
+
+    <div class="card card-gap">
+      <h2>Symbolic request &mdash; nothing is transmitted</h2>
+      <div class="q" id="wire" aria-label="Simulated HTTP request"></div>
+      <p id="relationship"></p>
+      <p class="hint">The request is an ordinary form-compatible
+      <code>application/x-www-form-urlencoded</code> POST. It needs no custom
+      header and therefore does not rely on a CORS preflight.</p>
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <h2>Browser &rarr; target decision path</h2>
+      <div class="prompt-guard-step" id="step-request">
+        <span class="prompt-guard-steplbl">1 &middot; Request emission</span>
+        <span class="prompt-guard-stepval" id="request-result"></span>
+      </div>
+      <div class="prompt-guard-step" id="step-cookie">
+        <span class="prompt-guard-steplbl">2 &middot; Ambient session cookie</span>
+        <span class="prompt-guard-stepval" id="cookie-result"></span>
+      </div>
+      <div class="prompt-guard-step" id="step-auth">
+        <span class="prompt-guard-steplbl">3 &middot; Target authentication</span>
+        <span class="prompt-guard-stepval" id="auth-result"></span>
+      </div>
+      <div class="prompt-guard-step" id="step-intent">
+        <span class="prompt-guard-steplbl">4 &middot; Request-intent proof</span>
+        <span class="prompt-guard-stepval" id="intent-result"></span>
+      </div>
+      <div class="prompt-guard-step" id="step-action">
+        <span class="prompt-guard-steplbl">5 &middot; State change</span>
+        <span class="prompt-guard-stepval" id="action-result"></span>
+      </div>
+      <div class="prompt-guard-step" id="step-read">
+        <span class="prompt-guard-steplbl">6 &middot; Readable to attacker code?</span>
+        <span class="prompt-guard-stepval" id="read-result"></span>
+      </div>
+    </div>
+
+    <div class="card card-gap">
+      <h2>Correct diagnosis</h2>
+      <p class="verdict" id="diagnosis"></p>
+      <p id="diagnosis-why"></p>
+      <p class="hint" id="response-note"></p>
+    </div>
+  </div>
+</div>
+
+<div class="card card-gap">
+  <h2>Transfer the rule, not the demo</h2>
+  <ul>
+    <li><b>True CSRF:</b> attacker-controlled cross-origin content makes the
+    victim&rsquo;s browser attach ambient authority, and the target accepts a
+    state change without adequate intent proof. Reading the response is not
+    required.</li>
+    <li><b>Unauthenticated POST:</b> the endpoint may still receive bytes, but
+    no victim authority is attached. That can be spam or abuse; it is not a
+    successful cross-site <i>request forgery</i> against a victim session.</li>
+    <li><b>XSS:</b> attacker code already runs in the target origin. It can
+    normally issue same-origin requests, read responses, and obtain a token
+    rendered into the page. CSRF defenses do not repair XSS; an
+    <code>HttpOnly</code> cookie prevents direct cookie reading, not ambient
+    cookie sending.</li>
+    <li><b>Defense in depth:</b> validate a per-session token or trusted request
+    origin, use an explicit <code>SameSite</code> cookie policy, keep unsafe
+    actions off GET, and still fix every XSS sink.</li>
+  </ul>
+  <p class="hint">This focused model uses an HTTPS POST, explicit SameSite
+  values, a host that requires authentication, and standard same-origin policy
+  without permissive CORS. It intentionally omits legacy default-cookie grace
+  periods, redirects, service workers, and browser extensions.</p>
+</div>
+
+<script src="/static/sim/csrf-intent.js?v={{ asset_v }}"></script>
+</body></html>

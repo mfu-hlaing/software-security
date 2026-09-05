@@ -33,7 +33,8 @@ import pytest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from app import _APP_CSP, app as flask_app          # noqa: E402
-from routes_content import CSP as LEARN_CSP, SIM_CSP  # noqa: E402
+from routes_content import (CSP as LEARN_CSP, MASTERY_CSP, PRACTICE_CSP,
+                            SIM_CSP)  # noqa: E402
 
 TEMPLATES = os.path.join(os.path.dirname(__file__), "..", "templates")
 STATIC = os.path.join(os.path.dirname(__file__), "..", "static")
@@ -41,7 +42,9 @@ STATIC = os.path.join(os.path.dirname(__file__), "..", "static")
 # Every policy this app serves. If one of them ever gains 'unsafe-inline' the
 # corresponding assertions below stop applying — which is why the guard tests at
 # the bottom pin the policies themselves.
-POLICIES = {"app": _APP_CSP, "learn": LEARN_CSP, "sim": SIM_CSP}
+POLICIES = {"app": _APP_CSP, "learn": LEARN_CSP,
+            "mastery": MASTERY_CSP, "practice": PRACTICE_CSP,
+            "sim": SIM_CSP}
 
 _INLINE_SCRIPT = re.compile(r"<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>", re.S)
 _STYLE_ATTR = re.compile(r"\sstyle\s*=\s*\"")
@@ -156,10 +159,14 @@ def test_rendered_host_page_carries_the_pin_and_no_inline_script():
                 if m.group(1).strip()]
 
 
-def test_static_scripts_are_cache_busted():
-    """A stale host.js is the same dead projector as a blocked one, and just as
-    quiet. Every one of our scripts must carry the deploy's asset version."""
-    for name in ("host.html", "player.html", "console.html", "set_form.html"):
+def test_static_scripts_and_stylesheets_are_cache_busted():
+    """Stale code can silently disable a page, so every local script and
+    stylesheet reference must carry the deploy's asset version."""
+    for name in _templates():
         html = _read(name)
         for src in re.findall(r'<script src="(/static/[^"]+)"', html):
             assert "?v=" in src, f"{name} loads {src} with no cache-busting token"
+        for href in re.findall(
+                r'<link rel="stylesheet" href="(/static/[^"]+)"', html):
+            assert "?v=" in href, (
+                f"{name} loads {href} with no cache-busting token")

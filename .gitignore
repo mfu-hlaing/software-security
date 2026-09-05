@@ -55,3 +55,19 @@ crash-*
 
 # Student submission uploads — never belongs in a public repo (PDPA)
 labs/live-quiz/uploads/
+
+# Internal-lab deployment material generated on an operator workstation/host.
+# Peer configs contain WireGuard private keys; Terraform state can contain IDs,
+# IP assignments, and rendered bootstrap data. None belongs in Git.
+deploy/internal-labs/.env
+deploy/internal-labs/secrets/
+infra/aws-vpn-labs/terraform.tfvars
+infra/aws-vpn-labs/*.auto.tfvars
+infra/aws-vpn-labs/*.tfplan
+infra/aws-vpn-labs/.terraform/
+infra/aws-vpn-labs/generated-peers/
+infra/aws-vpn-labs/operator-known-hosts
+**/*.tfstate
+**/*.tfstate.*
+crash.log
+crash.*.log

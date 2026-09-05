@@ -25,6 +25,7 @@ from flask import (Blueprint, abort, make_response, redirect, render_template,
                    url_for)
 
 import content as C
+import mastery_pathway as M
 
 bp = Blueprint("learn", __name__)
 
@@ -44,6 +45,21 @@ CSP = ("default-src 'none'; style-src 'self'; img-src 'self' data:; "
 SIM_CSP = ("default-src 'none'; script-src 'self'; style-src 'self'; "
            "img-src 'self' data:; font-src 'self'; base-uri 'none'; "
            "form-action 'none'")
+
+# Mastery pages use one first-party script to retain checkpoint IDs and earned
+# XP locally in the learner's browser.  Like practice, it has no POST route and
+# no network API; `default-src 'none'` also keeps accidental connections closed.
+MASTERY_CSP = ("default-src 'none'; script-src 'self'; style-src 'self'; "
+               "img-src 'self' data:; font-src 'self'; base-uri 'none'; "
+               "form-action 'none'; frame-ancestors 'none'")
+
+# Practice uses a separate first-party script to reveal rationales and remember
+# selected option indexes in localStorage. It submits nothing.
+PRACTICE_CSP = ("default-src 'none'; script-src 'self'; style-src 'self'; "
+                "img-src 'self' data:; font-src 'self'; base-uri 'none'; "
+                "form-action 'none'; frame-ancestors 'none'")
+
+MASTERY_COURSE_SLUG = "software-security"
 
 
 def _harden(resp, csp=None):
@@ -136,6 +152,79 @@ def unit_image(course_slug, unit, name):
 @bp.route("/sim")
 def simulations():
     return render_template("sim_index.html", sims=C.sim_entries())
+
+
+def _mastery_course(course_slug):
+    """Return the one course this six-week pathway describes, or 404.
+
+    Keeping the check at the route edge matters on multi-course deployments:
+    `/learn/cryptography/mastery` must not quietly display software-security
+    links under the cryptography navigation state.
+    """
+    if course_slug != MASTERY_COURSE_SLUG:
+        abort(404)
+    c = C.course(course_slug)
+    if c is None:
+        abort(404)
+    return c
+
+
+@bp.route("/learn/<course_slug>/mastery")
+def mastery_index(course_slug):
+    """The connected map, with browser-local checkpoint progress only."""
+    c = _mastery_course(course_slug)
+    weeks = [M.resolved_week(n) for n in range(1, 7)]
+    if any(w is None for w in weeks):
+        abort(404)
+    simulation_count = sum(
+        len(stage.get("simulations", ()))
+        for week in weeks
+        for stage in week["stages"]
+    )
+    extension_simulation_count = sum(
+        len(week["advanced_extension"].get("browser_labs", ()))
+        for week in weeks
+    )
+    resp = make_response(render_template(
+        "mastery_index.html", course=c, weeks=weeks,
+        stages=M.PATHWAY_STAGES, simulation_count=simulation_count,
+        extension_simulation_count=extension_simulation_count,
+        total_journey_xp=M.TOTAL_JOURNEY_XP))
+    return _harden(resp, MASTERY_CSP)
+
+
+@bp.route("/learn/<course_slug>/mastery/week/<int:week_number>")
+def mastery_week(course_slug, week_number):
+    """One guided itinerary with anonymous, browser-local checkpoints."""
+    c = _mastery_course(course_slug)
+    week = M.resolved_week(week_number)
+    if week is None:
+        abort(404)
+    resp = make_response(render_template(
+        "mastery_week.html", course=c, week=week,
+        stages=M.PATHWAY_STAGES,
+        previous=M.get_week(week_number - 1),
+        next=M.get_week(week_number + 1),
+    ))
+    return _harden(resp, MASTERY_CSP)
+
+
+@bp.route("/learn/<course_slug>/mastery/practice/<int:week_number>")
+def mastery_practice(course_slug, week_number):
+    """Anonymous, ungraded retrieval practice with client-side feedback.
+
+    There is intentionally no POST route. Answers never reach Flask, the
+    database, logs, or a teacher session; the browser may retain only the
+    selected option indexes in localStorage.
+    """
+    c = _mastery_course(course_slug)
+    week = M.get_week(week_number)
+    bank = M.get_practice_bank(week_number)
+    if week is None or bank is None:
+        abort(404)
+    resp = make_response(render_template("mastery_practice.html", course=c,
+                                         week=week, bank=bank))
+    return _harden(resp, PRACTICE_CSP)
 
 
 @bp.route("/learn")

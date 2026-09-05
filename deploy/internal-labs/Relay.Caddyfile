@@ -1,0 +1,18 @@
+{
+	admin off
+	auto_https off
+	persist_config off
+}
+
+# UPSTREAM is set by the operator-owned Compose definition, never derived from
+# Host, SNI, a URL, or any other app-controlled request value. A vulnerable app
+# can reach its own relay, but every such request loops back to that same app.
+http://:8080 {
+	bind 0.0.0.0
+	reverse_proxy {$UPSTREAM} {
+		header_up Host {upstream_hostport}
+		header_up -Forwarded
+		header_up -X-Forwarded-Host
+	}
+	header -Server
+}

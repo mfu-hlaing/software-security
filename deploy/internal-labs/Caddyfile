@@ -1,0 +1,46 @@
+{
+	admin off
+	auto_https disable_redirects
+	https_port 8443
+	skip_install_trust
+}
+
+(internal_site) {
+	tls internal
+	header -Server
+}
+
+https://{$LEARN_HOST} {
+	import internal_site
+	reverse_proxy learning-relay:8080
+}
+
+https://{$WEEK01_HOST} {
+	import internal_site
+	reverse_proxy week01-relay:8080
+}
+
+https://{$WEEK04_HOST} {
+	import internal_site
+	reverse_proxy week04-relay:8080
+}
+
+https://{$WEEK05_HOST} {
+	import internal_site
+	reverse_proxy week05-relay:8080
+}
+
+https://{$WEEK06_HOST} {
+	import internal_site
+	reverse_proxy week06-relay:8080
+}
+
+https://{$TEAM_1_HOST} {
+	import internal_site
+	reverse_proxy notevault-team-1-relay:8080
+}
+
+https://{$TEAM_2_HOST} {
+	import internal_site
+	reverse_proxy notevault-team-2-relay:8080
+}

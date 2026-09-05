@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% set section = 'mastery' %}
+{% set page_description = 'A connected Weeks 1–6 software-security pathway: theory, 13 core simulations, 8 optional extension browser labs, NoteVault defence missions, and ungraded practice.' %}
+{% block title %}Weeks 1–6 mastery — {{ course.title }}{% endblock %}
+
+{% block main %}
+<section class="mx-hero" data-mastery-overview>
+  <div class="lx-wrap mx-hero-grid">
+    <div>
+      <p class="lx-crumb"><a class="lx-link" href="/learn/{{ course.slug }}/">{{ course.title }}</a></p>
+      <p class="mx-kicker">Guided mastery path · Weeks 1–6</p>
+      <h1 class="lx-h1">Understand the attack. Build it safely. Defend the system.</h1>
+      <p class="lx-lead lx-measure">Six connected weeks turn isolated theories into
+        one security story. Follow the same five moves every week and apply the
+        result to NoteVault, the course project, until you can explain both the
+        exploit and the defence.</p>
+      <div class="mx-hero-actions">
+        <a class="mx-primary-link" href="/learn/{{ course.slug }}/mastery/week/1">Begin with Week 1</a>
+        <a class="lx-link" href="#mx-weeks">Choose a week</a>
+      </div>
+    </div>
+    <aside class="mx-mission-card" aria-labelledby="mx-mission-title">
+      <p class="mx-kicker">Application mission</p>
+      <h2 id="mx-mission-title">Secure NoteVault across six releases</h2>
+      <p>Threat-model it, add security gates, replace fragile cryptography,
+        close injection and browser flaws, then enforce identity and object-level
+        authorization. Each week leaves one concrete defence artifact.</p>
+      <ul class="mx-mission-facts">
+        <li><strong>6</strong><span>connected releases</span></li>
+        <li><strong>{{ simulation_count }} + {{ extension_simulation_count }}</strong><span>core + optional browser labs</span></li>
+        <li><strong>{{ total_journey_xp }}</strong><span>local-only journey XP</span></li>
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<section class="lx-sec mx-rank-band" aria-labelledby="mx-rank-title">
+  <div class="lx-wrap">
+    <div class="mx-section-head">
+      <div>
+        <p class="mx-kicker">NoteVault mission map</p>
+        <h2 class="lx-h2" id="mx-rank-title">Six releases. Six defender ranks.</h2>
+      </div>
+      <p>XP is a private progress cue, not a grade or leaderboard. This browser
+        stores only completed checkpoint IDs; no name, account, answer, or
+        evidence is collected.</p>
+    </div>
+    <ol class="mx-rank-map">
+      {% for week in weeks %}
+      <li data-week-summary data-week-id="{{ week.id }}" data-week-xp="{{ week.challenge.xp_total }}">
+        <a href="/learn/{{ course.slug }}/mastery/week/{{ week.number }}">
+          <span class="mx-rank-node">{{ week.number }}</span>
+          <span class="mx-rank-copy">
+            <strong>{{ week.challenge.rank }}</strong>
+            <span>Week {{ week.number }} · {{ week.challenge.xp_total }} XP</span>
+            <progress max="{{ week.challenge.xp_total }}" value="0" data-week-summary-progress>0%</progress>
+            <small data-week-summary-text>0 of {{ week.challenge.xp_total }} XP on this device</small>
+          </span>
+        </a>
+        {% for checkpoint in week.challenge.checkpoints %}<span hidden data-summary-checkpoint data-checkpoint-id="{{ checkpoint.id }}" data-checkpoint-xp="{{ checkpoint.xp }}"></span>{% endfor %}
+      </li>
+      {% endfor %}
+    </ol>
+    <p class="mx-privacy-note">Local progress is optional and remains on this
+      device. Clearing site data resets it; the platform has no completion
+      endpoint.</p>
+  </div>
+</section>
+
+<section class="mx-band" aria-labelledby="mx-loop-title">
+  <div class="lx-wrap">
+    <p class="mx-kicker">Your repeatable learning loop</p>
+    <h2 class="lx-h2" id="mx-loop-title">Learn → Explore → Lab → Defend → Check</h2>
+    <ol class="mx-flow">
+      {% for stage in stages %}
+      <li class="mx-flow-step">
+        <span class="mx-flow-number">{{ loop.index }}</span>
+        <div><strong>{{ stage.label }}</strong><span>{{ stage.description }}</span></div>
+      </li>
+      {% endfor %}
+    </ol>
+    <p class="mx-safety-note"><strong>Safe by design:</strong> use the supplied
+      local containers or the class VPN targets only. Never test these techniques
+      against systems you do not own or lack explicit permission to assess.</p>
+  </div>
+</section>
+
+<section class="lx-sec" id="mx-weeks" aria-labelledby="mx-weeks-title">
+  <div class="lx-wrap">
+    <div class="mx-section-head">
+      <div>
+        <p class="mx-kicker">The pathway</p>
+        <h2 class="lx-h2" id="mx-weeks-title">Six weeks, one connected security model</h2>
+      </div>
+      <p>Start anywhere, but the sequence deliberately moves from reasoning
+        about risk to building and verifying concrete controls.</p>
+    </div>
+
+    <ol class="mx-week-grid">
+      {% for week in weeks %}
+      {% set counts = namespace(sims=0) %}
+      {% for stage in week.stages %}{% set counts.sims = counts.sims + (stage.simulations|default([])|length) %}{% endfor %}
+      <li>
+        <article class="mx-week-card">
+          <header class="mx-week-card-head">
+            <span class="mx-week-number">W{{ week.number }}</span>
+            <span class="mx-time">≈ {{ week.minutes }} min</span>
+          </header>
+          <h3><a href="/learn/{{ course.slug }}/mastery/week/{{ week.number }}">{{ week.title }}</a></h3>
+          <p class="mx-strapline">{{ week.strapline }}</p>
+          <p class="mx-question"><span>Essential question</span>{{ week.essential_question }}</p>
+          <ol class="mx-mini-flow" aria-label="Week {{ week.number }} pathway stages">
+            {% for stage in week.stages %}<li>{{ stage.label }}</li>{% endfor %}
+          </ol>
+          <div class="mx-week-meta">
+            <span>{{ counts.sims }} simulation{{ '' if counts.sims == 1 else 's' }}</span>
+            {% if week.advanced_extension.browser_labs %}<span>+ {{ week.advanced_extension.browser_labs|length }} beyond-syllabus browser lab{{ '' if week.advanced_extension.browser_labs|length == 1 else 's' }}</span>{% endif %}
+            <span>{{ week.objectives|length }} outcomes</span>
+            <span>ungraded check</span>
+          </div>
+          <p class="mx-card-next"><a class="mx-primary-link" href="/learn/{{ course.slug }}/mastery/week/{{ week.number }}">Open Week {{ week.number }}</a></p>
+        </article>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="mx-close">
+  <div class="lx-wrap mx-close-grid">
+    <div>
+      <p class="mx-kicker">How to use it with friends</p>
+      <h2 class="lx-h2">Explain, predict, test, then compare evidence</h2>
+      <p>Take turns being attacker, defender, and reviewer. Before each simulation
+        or lab, predict the outcome aloud. Afterward, point to the exact evidence
+        that confirmed or disproved it. The practice checks are private and
+        ungraded, so retry until the reasoning feels automatic.</p>
+    </div>
+    <a class="mx-primary-link" href="/learn/{{ course.slug }}/mastery/week/1">Start Week 1</a>
+  </div>
+</section>
+<script src="/static/mastery_journey.js?v={{ asset_v }}" defer></script>
+{% endblock %}

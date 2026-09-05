@@ -113,6 +113,19 @@
       means that {{ course.unit_label|lower }}'s work counts toward your mark —
       the document itself is still free to open.</p>
 
+    {% if mastery_course_slug == course.slug %}
+    <aside class="mx-course-callout" aria-labelledby="mx-course-callout-title">
+      <div>
+        <p class="mx-kicker">New self-paced route</p>
+        <h2 class="mx-course-callout-title" id="mx-course-callout-title">Master Weeks 1–6 through one connected mission</h2>
+        <p class="mx-course-callout-copy">Learn each idea, explore all 11 simulations,
+          test the vulnerable lab, defend NoteVault, then check your reasoning with
+          ungraded practice and full explanations.</p>
+      </div>
+      <a class="mx-primary-link" href="/learn/{{ course.slug }}/mastery">Start the mastery path</a>
+    </aside>
+    {% endif %}
+
     <ul class="lx-facts">
       <li class="lx-fact">
         <span class="lx-fact-v">{{ weeks|length }}</span>

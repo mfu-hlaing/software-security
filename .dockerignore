@@ -8,7 +8,19 @@
 # It must never enter the context.
 *
 !labs/
+!labs/**
 !slides/
+!slides/**
+!SUBMISSION.md
+!ETHICS.md
+!quizzes/
+!quizzes/**
+!project/
+!project/**
+!deploy/
+!deploy/internal-labs/
+!deploy/internal-labs/Caddyfile
+!deploy/internal-labs/Relay.Caddyfile
 
 # …and within those, nothing generated or private.
 labs/**/.venv
@@ -17,7 +29,43 @@ labs/**/.pytest_cache
 labs/**/*.pyc
 labs/**/node_modules
 labs/live-quiz/*.db
+labs/**/.env
+labs/**/.env.*
+labs/**/secrets
+labs/**/secrets/**
+labs/**/uploads
+labs/**/uploads/**
+labs/**/*.conf
+labs/**/*.pem
+labs/**/*.key
+# Fixed reference implementations are intentionally not part of the learning
+# image. Markdown may cite them, but a runtime compromise must not reveal their
+# source. Week 3's "skeleton" is already fully populated, so exclude it too.
+labs/**/solution*.py
+labs/**/fixed_app.py
+labs/**/safe.rs
+labs/**/secure_service.py
 labs/week11-memory-safety-exploitation/vuln
 labs/week11-memory-safety-exploitation/vuln-*
 labs/week11-memory-safety-exploitation/fuzz
 slides/pptx
+
+# The NoteVault image needs only its checked-in starter source. Never admit a
+# local team environment, evidence, credentials, or generated database.
+project/starter-app/.env
+project/starter-app/.env.*
+project/**/__pycache__
+project/**/*.pyc
+project/starter-app/secrets
+project/starter-app/secrets/**
+project/starter-app/**/*.db
+
+# Only the Caddyfile is intentionally admitted from deploy/. The local .env and
+# future key/certificate material remain outside every image context.
+deploy/internal-labs/.env
+deploy/internal-labs/.env.*
+deploy/internal-labs/secrets
+deploy/internal-labs/secrets/**
+deploy/internal-labs/**/*.conf
+deploy/internal-labs/**/*.pem
+deploy/internal-labs/**/*.key

@@ -1,0 +1,12 @@
+# Copy this to backend.tf after creating the bucket and lock table in a separate
+# administrator bootstrap. Names are intentionally placeholders: Terraform
+# cannot safely create the backend that protects its own state.
+terraform {
+  backend "s3" {
+    bucket         = "REPLACE-terraform-state-bucket"
+    key            = "software-security-labs/pilot.tfstate"
+    region         = "ap-southeast-1"
+    encrypt        = true
+    dynamodb_table = "REPLACE-terraform-state-locks"
+  }
+}

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="/static/sim/sim.css?v={{ asset_v }}">
+</head>
+<body>
+  <h1>One request, two gates: session identity is not permission</h1>
+  <p class="lead">Run a session through login, time and logout; then ask a
+  subject to perform an action on an object. The server must get both gates
+  right: establish an identity safely, then authorize this exact request.</p>
+  <p class="hint"><strong>Toy model:</strong> the readable labels below are not
+  real session tokens, contain no secrets and never leave this page. Real
+  session identifiers need cryptographic randomness, protected transport and
+  server-side lifecycle controls.</p>
+
+  <div class="wrap">
+    <section class="card" aria-labelledby="session-heading">
+      <h2 id="session-heading">1 · Session lifecycle workbench</h2>
+      <p>Idle timeout is <strong>4 minutes</strong>; absolute lifetime is
+      <strong>10 minutes after login</strong>. A protected request refreshes
+      only the idle clock.</p>
+
+      <fieldset class="iam-evaluation-fs">
+        <legend>Login transition</legend>
+        <div class="iam-evaluation-opts">
+          <span class="iam-evaluation-opt">
+            <input type="radio" name="rotation" id="rotation-on" value="on" checked>
+            <label for="rotation-on">Rotate the identifier</label>
+          </span>
+          <span class="iam-evaluation-opt">
+            <input type="radio" name="rotation" id="rotation-off" value="off">
+            <label for="rotation-off">Reuse the pre-login identifier</label>
+          </span>
+        </div>
+      </fieldset>
+
+      <p id="session-scenario-label"><strong>Guided demonstrations</strong></p>
+      <div class="preset" id="session-scenarios" role="group"
+           aria-labelledby="session-scenario-label"></div>
+
+      <p><strong>Manual controls</strong></p>
+      <div class="preset" role="group" aria-label="Session lifecycle controls">
+        <button type="button" id="save-id">Save pre-login label in a second tab</button>
+        <button type="button" id="login">Log in as Learner Alpha</button>
+        <button type="button" id="advance-one">Advance 1 minute</button>
+        <button type="button" id="advance-four">Advance 4 minutes</button>
+        <button type="button" id="use-session">Request a protected page</button>
+        <button type="button" id="replay-id">Try the saved label</button>
+        <button type="button" id="logout">Log out</button>
+        <button type="button" id="reset-session">Reset</button>
+      </div>
+
+      <h3>Server view</h3>
+      <pre class="q" id="session-state" role="status" aria-live="polite"
+           aria-atomic="true"></pre>
+      <p class="verdict" id="session-verdict"></p>
+      <p id="session-explanation"></p>
+
+      <h3>Event trace</h3>
+      <pre class="q" id="session-trace"></pre>
+    </section>
+
+    <section class="card" aria-labelledby="policy-heading">
+      <h2 id="policy-heading">2 · Subject–action–object policy lab</h2>
+      <p>A valid login supplies a subject. It does not answer whether that
+      subject may perform this action on this object.</p>
+
+      <div class="iam-evaluation-grid">
+        <div>
+          <label for="policy-subject">Subject</label>
+          <select id="policy-subject">
+            <option value="anonymous">Anonymous visitor</option>
+            <option value="learner-alpha" selected>Learner Alpha</option>
+            <option value="learner-beta">Learner Beta</option>
+            <option value="course-admin">Course administrator</option>
+          </select>
+        </div>
+        <div>
+          <label for="policy-action">Action</label>
+          <select id="policy-action">
+            <option value="view">View</option>
+            <option value="edit" selected>Edit</option>
+            <option value="delete">Delete</option>
+          </select>
+        </div>
+        <div class="iam-evaluation-wide">
+          <label for="policy-object">Object</label>
+          <select id="policy-object">
+            <option value="public-guide">Public course guide</option>
+            <option value="alpha-note" selected>Alpha's private note</option>
+            <option value="beta-note">Beta's private note</option>
+            <option value="class-roster">Restricted class roster</option>
+          </select>
+        </div>
+      </div>
+
+      <fieldset class="iam-evaluation-fs">
+        <legend>Authorization implementation</legend>
+        <div class="iam-evaluation-opts">
+          <span class="iam-evaluation-opt">
+            <input type="radio" name="policy-mode" id="policy-rules"
+                   value="rules" checked>
+            <label for="policy-rules">Exact rules + default deny</label>
+          </span>
+          <span class="iam-evaluation-opt">
+            <input type="radio" name="policy-mode" id="policy-identity"
+                   value="identity-only">
+            <label for="policy-identity">Flawed: valid identity means allow</label>
+          </span>
+        </div>
+      </fieldset>
+
+      <p id="policy-scenario-label"><strong>Policy challenges</strong></p>
+      <div class="preset" id="policy-scenarios" role="group"
+           aria-labelledby="policy-scenario-label"></div>
+
+      <h3>Active policy</h3>
+      <pre class="q" id="policy-text"></pre>
+
+      <div class="iam-evaluation-verdict" id="policy-verdict" role="status"
+           aria-live="polite" aria-atomic="true">
+        <span class="iam-evaluation-badge" id="policy-badge">—</span>
+        <span class="iam-evaluation-because" id="policy-summary"></span>
+        <p class="iam-evaluation-sub" id="policy-explanation"></p>
+      </div>
+
+      <h3>Decision path</h3>
+      <div id="policy-steps"></div>
+      <p class="hint">The secure model allows only named combinations. A role
+      label such as “administrator” has no magic power: it receives exactly the
+      actions the policy grants, and every unmatched request is denied.</p>
+    </section>
+  </div>
+
+  <script src="/static/sim/session-policy.js?v={{ asset_v }}"></script>
+</body>
+</html>

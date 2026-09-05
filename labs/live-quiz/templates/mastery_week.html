@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+{% set section = 'mastery' %}
+{% set page_description = 'Week ' ~ week.number ~ ' of the guided software-security mastery path: ' ~ week.title ~ '.' %}
+{% block title %}Week {{ week.number }} · {{ week.title }} — Mastery path{% endblock %}
+
+{% block main %}
+<div data-mastery-journey data-week-id="{{ week.id }}" data-week-xp="{{ week.challenge.xp_total }}" data-rank="{{ week.challenge.rank }}">
+<section class="mx-week-hero">
+  <div class="lx-wrap">
+    <p class="lx-crumb"><a class="lx-link" href="/learn/{{ course.slug }}/mastery">Weeks 1–6 mastery</a> <span aria-hidden="true">/</span> Week {{ week.number }}</p>
+    <div class="mx-week-titleline">
+      <span class="mx-week-number mx-week-number--large">W{{ week.number }}</span>
+      <div>
+        <p class="mx-kicker">{{ week.strapline }} · ≈ {{ week.minutes }} minutes</p>
+        <h1 class="lx-h1">{{ week.title }}</h1>
+      </div>
+    </div>
+    <p class="mx-essential"><span>Essential question</span>{{ week.essential_question }}</p>
+
+    <nav class="mx-stage-nav" aria-label="Stages in Week {{ week.number }}">
+      <ol>
+        {% for stage in week.stages %}
+        <li><a href="#mx-{{ stage.id }}"><span>{{ loop.index }}</span>{{ stage.label }}</a></li>
+        {% endfor %}
+      </ol>
+    </nav>
+    <aside class="mx-local-progress" aria-live="polite">
+      <div>
+        <p class="mx-kicker">Private journey progress</p>
+        <p><strong data-current-rank>{{ week.challenge.rank }}</strong> · <span data-week-progress-text>0 of {{ week.challenge.xp_total }} XP on this device</span></p>
+      </div>
+      <progress max="{{ week.challenge.xp_total }}" value="0" data-week-progress>0%</progress>
+    </aside>
+  </div>
+</section>
+
+<section class="mx-week-context">
+  <div class="lx-wrap mx-context-grid">
+    <div>
+      <p class="mx-kicker">By the end, you can</p>
+      <ul class="mx-objectives">
+        {% for objective in week.objectives %}<li>{{ objective }}</li>{% endfor %}
+      </ul>
+    </div>
+    <aside>
+      <p class="mx-kicker">Reasoning vocabulary</p>
+      <ul class="mx-chips">
+        {% for term in week.terms %}<li>{{ term }}</li>{% endfor %}
+      </ul>
+      {% if week.owasp or week.cwes %}
+      <p class="mx-standards">
+        {% if week.owasp %}<strong>OWASP:</strong> {{ week.owasp|join(', ') }}{% endif %}
+        {% if week.cwes %}<strong>CWE:</strong> {{ week.cwes|join(', ') }}{% endif %}
+      </p>
+      {% endif %}
+    </aside>
+  </div>
+</section>
+
+<section class="lx-sec mx-deep-dive" aria-labelledby="mx-depth-title">
+  <div class="lx-wrap">
+    <div class="mx-section-head">
+      <div>
+        <p class="mx-kicker">Concept ladder</p>
+        <h2 class="lx-h2" id="mx-depth-title">Foundation → mechanism → transfer</h2>
+      </div>
+      <p>{{ week.deep_dive.intro }}</p>
+    </div>
+    <ol class="mx-layer-grid">
+      {% for layer in week.deep_dive.layers %}
+      <li class="mx-layer{% if layer.beyond_syllabus %} mx-layer--beyond{% endif %}">
+        <header>
+          <span class="mx-layer-number">{{ loop.index }}</span>
+          <div>
+            <p class="mx-layer-label">{{ layer.label }}</p>
+            <h3>{{ layer.title }}</h3>
+          </div>
+        </header>
+        <p>{{ layer.explanation }}</p>
+        <p class="mx-layer-check"><strong>Self-check:</strong> {{ layer.checkpoint }}</p>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="lx-sec mx-model" aria-labelledby="mx-model-title">
+  <div class="lx-wrap">
+    <p class="mx-kicker">Code-native mechanism map</p>
+    <h2 class="lx-h2" id="mx-model-title">{{ week.visual_model.title }}</h2>
+    <p class="mx-model-question"><strong>Predict first:</strong> {{ week.visual_model.question }}</p>
+    <div class="mx-model-lanes">
+      {% for lane in week.visual_model.lanes %}
+      <article class="mx-model-lane mx-model-lane--{{ lane.tone }}">
+        <header><span aria-hidden="true">{{ '⚠' if lane.tone == 'attack' else '✓' }}</span><h3>{{ lane.label }}</h3></header>
+        <ol>
+          {% for step in lane.steps %}
+          <li>
+            <span class="mx-model-node">{{ loop.index }}</span>
+            <div><strong>{{ step.label }}</strong><span>{{ step.detail }}</span></div>
+          </li>
+          {% endfor %}
+        </ol>
+        <p class="mx-model-outcome"><strong>Outcome:</strong> {{ lane.outcome }}</p>
+      </article>
+      {% endfor %}
+    </div>
+    <p class="mx-model-caption">{{ week.visual_model.caption }}</p>
+  </div>
+</section>
+
+<section class="mx-extension" aria-labelledby="mx-extension-title">
+  <div class="lx-wrap mx-extension-grid">
+    <div>
+      <p class="mx-kicker">{{ week.advanced_extension.scope_label }}</p>
+      <h2 class="lx-h2" id="mx-extension-title">{{ week.advanced_extension.title }}</h2>
+      <p>{{ week.advanced_extension.summary }}</p>
+    </div>
+    <aside>
+      <p class="mx-kicker">Current reference alignment</p>
+      <ul>{% for standard in week.advanced_extension.standards %}<li>{{ standard }}</li>{% endfor %}</ul>
+      <p>This mapping supplements the canonical lecture wording; it does not silently expand assessed Week {{ week.number }} content.</p>
+    </aside>
+    {% if week.advanced_extension.browser_labs %}
+    <div class="mx-extension-labs">
+      <p class="mx-kicker">Optional manipulable browser labs · beyond this week's syllabus</p>
+      <h3>Transfer the mechanism without adding hidden assessment scope</h3>
+      <div class="mx-sim-grid">
+        {% for sim in week.advanced_extension.browser_labs %}
+        <article class="mx-sim-card">
+          <span class="mx-resource-kind">Optional first-party browser lab</span>
+          <h3><a href="{{ sim.href }}">{{ sim.title }}</a></h3>
+          <p>{{ sim.prompt }}</p>
+          <p class="mx-sim-evidence"><strong>Learning loop:</strong> predict an
+            outcome, manipulate one input, preserve the observed evidence, then
+            name the assumption and defence.</p>
+          <a class="mx-text-link" href="{{ sim.href }}">Open {{ sim.slug }}</a>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="lx-sec mx-briefing" aria-labelledby="mx-briefing-title">
+  <div class="lx-wrap mx-briefing-grid">
+    <div>
+      <p class="mx-kicker">{{ week.challenge.xp_total }} XP · Unlock rank: {{ week.challenge.rank }}</p>
+      <h2 class="lx-h2" id="mx-briefing-title">{{ week.challenge.title }}</h2>
+      <p>{{ week.challenge.brief }}</p>
+      <p><strong>Mission objective:</strong> {{ week.challenge.objective }}</p>
+    </div>
+    <aside>
+      <p class="mx-kicker">Evidence pack</p>
+      <ul>{% for item in week.challenge.evidence %}<li>{{ item }}</li>{% endfor %}</ul>
+    </aside>
+  </div>
+</section>
+
+<div class="lx-wrap mx-stage-stack">
+  {% for stage in week.stages %}
+  <section class="mx-stage" id="mx-{{ stage.id }}" aria-labelledby="mx-{{ stage.id }}-title">
+    <header class="mx-stage-head">
+      <span class="mx-stage-index">{{ loop.index }}</span>
+      <div>
+        <p class="mx-kicker">{{ stage.label }} · {{ stage.minutes }} min</p>
+        <h2 id="mx-{{ stage.id }}-title">{{ stage.title }}</h2>
+      </div>
+    </header>
+    <p class="mx-stage-summary">{{ stage.summary }}</p>
+
+    {% if stage.resources %}
+    <ul class="mx-resource-list">
+      {% for resource in stage.resources %}
+      <li>
+        <span class="mx-resource-kind">{{ resource.kind }}</span>
+        <a class="lx-link" href="{{ resource.href }}">{{ resource.label }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if stage.simulations %}
+    <div class="mx-sim-grid">
+      {% for sim in stage.simulations %}
+      <article class="mx-sim-card">
+        <span class="mx-resource-kind">Browser lab · predict → manipulate → explain</span>
+        <h3><a href="{{ sim.href }}">{{ sim.title }}</a></h3>
+        <p>{{ sim.prompt }}</p>
+        <p class="mx-sim-evidence"><strong>Evidence move:</strong> state your
+          prediction before changing an input; afterward, record the observed
+          state change and the control that would break the path.</p>
+        <a class="mx-text-link" href="{{ sim.href }}">Explore {{ sim.slug }}</a>
+      </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if stage.launch %}
+    <aside class="mx-launch">
+      <div>
+        <p class="mx-kicker">Isolated training target</p>
+        {% if stage.launch.href %}
+        <h3>Launch the Week {{ week.number }} lab</h3>
+        <p>{% if stage.launch.requires_vpn %}Connect to the class VPN first. {% endif %}{{ stage.launch.browser_role }} Shared targets are resettable practice instances; they never execute your NoteVault branch.</p>
+        {% else %}
+        <h3>Run this lab from the repository</h3>
+        <p>No shared target is configured on this deployment. Follow the lab guide
+          to run the supplied container or command locally.</p>
+        {% endif %}
+        <p class="mx-local-required"><strong>Local checkout required:</strong> {{ stage.launch.local_required }}</p>
+      </div>
+      <div class="mx-launch-actions">
+        {% if stage.launch.href %}<a class="mx-primary-link" href="{{ stage.launch.href }}">Open configured browser sandbox</a>{% endif %}
+        <a class="lx-link" href="{{ stage.launch.fallback_href }}">Read the lab guide</a>
+      </div>
+    </aside>
+    {% endif %}
+
+    {% if stage.mission %}
+    <aside class="mx-defend">
+      <p class="mx-kicker">NoteVault application mission</p>
+      <h3>{{ stage.mission.title }}</h3>
+      <p>{{ stage.mission.brief }}</p>
+      <dl>
+        <div><dt>Project area</dt><dd><a class="lx-link" href="{{ stage.mission.repo_href }}">{{ stage.mission.repo_path }}</a></dd></div>
+        <div><dt>Evidence to keep</dt><dd>{{ stage.mission.deliverable }}</dd></div>
+      </dl>
+      <p class="mx-repo-boundary"><strong>Where the fix lives:</strong> implement,
+        test, commit, and submit this hardening in your own team repository.
+        The shared lab target is evidence practice, not a deployment destination
+        for student branches.</p>
+    </aside>
+    {% endif %}
+
+    <p class="mx-completion"><strong>Ready to move on when:</strong> {{ stage.completion }}</p>
+  </section>
+  {% endfor %}
+</div>
+
+<section class="lx-sec mx-checkpoints" id="mx-challenge" aria-labelledby="mx-challenge-title">
+  <div class="lx-wrap">
+    <div class="mx-section-head">
+      <div>
+        <p class="mx-kicker">Mission checkpoints · {{ week.challenge.xp_total }} XP</p>
+        <h2 class="lx-h2" id="mx-challenge-title">Earn progress by preserving evidence</h2>
+      </div>
+      <p>Mark a checkpoint only after you can show its evidence and explain the
+        mechanism. XP is self-tracked motivation—not a grade, submission, or
+        claim that an exploit or fix was correct.</p>
+    </div>
+    <div class="mx-challenge-progress" aria-live="polite">
+      <progress max="{{ week.challenge.xp_total }}" value="0" data-week-progress>0%</progress>
+      <strong data-week-progress-text>0 of {{ week.challenge.xp_total }} XP on this device</strong>
+      <button class="mx-reset" type="button" data-reset-week>Reset Week {{ week.number }} progress</button>
+    </div>
+    <ol class="mx-checkpoint-list">
+      {% for checkpoint in week.challenge.checkpoints %}
+      <li class="mx-checkpoint" data-checkpoint data-checkpoint-id="{{ checkpoint.id }}" data-checkpoint-xp="{{ checkpoint.xp }}">
+        <header>
+          <span class="mx-xp">+{{ checkpoint.xp }} XP</span>
+          <h3>{{ checkpoint.title }}</h3>
+        </header>
+        <p>{{ checkpoint.objective }}</p>
+        <p class="mx-checkpoint-evidence"><strong>Evidence gate:</strong> {{ checkpoint.evidence }}</p>
+        <details class="mx-hints">
+          <summary>Open the reasoning hints</summary>
+          <ol>{% for hint in checkpoint.hints %}<li>{{ hint }}</li>{% endfor %}</ol>
+        </details>
+        <button class="mx-checkpoint-toggle" type="button" data-checkpoint-toggle aria-pressed="false">
+          <span data-checkpoint-action>Mark checkpoint complete</span>
+        </button>
+      </li>
+      {% endfor %}
+    </ol>
+    <p class="mx-safety-note"><strong>Scope boundary:</strong> {{ week.challenge.ethics }}</p>
+    <p class="mx-privacy-note">This page stores only checkpoint IDs in localStorage.
+      It never asks for a name or student ID, uploads no evidence, and makes no
+      progress request to the server.</p>
+  </div>
+</section>
+
+<nav class="mx-week-pager" aria-label="Mastery week navigation">
+  <div class="lx-wrap">
+    {% if previous %}<a class="mx-pager-link" href="/learn/{{ course.slug }}/mastery/week/{{ previous.number }}"><span>Previous</span>Week {{ previous.number }} · {{ previous.title }}</a>{% else %}<a class="mx-pager-link" href="/learn/{{ course.slug }}/mastery"><span>Path overview</span>All six weeks</a>{% endif %}
+    {% if next %}<a class="mx-pager-link mx-pager-link--next" href="/learn/{{ course.slug }}/mastery/week/{{ next.number }}"><span>Next</span>Week {{ next.number }} · {{ next.title }}</a>{% else %}<a class="mx-pager-link mx-pager-link--next" href="/learn/{{ course.slug }}/mastery"><span>Complete</span>Review the full path</a>{% endif %}
+  </div>
+</nav>
+</div>
+<script src="/static/mastery_journey.js?v={{ asset_v }}" defer></script>
+{% endblock %}

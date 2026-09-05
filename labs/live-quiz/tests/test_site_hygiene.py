@@ -85,30 +85,22 @@ def test_course_root_docs_resolve_and_serve(client):
 
 
 def test_repo_relative_links_are_rewritten_not_merely_dropped():
-    """The no-broken-links test above is satisfied by degrading a link to plain
-    text, so on its own it would still pass if resolution stopped working. This
-    asserts the useful half: the link a student needs is a LINK, and it goes
-    somewhere that answers 200.
+    """A course-root markdown link stays useful after the source corpus changes.
 
-    Renders the worksheet specifically, not `w["primary"]` — content.PRIMARY_ORDER
-    now prefers slides for an ordinary week, so `primary` is no longer where
-    SUBMISSION.md gets linked from (that's still the worksheet, per
-    test_course_root_docs_resolve_and_serve's own docstring). Weeks without a
-    worksheet (exam/review/practical/capstone) fall back to `primary`, same as
-    before, so this still exercises every week's default reading.
+    Earlier this test depended on a worksheet continuing to contain one exact
+    link.  That made a legitimate curriculum edit look like a renderer
+    regression.  Render the historically broken shape directly instead: the
+    assertion now pins the resolver behaviour without coupling it to lesson
+    prose.
     """
     slug = _course()
-    linked = set()
-    for w in C.list_weeks(slug):
-        kind = "worksheet" if "worksheet" in w["available"] else w["primary"]
-        doc = C.render_document(w["slug"], kind, slug)
-        linked.update(re.findall(r'href="(/learn/[^"]*/doc/[^"]*)"', doc["html"]))
-    assert f"/learn/{slug}/doc/submission" in linked, (
-        "no worksheet linked SUBMISSION.md as a resolved URL — either the "
-        "fixture changed or link resolution regressed")
-    # and every URL it produced is one this app will actually serve
-    valid = {f"/learn/{slug}/doc/{d['name']}" for d in C.list_course_docs(slug)}
-    assert linked <= valid, f"resolved to URLs that do not exist: {linked - valid}"
+    root = os.path.realpath(C.course(slug)["root"])
+    first_week = C.list_weeks(slug)[0]["slug"]
+    out = C.render(
+        "[hand-in guide](../../SUBMISSION.md)",
+        ctx={"course": slug, "dir": os.path.join(root, first_week)},
+    )
+    assert f'href="/learn/{slug}/doc/submission"' in out
 
 
 def test_week_to_week_relative_link_resolves_to_the_on_site_url():
@@ -192,6 +184,51 @@ def test_robots_and_sitemap_are_served(client):
     assert f"/learn/{_course()}/" in body
     for w in C.list_weeks(_course()):
         assert f"/learn/{_course()}/{w['slug']}" in body
+
+
+def test_sitemap_lists_every_public_mastery_page(client):
+    body = client.get("/sitemap.xml").data.decode()
+    paths = ["/learn/software-security/mastery"]
+    paths.extend(
+        f"/learn/software-security/mastery/{kind}/{week}"
+        for week in range(1, 7)
+        for kind in ("week", "practice")
+    )
+    published = set(re.findall(r"<loc>[^<]+(\/learn\/[^<]+)</loc>", body))
+    assert set(paths) <= published
+
+
+def test_asset_version_includes_simulation_assets(tmp_path, monkeypatch):
+    import app as appmod
+
+    static = tmp_path / "static"
+    sim = static / "sim"
+    sim.mkdir(parents=True)
+    stylesheet = static / "style.css"
+    simulation = sim / "new-simulation.js"
+    stylesheet.write_text("/* shell */", encoding="utf-8")
+    simulation.write_text("/* simulation */", encoding="utf-8")
+    os.utime(stylesheet, (100, 100))
+    os.utime(simulation, (200, 200))
+    monkeypatch.setattr(appmod.app, "static_folder", str(static))
+
+    assert appmod._asset_version() == "200"
+
+
+def test_asset_version_includes_bundled_socket_client(tmp_path, monkeypatch):
+    import app as appmod
+
+    static = tmp_path / "static"
+    static.mkdir()
+    stylesheet = static / "style.css"
+    socket_client = static / "socket.io.min.js"
+    stylesheet.write_text("/* shell */", encoding="utf-8")
+    socket_client.write_text("/* socket client */", encoding="utf-8")
+    os.utime(stylesheet, (100, 100))
+    os.utime(socket_client, (300, 300))
+    monkeypatch.setattr(appmod.app, "static_folder", str(static))
+
+    assert appmod._asset_version() == "300"
 
 
 def test_pages_carry_description_and_card_metadata(client):

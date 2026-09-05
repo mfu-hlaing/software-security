@@ -258,18 +258,29 @@ def _asset_version() -> str:
     be cached hard and still change the instant a deploy rewrites it. Computed
     once at import — the files cannot change under a running container.
 
-    It covers the SCRIPTS as well as the stylesheet, and that is not tidiness.
+    It covers the scripts (including every simulation asset) as well as the
+    stylesheets, and that is not tidiness.
     A stale host.js is a dead projector: the screen's whole lifecycle lives in
     that file, so a browser holding yesterday's copy shows a lobby that never
     fills and a Start button that never enables — the same symptom as the CSP
     bug this was found next to, with no error to tell them apart. One token
     across all of them means a deploy invalidates the set, never a subset.
     """
+    # Every local script and stylesheet uses this shared token. Walking the tree
+    # keeps future root assets and sim-only deploys from silently falling outside
+    # the fingerprint calculation and retaining yesterday's cached behavior.
+    assets = []
+    for directory, _subdirs, filenames in os.walk(app.static_folder):
+        assets.extend(
+            os.path.join(directory, name)
+            for name in filenames
+            if name.endswith((".css", ".js"))
+        )
+
     newest = 0.0
-    for name in ("style.css", "host.js", "player.js", "set_form.js", "confirm.js"):
+    for path in assets:
         try:
-            newest = max(newest, os.path.getmtime(
-                os.path.join(app.static_folder, name)))
+            newest = max(newest, os.path.getmtime(path))
         except OSError:
             continue          # a file we don't ship yet must not break the page
     return str(int(newest))
@@ -295,8 +306,10 @@ def _shell_context():
     An explicit nav_courses= kwarg still wins, so nothing that passes its own is
     affected, and /host and /play simply never read the name.
     """
+    mastery_course = (_content.course("software-security") or {}).get("slug")
     return {"nav_courses": _content.nav_courses(),
             "kind_label": _content.kind_label,
+            "mastery_course_slug": mastery_course,
             "asset_v": ASSET_V,
             "site_origin": site_origin()}
 
@@ -356,6 +369,20 @@ def sitemap():
     urls = [f"{base}/", f"{base}/learn", f"{base}/sim"]
     for c in _content.COURSES:
         urls.append(f"{base}/learn/{c['slug']}/")
+        if c["slug"] == routes_content.MASTERY_COURSE_SLUG:
+            # Use the registered endpoints and the pathway's own week data, so
+            # a route rename or curriculum change cannot leave an invented URL
+            # in the index. Practice is a separate public page for every week.
+            path = url_for("learn.mastery_index", course_slug=c["slug"])
+            urls.append(f"{base}{path}")
+            for week in routes_content.M.MASTERY_WEEKS:
+                number = week["number"]
+                path = url_for("learn.mastery_week", course_slug=c["slug"],
+                               week_number=number)
+                urls.append(f"{base}{path}")
+                path = url_for("learn.mastery_practice",
+                               course_slug=c["slug"], week_number=number)
+                urls.append(f"{base}{path}")
         for d in _content.list_course_docs(c["slug"]):
             urls.append(f"{base}/learn/{c['slug']}/doc/{d['name']}")
         for w in _content.list_weeks(c["slug"]):
