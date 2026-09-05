@@ -4,9 +4,11 @@ You will NOT exploit this in Week 1 — you will draw a data-flow diagram
 and apply STRIDE to its components (web client, app, SQLite DB, /upload).
 """
 from flask import Flask, request, jsonify, send_from_directory
-import sqlite3, os
+from werkzeug.utils import secure_filename
+import sqlite3, os, uuid
 
 app = Flask(__name__)
+app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024
 DB = "notes.db"
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -30,13 +32,27 @@ def notes():
 
 @app.route("/upload", methods=["POST"])
 def upload():
-    f = request.files["file"]
-    f.save(os.path.join(UPLOAD_DIR, f.filename))
-    return {"saved": f.filename}
+    f = request.files.get("file")
+    if f is None or not f.filename:
+        return {"error": "a named file is required"}, 400
+    raw = f.filename
+    if any(c in raw for c in ("/", "\\", "\x00")):
+        return {"error": "path components are not allowed"}, 400
+    safe = secure_filename(raw)
+    extension = safe.rsplit(".", 1)[-1].lower() if "." in safe else ""
+    if extension not in {"txt", "png", "jpg", "jpeg", "pdf"}:
+        return {"error": "unsupported file type"}, 400
+    # Only server-generated identifiers and fixed allowlisted suffixes form paths.
+    name = uuid.uuid4().hex + "." + extension
+    with open(os.path.join(UPLOAD_DIR, name), "xb") as output:
+        f.save(output)
+    return {"saved": name}
 
 @app.route("/files/<name>")
 def files(name):
-    return send_from_directory(UPLOAD_DIR, name)
+    response = send_from_directory(UPLOAD_DIR, name, as_attachment=True)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return response
 
 if __name__ == "__main__":
     init_db()
