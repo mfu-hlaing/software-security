@@ -1,0 +1,17 @@
+{
+  "scope": "Local loopback TLS and Docker isolation; remote VPN/Linux firewall/load tests not performed",
+  "https_checks": 151,
+  "services": 15,
+  "passed": [
+    "certificate/hostname validation",
+    "19 week pages and linked student resources",
+    "API 401/403/200 and field binding",
+    "chatbot benign response and escaped output",
+    "DevSecOps fail-open/fail-closed and legitimate admin",
+    "non-root read-only capability-restricted apps",
+    "only gateway published on loopback",
+    "private app networks and fixed relay",
+    "cross-network DNS denied",
+    "API Internet and metadata egress denied"
+  ]
+}

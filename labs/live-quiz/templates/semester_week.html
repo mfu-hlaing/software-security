@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% set section = 'semester' %}
+{% set page_description = week.title ~ ': foundation, core, advanced investigation, code flow and original practice.' %}
+{% block title %}Week {{week.number}} · {{week.title}}{% endblock %}
+{% block main %}
+<link rel="stylesheet" href="/static/semester.css?v={{ asset_v }}">
+<div class="sj-shell" data-journey-week="{{week.number}}">
+  <nav class="sj-breadcrumb" aria-label="Breadcrumb"><a href="/learn/software-security/journey">Semester map</a><span>/ Week {{week.number}}</span></nav>
+  <header class="sj-intro sj-compact"><p class="sj-eyebrow">{{week.kind}} / Week {{'%02d'|format(week.number)}}</p><h1>{{week.title}}</h1><p>{{week.transfer}}</p>
+    {% if week.prerequisites %}<p class="sj-prereqs">Builds on {% for n in week.prerequisites %}<a href="/learn/software-security/journey/week/{{n}}">Week {{n}}</a>{{ ', ' if not loop.last else '' }}{% endfor %}</p>{% endif %}
+  </header>
+  <nav class="sj-tabs" aria-label="Week sections"><a href="#understand">Understand</a><a href="#trace">Trace code</a><a href="#practice">Practice</a><a href="#check">Check</a><a href="#evidence">Evidence</a></nav>
+  <div class="sj-workspace">
+    <article class="sj-content">
+      <section id="understand"><p class="sj-eyebrow">01 / Understand</p><h2>Start with the simplest model</h2><h3>Foundation</h3><p>{{week.foundation}}</p><details open><summary>Core · connect mechanism and control</summary><p>{{week.core}}</p></details><details><summary>Advanced · investigate assumptions and limits</summary><p>{{week.advanced}}</p><p><strong>Challenge:</strong> change one assumption, predict whether the control still works, and design a test that could prove your prediction wrong.</p></details></section>
+      <section id="trace"><p class="sj-eyebrow">02 / Trace the mechanism</p><h2>Follow one value through the system</h2><ol class="sj-flow">{% for step in week.flow %}<li><span>{{loop.index}}</span>{{step}}</li>{% endfor %}</ol><h3>Open the source and explain each transition</h3><ol>{% for task in week.trace %}<li>{{task}}</li>{% endfor %}</ol><p class="sj-callout">Before running: say what you expect to happen, which line or policy makes that happen, and what result would contradict your explanation.</p></section>
+      <section id="practice"><p class="sj-eyebrow">03 / Practice and defend</p><h2>Change one thing. Observe the effect.</h2><ol>{% for task in week.exercise %}<li>{{task}}</li>{% endfor %}</ol>
+        {% if week.command_steps %}<h3>Local command walkthrough</h3><p>These are expected behaviors to compare with your own output, not a transcript of work you have already performed.</p>{% for step in week.command_steps %}<details><summary>{{step.title}}</summary><pre><code>{{step.command}}</code></pre><p>{{step.expect}}</p></details>{% endfor %}{% endif %}
+        {% if sims %}<h3>Interactive models</h3><div class="sj-resource-list">{% for s in sims %}<a href="{{s.href}}">{{s.label}} →</a>{% endfor %}</div>{% endif %}
+        {% if week.number <= 6 %}<p><a class="sj-button" href="/learn/software-security/mastery/week/{{week.number}}">Open the detailed Week {{week.number}} mastery lab</a></p>{% endif %}
+        {% if week.number in [10,14,15] %}<h3>Private target pair</h3>{% for lab in labs %}{% if lab.href %}<p><a class="sj-button" href="{{lab.href}}" rel="noreferrer">Launch {{lab.label|lower}} target</a> · class VPN required</p>{% else %}<p>{{lab.label}} target is not configured on this deployment. Use this week’s local lab guide below.</p>{% endif %}{% endfor %}{% endif %}
+        <details><summary>Stuck? Work through these hints</summary><ol><li>Confirm the assigned service and a normal request work before testing a hypothesis.</li><li>Locate the exact point where untrusted data becomes an operation or permission decision.</li><li>Compare vulnerable and defended source at that point. Change only one input and explain the observed difference.</li></ol></details>
+      </section>
+      <section id="check"><p class="sj-eyebrow">04 / Retrieve before revealing</p><h2>Explain your decision</h2><p>Original, ungraded practice. Answer first, then use the explanation to find a gap.</p>
+        {% for q in week.questions %}<fieldset class="sj-question" data-question="{{loop.index0}}" data-answer="{{q.answer}}"><legend>{{loop.index}}. {{q.stem}}</legend>{% set qi=loop.index0 %}{% for option in q.options %}<label><input type="radio" name="q{{qi}}" value="{{loop.index0}}"> <span>{{option}}</span></label>{% endfor %}<button type="button" class="sj-button" data-check-answer>Check reasoning</button><p class="sj-feedback" aria-live="polite"></p><details class="sj-rationale"><summary>Read the explanation</summary><p>{{q.why}}</p></details></fieldset>{% endfor %}
+        <p><button type="button" class="sj-secondary" data-reset-quiz>Reset this practice</button></p>
+      </section>
+      <section id="evidence"><p class="sj-eyebrow">05 / Prove and reflect</p><h2>Keep evidence in your own project</h2><ul>{% for item in week.evidence %}<li>{{item}}</li>{% endfor %}</ul><p>Use the canonical worksheet and instructor’s submission process for graded work. This page does not upload evidence.</p>
+        <div class="sj-checkpoints">{% for id,label in [('explain','I can explain the mechanism without reading it'),('practice','I completed a practice attempt and reviewed the evidence'),('defend','I can justify a control and a positive/negative test')] %}<label><input type="checkbox" data-checkpoint="{{id}}"> {{label}}</label>{% endfor %}</div><p data-progress-status class="sj-status" aria-live="polite"></p><button type="button" class="sj-secondary" data-reset-week>Reset this week’s progress</button>
+        <h3>Come back to it</h3><p>Tomorrow, explain the weakest concept without notes. In a week, repeat one test with a changed input. Keep your error log in your own notebook.</p>
+      </section>
+    </article>
+    <aside class="sj-sidebar"><h2>Week {{week.number}} desk</h2><p>Begin with Foundation. Open Advanced after you can explain the flow.</p><h3>Canonical course materials</h3><div class="sj-resource-list">{% for r in resources %}<a href="{{r.href}}">{{r.label}} →</a>{% endfor %}</div><h3>Evidence pattern</h3><p>Prediction → exact command → raw result → source explanation → fix → retest.</p><h3>Privacy</h3><p>Only checkpoint IDs and your last week are saved on this device. Quiz choices stay in this page’s memory. No identity, grade or evidence is sent.</p><p><a href="/learn/software-security/">All course documents</a></p></aside>
+  </div>
+  <nav class="sj-next" aria-label="Previous and next week">{% if week.number > 1 %}<a href="/learn/software-security/journey/week/{{week.number-1}}">← Week {{week.number-1}}</a>{% endif %}<a href="/learn/software-security/journey">Semester map</a>{% if week.number < 19 %}<a href="/learn/software-security/journey/week/{{week.number+1}}">Week {{week.number+1}} →</a>{% endif %}</nav>
+</div>
+<script src="/static/semester.js?v={{ asset_v }}" defer></script>
+{% endblock %}

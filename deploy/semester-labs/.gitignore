@@ -1,0 +1,5 @@
+.env
+*.crt
+*.pem
+*.key
+evidence/

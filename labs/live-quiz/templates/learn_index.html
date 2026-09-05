@@ -30,6 +30,7 @@
 {% block title %}{{ course.title }} — KOSEN·KMITL{% endblock %}
 
 {% block main %}
+{% if course.slug == "software-security" %}<div class="lx-wrap sj-entry"><a class="lx-link" href="/learn/software-security/journey">Full semester journey · Weeks 1–19 · explanations, code flow and practice</a></div>{% endif %}
 
 {#- ── the one place a unit row is defined ────────────────────────────────────
     Used identically by the grouped path and the flat path. That is deliberate:

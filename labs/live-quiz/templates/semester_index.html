@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% set section = 'semester' %}
+{% set page_description = 'A full semester of software security: 19 weeks of explanation, code tracing, bounded practice and evidence.' %}
+{% block title %}Semester journey — Software Security{% endblock %}
+{% block main %}
+<link rel="stylesheet" href="/static/semester.css?v={{ asset_v }}">
+<div class="sj-shell" data-journey-index>
+  <header class="sj-intro">
+    <p class="sj-eyebrow">Software Security / 19 weeks</p>
+    <h1>Build understanding.<br>Then prove it works.</h1>
+    <p>Start with a boundary. Follow the code. Test your prediction. Each week connects to the same NoteVault project.</p>
+    <div class="sj-actions"><a class="sj-button" href="/learn/software-security/journey/week/1" data-resume>Begin Week 1</a><a href="/learn/software-security/mastery">Weeks 1–6 mastery labs</a></div>
+    <p class="sj-status" data-overview-status aria-live="polite">Progress is self-tracking on this device. It does not submit work or determine grades.</p>
+  </header>
+  <section class="sj-start" aria-labelledby="plan-title"><h2 id="plan-title">Choose today’s pace</h2>
+    <div class="sj-grid-three"><article><h3>15 minutes · build a model</h3><p>Read Foundation, trace the code flow, and answer one question before revealing the explanation.</p></article><article><h3>45 minutes · investigate</h3><p>Add Core, a simulation and one source trace. Write your prediction before changing the input.</p></article><article><h3>Deep session · build and defend</h3><p>Work through the canonical worksheet, preserve real evidence, then tackle the advanced investigation.</p></article></div>
+  </section>
+  <nav class="sj-map" aria-label="Semester weeks">
+    {% for w in weeks %}<a class="sj-week-card" href="/learn/software-security/journey/week/{{w.number}}" data-week="{{w.number}}"><span class="sj-week-num">{{'%02d'|format(w.number)}}</span><span><small>{{w.kind}}</small><strong>{{w.title}}</strong><span class="sj-card-status" data-week-status="{{w.number}}">Explore week →</span></span></a>{% endfor %}
+  </nav>
+  <section class="sj-start"><h2>How the pieces fit</h2><p>In a class deployment, your browser connects through the class VPN to a private HTTPS entry point. The learning app serves explanations and simulations; isolated target services demonstrate vulnerable and defended behavior. Your own checkout is where you edit code, run scanners, build binaries and retain evidence.</p><p>Browser simulations are simplified models. The API’s identity header and chatbot’s deterministic replies are teaching shortcuts. Review and assessment weeks link the actual briefs; this practice does not replace your instructor’s submission process.</p></section>
+</div>
+<script src="/static/semester.js?v={{ asset_v }}" defer></script>
+{% endblock %}

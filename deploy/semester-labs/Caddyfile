@@ -1,0 +1,38 @@
+{
+ admin off
+ auto_https disable_redirects
+ https_port 8443
+ skip_install_trust
+}
+(private_site) {
+ tls internal
+ header -Server
+}
+https://{$SEMESTER_LEARN_HOST} {
+ import private_site
+ reverse_proxy learning-relay:8080
+}
+https://{$SEMESTER_API_VULNERABLE_HOST} {
+ import private_site
+ reverse_proxy api-vulnerable-relay:8080
+}
+https://{$SEMESTER_API_DEFENDED_HOST} {
+ import private_site
+ reverse_proxy api-defended-relay:8080
+}
+https://{$SEMESTER_AI_VULNERABLE_HOST} {
+ import private_site
+ reverse_proxy ai-vulnerable-relay:8080
+}
+https://{$SEMESTER_AI_DEFENDED_HOST} {
+ import private_site
+ reverse_proxy ai-defended-relay:8080
+}
+https://{$SEMESTER_OPS_VULNERABLE_HOST} {
+ import private_site
+ reverse_proxy ops-vulnerable-relay:8080
+}
+https://{$SEMESTER_OPS_DEFENDED_HOST} {
+ import private_site
+ reverse_proxy ops-defended-relay:8080
+}

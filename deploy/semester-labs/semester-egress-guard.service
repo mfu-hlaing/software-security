@@ -1,0 +1,13 @@
+[Unit]
+Description=Constrain semester lab container egress
+Requires=docker.service
+After=docker.service
+PartOf=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/software-security/deploy/semester-labs/install-egress-guard.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
