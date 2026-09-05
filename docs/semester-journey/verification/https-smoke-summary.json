@@ -1,6 +1,6 @@
 {
   "scope": "Local loopback TLS and Docker isolation; remote VPN/Linux firewall/load tests not performed",
-  "https_checks": 151,
+  "https_checks": 152,
   "services": 15,
   "passed": [
     "certificate/hostname validation",

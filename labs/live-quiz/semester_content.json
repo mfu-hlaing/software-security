@@ -679,7 +679,7 @@
     ],
     "foundation": "A C array has a fixed capacity. Copying more bytes than fit can overwrite neighboring state; the terminating zero byte counts too. A crash tells you an operation violated a runtime condition, but you still need to explain the exact read or write that crossed its bounds.",
     "core": "The supplied parse_input routine has char buf[64] and an unchecked strcpy. The fuzzer first bounds its scratch copy to 4095 bytes, then passes the resulting string to the smaller buffer: the safe first copy does not fix the second one. AddressSanitizer helps locate invalid access. A canary detects some stack corruption; NX and ASLR constrain exploitation rather than remove the bug.",
-    "advanced": "Compare byte length, Unicode characters and embedded NULs. safe.rs demonstrates a memory-safe alternative, but Rust’s unsafe blocks and FFI need separate review and memory safety does not guarantee authorization or availability. Use-after-free and integer overflow are lecture extensions; the shipped binary directly demonstrates stack overflow and format-string flaws.",
+    "advanced": "Compare byte length, Unicode characters and embedded NULs. safe.rs demonstrates a memory-safe alternative, but Rust’s unsafe blocks and FFI need separate review and memory safety does not guarantee authorization or availability. The optional ownership and allocation workshop now provides separate use-after-free and integer-wrap experiments with defended counterparts. The original binary demonstrates stack overflow and format-string flaws; an ASan finding identifies a failing access, not every possible path.",
     "flow": [
       "Fuzzer bytes",
       "Bounded scratch buffer",
@@ -698,7 +698,8 @@
       "Use the stack-frame simulation before compiling a vulnerable binary.",
       "Inside the isolated toolbox/VM, compile the harness with the worksheet’s sanitizer flags and a bounded fuzz run.",
       "Replay and minimize the crashing input; save the sanitizer report.",
-      "Retest the memory-safe rewrite with boundary lengths and normal inputs."
+      "Retest the memory-safe rewrite with boundary lengths and normal inputs.",
+      "Open the ownership and allocation workshop in the materials below; predict the lifetime and wrapped-size failures, then run its 15 isolated checks."
     ],
     "evidence": [
       "Minimal crash and sanitizer source location",
@@ -756,6 +757,11 @@
         "title": "Exercise the memory-safe example inside that environment",
         "command": "rustc safe.rs -o safe\nprintf 'hello\\n' | ./safe",
         "expect": "Record actual output, then inspect safe.rs to choose relevant boundary inputs. Do not claim a safe-language port fixes business authorization or every possible unsafe/FFI boundary."
+      },
+      {
+        "title": "Extend into ownership and allocation (from repository root)",
+        "command": "sh labs/week11-memory-safety-exploitation/run-memory-workshop.sh --show-reports",
+        "expect": "The optional memory workshop compiles in the installed course toolbox with no network and a read-only source mount. Expect 15 verified checks plus use-after-free and heap-buffer-overflow reports; normal inputs and rejected boundary inputs are checked separately."
       }
     ]
   },
