@@ -163,9 +163,12 @@ runcmd:
     EOF
     chmod 0600 .env
     systemctl daemon-reload
-    systemctl enable --now lab-egress-guard.service
     docker compose --env-file .env -f compose.yml --profile ${team_profile} config --quiet
     COMPOSE_PARALLEL_LIMIT=1 docker compose --env-file .env -f compose.yml --profile ${team_profile} build --pull
+    # Builds need outbound package registries. IMDS is already disabled above;
+    # install the container egress boundary after the reviewed build completes
+    # and immediately before any intentionally vulnerable service starts.
+    systemctl enable --now lab-egress-guard.service
     docker compose --env-file .env -f compose.yml --profile ${team_profile} up -d --remove-orphans
     docker compose --env-file .env -f compose.yml --profile ${team_profile} ps
     echo "TEAM_LAB_READY profile=${team_profile} host=${learn_host}:8443"
