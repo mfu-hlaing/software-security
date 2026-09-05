@@ -1,8 +1,13 @@
+# Dedicated practice-image context. The learning image's root allowlist keeps
+# reference implementations private; these targets need their reviewed module.
 *
 !labs/
 !labs/week10-api-security/
-!labs/week10-api-security/*.py
+!labs/week10-api-security/vulnerable_api.py
+!labs/week10-api-security/solution_api.py
 !labs/week14-ai-llm-security/
-!labs/week14-ai-llm-security/*.py
+!labs/week14-ai-llm-security/vulnerable_chatbot.py
+!labs/week14-ai-llm-security/guarded_chatbot.py
 !labs/week15-devsecops-pipeline/
-!labs/week15-devsecops-pipeline/*.py
+!labs/week15-devsecops-pipeline/insecure_service.py
+!labs/week15-devsecops-pipeline/secure_service.py
