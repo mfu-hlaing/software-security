@@ -61,7 +61,11 @@ def generate(config, destination):
  import private
  @owner remote_ip {peer}
  handle @owner {{
-  reverse_proxy personal-{slot}-relay:8080
+  reverse_proxy personal-{slot}-relay:8080 {{
+   # Legacy Flask apps may absolutize redirects using the fixed relay Host.
+   # Return only this slot's internal origin to a same-origin relative path.
+   header_down Location "^https?://p{slot}-app:5000(/.*)$" "$1"
+  }}
  }}
  handle {{
   respond "This personal workspace belongs to another VPN identity." 403
