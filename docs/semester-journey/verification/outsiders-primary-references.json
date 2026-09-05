@@ -1,0 +1,77 @@
+[
+  {
+    "url": "https://cheatsheetseries.owasp.org/",
+    "status": 200,
+    "final_url": "https://cheatsheetseries.owasp.org/"
+  },
+  {
+    "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+    "status": 200,
+    "final_url": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html"
+  },
+  {
+    "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
+    "status": 200,
+    "final_url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html"
+  },
+  {
+    "url": "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html",
+    "status": 200,
+    "final_url": "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html"
+  },
+  {
+    "url": "https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html",
+    "status": 200,
+    "final_url": "https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html"
+  },
+  {
+    "url": "https://clang.llvm.org/docs/AddressSanitizer.html",
+    "status": 200,
+    "final_url": "https://clang.llvm.org/docs/AddressSanitizer.html"
+  },
+  {
+    "url": "https://csrc.nist.gov/pubs/sp/800/38/d/final",
+    "status": 200,
+    "final_url": "https://csrc.nist.gov/pubs/sp/800/38/d/final"
+  },
+  {
+    "url": "https://docs.docker.com/engine/network/drivers/bridge/",
+    "status": 200,
+    "final_url": "https://docs.docker.com/engine/network/drivers/bridge/"
+  },
+  {
+    "url": "https://docs.sigstore.dev/cosign/verifying/verify/",
+    "status": 200,
+    "final_url": "https://docs.sigstore.dev/cosign/verifying/verify/"
+  },
+  {
+    "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+    "status": 200,
+    "final_url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/"
+  },
+  {
+    "url": "https://llvm.org/docs/LibFuzzer.html",
+    "status": 200,
+    "final_url": "https://llvm.org/docs/LibFuzzer.html"
+  },
+  {
+    "url": "https://owasp.org/API-Security/",
+    "status": 200,
+    "final_url": "https://owasp.org/API-Security/"
+  },
+  {
+    "url": "https://owasp.org/www-project-application-security-verification-standard/",
+    "status": 200,
+    "final_url": "https://owasp.org/www-project-application-security-verification-standard/"
+  },
+  {
+    "url": "https://owasp.org/www-project-web-security-testing-guide/",
+    "status": 200,
+    "final_url": "https://owasp.org/www-project-web-security-testing-guide/"
+  },
+  {
+    "url": "https://slsa.dev/spec/v1.2/",
+    "status": 200,
+    "final_url": "https://slsa.dev/spec/v1.2/"
+  }
+]

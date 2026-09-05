@@ -22,10 +22,21 @@ docker inspect "$("${legacy[@]}" ps -q learning)" --format '{{.Image}}' > "$back
 docker inspect "$("${legacy[@]}" ps -q caddy)" --format '{{.Image}}' > "$backup/previous-gateway-image.txt"
 
 # Build before interrupting the current learning service. No extra cloud nodes.
-COMPOSE_PARALLEL_LIMIT=1 "${legacy[@]}" build learning
-SEMESTER_SECRET_KEY=build-only-unused-in-targets COMPOSE_PARALLEL_LIMIT=1 docker compose --env-file /dev/null \
-  -f deploy/semester-labs/compose.json build \
-  api-vulnerable api-defended ai-vulnerable ai-defended ops-vulnerable ops-defended
+# The runtime host-input guard also denies DNS from a default build bridge.
+# Only reviewed dependency-install build steps use the host network. No lab
+# application is executed by these Dockerfiles during the image build.
+docker build --network=host -f deploy/internal-labs/images/learning.Dockerfile \
+  -t software-security-internal-labs-learning:latest .
+for target in api-vulnerable api-defended ai-vulnerable ai-defended ops-vulnerable ops-defended; do
+  case "$target" in
+    api-*) source_dir=labs/week10-api-security;;
+    ai-*) source_dir=labs/week14-ai-llm-security;;
+    ops-*) source_dir=labs/week15-devsecops-pipeline;;
+  esac
+  docker build --network=host --build-arg "LAB_DIR=$source_dir" \
+    -f deploy/semester-labs/target.Dockerfile \
+    -t "software-security-semester-$target:latest" .
+done
 
 # Resolve an active-only manifest. It contains runtime secrets and stays root-only.
 python3 - <<'PY'
