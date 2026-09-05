@@ -7,7 +7,12 @@ if [ "$#" -ne 1 ] || [[ ! "$1" =~ ^[a-z0-9][a-z0-9_-]{1,30}$ ]]; then
 fi
 
 edge=${WG_EDGE_SSH_TARGET:-ubuntu@10.66.0.1}
-ssh -o IdentitiesOnly=yes "$edge" \
+ssh_options=(-o IdentitiesOnly=yes)
+if [ -n "${SSH_IDENTITY_FILE:-}" ]; then
+  [ -f "$SSH_IDENTITY_FILE" ] || { echo "SSH identity file not found" >&2; exit 1; }
+  ssh_options+=(-i "$SSH_IDENTITY_FILE")
+fi
+ssh "${ssh_options[@]}" "$edge" \
   sudo /usr/local/sbin/wg-peer-admin revoke "$1"
 
 echo "Revoked immediately on the edge. Confirm with the peer isolation smoke test."

@@ -11,7 +11,12 @@ fi
 ssh_target=$1
 host_private_ip=$2
 
-ssh -o IdentitiesOnly=yes "$ssh_target" sudo bash -s -- "$host_private_ip" <<'REMOTE'
+ssh_options=(-o IdentitiesOnly=yes)
+if [ -n "${SSH_IDENTITY_FILE:-}" ]; then
+  [ -f "$SSH_IDENTITY_FILE" ] || { echo "SSH identity file not found" >&2; exit 1; }
+  ssh_options+=(-i "$SSH_IDENTITY_FILE")
+fi
+ssh "${ssh_options[@]}" "$ssh_target" sudo bash -s -- "$host_private_ip" <<'REMOTE'
 set -euo pipefail
 host_private_ip=$1
 cd /opt/software-security/deploy/internal-labs

@@ -87,6 +87,13 @@ the public edge security group needs only outer UDP 51820 because decapsulated
 `wg0` SSH/DNS are governed by nftables (`10.66.0.2` instructor SSH; all enrolled
 peers DNS).
 
+Point the operator helpers at the separately generated instructor SSH key;
+they never copy it or add it to the repository:
+
+```sh
+export SSH_IDENTITY_FILE="$PWD/generated-peers/instructor/ssh_ed25519"
+```
+
 Check both private hosts' console logs for `IMDS_DISABLED` and
 `TEAM_LAB_READY`. Over the instructor tunnel, also verify:
 
@@ -104,7 +111,8 @@ root only over instructor SSH, verify its fingerprint out-of-band, and install
 it only in a managed course browser/profile:
 
 ```sh
-ssh ubuntu@TEAM_HOST 'cd /opt/software-security/deploy/internal-labs && sudo docker cp "$(sudo docker compose --env-file .env -f compose.yml ps -q caddy)":/data/caddy/pki/authorities/local/root.crt /tmp/team-root.crt && sudo cat /tmp/team-root.crt' > team-root.crt
+ssh -i "$SSH_IDENTITY_FILE" -o IdentitiesOnly=yes ubuntu@TEAM_HOST \
+  'cd /opt/software-security/deploy/internal-labs && sudo docker cp "$(sudo docker compose --env-file .env -f compose.yml ps -q caddy)":/data/caddy/pki/authorities/local/root.crt /tmp/team-root.crt && sudo cat /tmp/team-root.crt' > team-root.crt
 openssl x509 -in team-root.crt -noout -sha256 -fingerprint
 ```
 
@@ -116,7 +124,7 @@ Retrieve each host's separately generated learning-app invite only through the
 instructor tunnel and private SSH:
 
 ```sh
-ssh ubuntu@TEAM_HOST \
+ssh -i "$SSH_IDENTITY_FILE" -o IdentitiesOnly=yes ubuntu@TEAM_HOST \
   "sudo sed -n 's/^LIVE_QUIZ_INVITE_CODE=//p' /opt/software-security/deploy/internal-labs/.env"
 ```
 

@@ -3,7 +3,8 @@
 set -euo pipefail
 
 usage() {
-  echo "usage: WG_EDGE_SSH_TARGET=ubuntu@10.66.0.1 bash onboard-peer.sh OPAQUE_NAME team1|team2 ADDRESS PUBLIC_KEY_FILE" >&2
+  echo "usage: WG_EDGE_SSH_TARGET=ubuntu@10.66.0.1 SSH_IDENTITY_FILE=/path/to/key \\" >&2
+  echo "  bash onboard-peer.sh OPAQUE_NAME team1|team2 ADDRESS PUBLIC_KEY_FILE" >&2
   exit 2
 }
 
@@ -24,7 +25,12 @@ public_key=$(tr -d '\r\n' < "$public_key_file")
 }
 
 edge=${WG_EDGE_SSH_TARGET:-ubuntu@10.66.0.1}
-ssh -o IdentitiesOnly=yes "$edge" \
+ssh_options=(-o IdentitiesOnly=yes)
+if [ -n "${SSH_IDENTITY_FILE:-}" ]; then
+  [ -f "$SSH_IDENTITY_FILE" ] || { echo "SSH identity file not found" >&2; exit 1; }
+  ssh_options+=(-i "$SSH_IDENTITY_FILE")
+fi
+ssh "${ssh_options[@]}" "$edge" \
   sudo /usr/local/sbin/wg-peer-admin add "$name" "$team" "$address" "$public_key"
 
 echo "Enrollment is active. Give the peer its assigned team URL; do not collect its private key."
