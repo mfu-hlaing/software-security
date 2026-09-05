@@ -151,3 +151,13 @@ def test_model_html_is_not_interpreted_in_client():
     assert '.innerHTML' not in js
     assert 'answer.textContent=' in js
     assert "credentials:'same-origin'" in js
+
+
+@pytest.mark.parametrize('error', ['No such object: target', 'error: no such object: target', 'No such container: target'])
+def test_missing_docker_target_across_cli_versions(error, monkeypatch):
+    from types import SimpleNamespace
+    manager=module('personal_manager','manager.py')
+    monkeypatch.setattr(manager,'command',lambda *a,**k:SimpleNamespace(returncode=1,stderr=error))
+    assert manager.existing('target') is None
+    monkeypatch.setattr(manager,'command',lambda *a,**k:SimpleNamespace(returncode=1,stderr='Cannot connect to the Docker daemon'))
+    with pytest.raises(RuntimeError):manager.existing('target')

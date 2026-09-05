@@ -31,7 +31,8 @@ def existing(name):
     result = command(['inspect', name], check=False)
     if result.returncode == 0:
         return json.loads(result.stdout)[0]
-    if 'No such object' in result.stderr or 'No such container' in result.stderr:
+    error = result.stderr.lower()
+    if 'no such object' in error or 'no such container' in error:
         return None
     raise RuntimeError('Docker status is unavailable')
 
