@@ -27,16 +27,7 @@ docker inspect "$("${legacy[@]}" ps -q caddy)" --format '{{.Image}}' > "$backup/
 # application is executed by these Dockerfiles during the image build.
 docker build --network=host -f deploy/internal-labs/images/learning.Dockerfile \
   -t software-security-internal-labs-learning:latest .
-for target in api-vulnerable api-defended ai-vulnerable ai-defended ops-vulnerable ops-defended; do
-  case "$target" in
-    api-*) source_dir=labs/week10-api-security;;
-    ai-*) source_dir=labs/week14-ai-llm-security;;
-    ops-*) source_dir=labs/week15-devsecops-pipeline;;
-  esac
-  docker build --network=host --build-arg "LAB_DIR=$source_dir" \
-    -f deploy/semester-labs/target.Dockerfile \
-    -t "software-security-semester-$target:latest" .
-done
+bash deploy/personal-labs/build-targets.sh
 
 # Resolve an active-only manifest. It contains runtime secrets and stays root-only.
 python3 - <<'PY'
