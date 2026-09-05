@@ -62,7 +62,9 @@ runcmd:
     # Terraform can finish the route before the edge has configured NAT. Use
     # apt itself (guaranteed on Ubuntu) rather than assuming curl is preinstalled.
     attempts=0
-    until DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Retries=3 update -qq; do
+    until DEBIAN_FRONTEND=noninteractive \
+      apt-get -o Acquire::ForceIPv4=true -o Acquire::Retries=3 update -qq \
+      && apt-cache show awscli docker.io >/dev/null 2>&1; do
       attempts=$((attempts + 1))
       [ "$attempts" -lt 180 ] || { echo "edge NAT was not ready after fifteen minutes" >&2; exit 1; }
       sleep 5
@@ -153,4 +155,4 @@ runcmd:
     docker compose --env-file .env -f compose.yml --profile ${team_profile} ps
     echo "TEAM_LAB_READY profile=${team_profile} host=${learn_host}:8443"
 
-final_message: "Team lab bootstrap complete. IMDS was disabled before the private Compose stack started."
+final_message: "Team lab cloud-init finished. Require the TEAM_LAB_READY marker before declaring the lab usable."
