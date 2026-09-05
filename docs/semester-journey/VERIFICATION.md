@@ -1,5 +1,18 @@
 # Release verification — 2026-09-05
 
+## AWS content release — deployment task report
+
+The deployment owner, **Build immersive security labs**, reports that both private team hosts now run integrated commit `8d3e7a9a7e0a637fcdb805f6cce4e4a2b6255e8b`. This was a content-first rollout: only the existing learning service was rebuilt, its data volume was preserved, and pre-cutover backups remain on each host.
+
+- 42 CA-verified HTTPS checks passed across both teams: the mastery page, semester journey and Weeks 1–19. Week 11 workshop content markers also passed.
+- Fresh temporary student VPN peers reached their own team and timed out cross-team; the temporary peers were then revoked. Host isolation checks passed.
+- Each host reports 13 healthy containers and zero unhealthy containers. Terraform reports no infrastructure changes.
+- The temporary rollout VPN container and copied administrator key were removed.
+
+These are the deployment task's reported remote results, separate from the locally executed checks below. They establish the deployed learning content and tested VPN boundaries; they do not establish classroom concurrency capacity or remote operation of the later target pairs.
+
+The six later-semester vulnerable/defended services remain **local only**: zero services from the separate semester stack were launched on AWS. Its 1824 MiB container ceilings plus host overhead do not fit alongside the existing stack on the current 2 GiB team hosts. Dedicated capacity or a reviewed scheduled replacement is still required for these services.
+
 ## Application and interface
 
 - Full repository suite: **746 passed, 1 skipped**. The existing skipped test and Eventlet deprecation warning remain; no new runtime migration was attempted.
