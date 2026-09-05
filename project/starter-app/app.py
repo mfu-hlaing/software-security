@@ -14,6 +14,7 @@ import hmac
 import os
 import sqlite3
 import subprocess
+from pathlib import Path
 
 import jwt  # PyJWT
 from flask import Flask, request, jsonify, render_template_string, redirect, make_response
@@ -33,22 +34,18 @@ def team_marker():
     return hmac.new(TEAM_SALT.encode(), TEAM_ID.encode(), hashlib.sha256).hexdigest()[:12]
 
 
-PAGE = """
-<!doctype html><title>NoteVault</title>
-<h1>NoteVault</h1>
-{% if user %}<p>Signed in as <b>{{ user }}</b> · <a href="/logout">logout</a>
-  {% if is_admin %}· <a href="/admin">admin</a>{% endif %}</p>
-<form method=post action="/notes"><input name=title placeholder=title>
-  <input name=body placeholder=note><button>Add note</button></form>
-<h3>Your notes</h3>{{ notes_html|safe }}
-<form action="/search"><input name=q placeholder="search notes"><button>Search</button></form>
-{% else %}
-<form method=post action="/login">user <input name=username> pass <input name=password type=password>
-  <button>Login</button></form>
-<form method=post action="/register">new: <input name=username> <input name=password type=password>
-  <button>Register</button></form>
-{% endif %}
-"""
+# Presentation stays separate from the deliberately vulnerable exercise behavior.
+PAGE = (Path(__file__).parent / "templates" / "notevault.html").read_text()
+
+
+def note_cards(rows):
+    # Deliberately retain the starter's raw note rendering for the project exercise.
+    return "".join(
+        '<article class="note-card"><div class="note-meta"><span>NOTE %02d</span>'
+        '<span aria-hidden="true">◇</span></div><h3>%s</h3><div class="note-body">%s</div>'
+        '<a href="/api/notes/%d">View JSON ↗</a></article>' %
+        (r["id"], r["title"], r["body"], r["id"]) for r in rows)
+
 
 
 def db():
@@ -96,15 +93,13 @@ def role_of(username):
 @app.route("/")
 def home():
     user = current_user()
-    notes_html = ""
+    rows = []
     if user:
         con = db()
         rows = con.execute("SELECT id,title,body FROM notes WHERE owner = ?", (user,)).fetchall()
         con.close()
-        notes_html = "".join(
-            "<li>#%d <b>%s</b>: %s</li>" % (r["id"], r["title"], r["body"]) for r in rows)
     return render_template_string(PAGE, user=user, is_admin=(user and role_of(user) == "admin"),
-                                  notes_html=notes_html)
+                                  notes_html=note_cards(rows), count=len(rows), view="notes")
 
 
 @app.route("/register", methods=["POST"])
@@ -130,7 +125,7 @@ def login():
     row = con.execute(q).fetchone()
     con.close()
     if not row:
-        return "login failed", 401
+        return render_template_string(PAGE, user=None, error="That practice login did not match. Try again."), 401
     tok = jwt.encode({"sub": username}, SECRET, algorithm="HS256")
     resp = make_response(redirect("/"))
     resp.set_cookie("session", tok)
@@ -178,8 +173,10 @@ def search():
     q = "SELECT id,title,body FROM notes WHERE owner='%s' AND body LIKE '%%%s%%'" % (user, term)
     rows = con.execute(q).fetchall()
     con.close()
-    return render_template_string("<a href=/>back</a><ul>" +
-        "".join("<li>%s: %s</li>" % (r["title"], r["body"]) for r in rows) + "</ul>")
+    # Keep the original search route's template interpretation for the assignment.
+    results = render_template_string(note_cards(rows))
+    return render_template_string(PAGE, user=user, is_admin=(role_of(user) == "admin"),
+                                  notes_html=results, count=len(rows), view="search", term=term)
 
 
 @app.route("/admin")

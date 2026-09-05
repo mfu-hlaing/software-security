@@ -10,6 +10,8 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt \
     && groupadd --gid 10001 lab \
     && useradd --uid 10001 --gid 10001 --no-create-home --shell /usr/sbin/nologin lab
 COPY --chown=10001:10001 project/starter-app/app.py /app/app.py
+COPY --chown=10001:10001 project/starter-app/templates /app/templates
+COPY --chown=10001:10001 project/starter-app/static /app/static
 
 USER 10001:10001
 EXPOSE 8080

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if view == 'search' %}Search · {% endif %}NoteVault · Outsiders</title>
+  <link rel="stylesheet" href="/static/notevault.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to workspace</a>
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="NoteVault home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M20 6 33 29H7Z"/><path d="m20 17 7 12H13Z"/><path d="M20 29v6"/></svg></span><span>NoteVault<small>BY OUTSIDERS</small></span></a>
+    <div class="workspace-label">YOUR WORKSPACE</div>
+    <nav aria-label="Notebook navigation">
+      <a class="nav-item {% if view != 'search' %}active{% endif %}" href="/"><span aria-hidden="true">▤</span> My notebook</a>
+      {% if user %}<a class="nav-item" href="/#composer"><span aria-hidden="true">＋</span> New note</a><a class="nav-item {% if view == 'search' %}active{% endif %}" href="/search"><span aria-hidden="true">⌕</span> Search notes</a><a class="nav-item" href="/export?fmt=txt"><span aria-hidden="true">↗</span> Try export</a>{% if is_admin %}<a class="nav-item" href="/admin">Admin data</a>{% endif %}{% endif %}
+    </nav>
+    <div class="field-guide"><div class="eyebrow">THE FIELD GUIDE</div><h2>Small notes.<br>Big discoveries.</h2><p>Observe a normal flow. Change one input. Keep evidence. Explain the boundary.</p><div class="guide-path"><span>Observe</span><span>Test</span><span>Retest</span></div></div>
+    <div class="sidebar-foot"><span class="status-dot"></span> Disposable practice workspace<p>Save your evidence before a reset or the 60-minute lab expiry.</p></div>
+  </aside>
+  <div class="main-area">
+    <header class="topbar"><span class="breadcrumb">Personal lab <span>/</span> NoteVault</span><span class="pill">PROJECT STUDIO</span>{% if user %}<div class="profile"><span class="avatar">{{ user[:1]|upper }}</span><span>{{ user }}</span><a href="/logout">Sign out</a></div>{% endif %}</header>
+    <main id="main">
+      {% if user %}
+      <section class="intro"><div><p class="eyebrow">A LITTLE SPACE FOR YOUR IDEAS</p><h1>{% if view == 'search' %}Find your next thought.{% else %}Your notebook, {{ user }}.{% endif %}</h1><p class="lede">Capture an idea. Trace a request. Make the next discovery yours.</p></div><div class="notebook-art" aria-hidden="true"><div class="paper"><span></span><span></span><span></span><i>n.</i></div><b>✦</b></div></section>
+      <div class="practice-banner"><span class="status-dot"></span><p><strong>This is your practice app.</strong> The account shown here belongs to seeded lab data. Your academy account and coursework are separate.</p><a href="#practice-guide">How to explore ↓</a></div>
+      <form class="searchbar" action="/search" role="search"><label class="sr-only" for="search">Search note contents</label><span aria-hidden="true">⌕</span><input id="search" name="q" value="{{ term or '' }}" placeholder="Search inside your notes…"><button type="submit" class="quiet-button">Search</button></form>
+      <div class="workspace-grid"><section class="notes-panel"><div class="section-heading"><div><p class="eyebrow">{% if view == 'search' %}SEARCH RESULTS{% else %}COLLECTED THOUGHTS{% endif %}</p><h2>{% if view == 'search' %}Matches{% else %}Your notes{% endif %} <span class="count">{{ count }}</span></h2></div>{% if view == 'search' %}<a href="/">Clear search</a>{% else %}<span class="subtle">Only this lab session</span>{% endif %}</div>{% if view == 'search' and term %}<p class="search-context">Note contents matching “{{ term }}”</p>{% endif %}<div class="notes-grid">{{ notes_html|safe }}{% if not count %}<div class="empty-state"><span aria-hidden="true">◇</span><h3>{% if view == 'search' %}No matching notes{% else %}A fresh page awaits{% endif %}</h3><p>{% if view == 'search' %}Try a different word from the note contents.{% else %}Use the composer to create your first note.{% endif %}</p></div>{% endif %}</div></section>
+      <aside class="composer" id="composer"><p class="eyebrow">MAKE A LITTLE ROOM</p><h2>A new thought.</h2><p>Write something worth coming back to.</p><form method="post" action="/notes"><label for="note-title">Title</label><input id="note-title" name="title" placeholder="Give your note a name" required><label for="note-body">Your note</label><textarea id="note-body" name="body" rows="6" placeholder="Start with an observation…" required></textarea><button class="primary-button" type="submit">Add note <span aria-hidden="true">↗</span></button></form><p class="fineprint">Stored in this running target. A reset or expiry removes your changes.</p></aside></div>
+      {% else %}
+      <section class="welcome"><div><p class="eyebrow">YOUR PERSONAL PROJECT STUDIO</p><h1>Keep your ideas.<br>Explore the edges.</h1><p class="lede">A small notes app with a bigger purpose. Get comfortable with the everyday workflow, then investigate how it behaves.</p><div class="welcome-art" aria-hidden="true"><div class="paper"><span></span><span></span><span></span><i>n.</i></div><span class="art-label">a place to begin</span></div><div class="practice-banner"><p>This is a disposable security exercise. Use fictional notes and practice credentials.</p></div></div><section class="login-card"><p class="eyebrow">WELCOME TO NOTEVAULT</p><h2>Open your notebook.</h2>{% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}<form method="post" action="/login"><label for="username">Practice username</label><input id="username" name="username" autocomplete="username" required><label for="password">Practice password</label><input id="password" name="password" type="password" autocomplete="current-password" required><button class="primary-button" type="submit">Sign in <span aria-hidden="true">↗</span></button></form><details class="demo-access"><summary>First visit? Use the seeded demo</summary><p>Username: <code>alice</code><br>Password: <code>alicepw</code></p><p>These fictional app credentials are separate from your academy student ID.</p></details><details class="register"><summary>Create a practice account</summary><form method="post" action="/register"><label for="new-user">New username</label><input id="new-user" name="username" autocomplete="off" required><label for="new-pass">New practice password</label><input id="new-pass" name="password" type="password" autocomplete="new-password" required><button class="quiet-button" type="submit">Register</button></form><p class="fineprint">After registering, sign in above.</p></details></section></section>
+      {% endif %}
+      <details class="practice-guide" id="practice-guide"><summary><span>Explore with a purpose</span><span class="subtle">A three-step practice loop</span></summary><div class="practice-steps"><div><b>01 / Observe</b><p>Sign in, create a fictional note and search its contents. Record the normal request and response.</p></div><div><b>02 / Investigate</b><p>Change one input or compare the web view with a note's JSON response. Stay within your assigned target.</p></div><div><b>03 / Explain</b><p>Describe the boundary you tested. Return to your weekly room for the theory, code trace and repair task.</p></div></div></details>
+      <footer>Made for curious minds. <strong>Outsiders.</strong><span>Private course practice · NoteVault starter</span></footer>
+    </main>
+  </div>
+</div>
+</body></html>
