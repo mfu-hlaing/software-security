@@ -17,7 +17,9 @@ team1 private subnet                          team2 private subnet
 team1 /32s + instructor only                 team2 /32s + instructor only
 ```
 
-Each private host runs its own learning app and Week 1/4/5/6 targets. Weeks 2
+**Current application runtime:** after Terraform bootstrap, follow the [personal academy installer](../../deploy/personal-labs/README.md) to deploy the 19-week academy and five individual practice slots. Terraform remains pinned to the reviewed bootstrap commit; the separately reviewed application release is checked out and installed in place. Do not change the bootstrap ref just to upgrade the UI, because that can replace team instances.
+
+The original bootstrap creates a learning app and Week 1/4/5/6 targets. Weeks 2
 and 3 use first-party interactive browser labs plus local-checkout tool work,
 not shared shells.
 Only the matching NoteVault team profile starts on each host. Private DNS uses

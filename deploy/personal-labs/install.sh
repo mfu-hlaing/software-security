@@ -28,6 +28,11 @@ docker inspect "$("${legacy[@]}" ps -q caddy)" --format '{{.Image}}' > "$backup/
 docker build --network=host -f deploy/internal-labs/images/learning.Dockerfile \
   -t software-security-internal-labs-learning:latest .
 bash deploy/personal-labs/build-targets.sh
+# The Terraform bootstrap may be pinned to an older starter. Rebuild the project
+# image from this reviewed release so a fresh personal install gets its UI too.
+team=$(python3 -c 'import json;print(json.load(open("/etc/outsiders/config.json"))["team"])')
+docker build --network=host -f deploy/internal-labs/images/notevault.Dockerfile \
+  -t "software-security-internal-labs-notevault-team-$team:latest" .
 
 # Resolve an active-only manifest. It contains runtime secrets and stays root-only.
 python3 - <<'PY'
