@@ -175,10 +175,6 @@ resource "aws_security_group" "wireguard_edge" {
   description = "Only public ingress in the pilot: WireGuard UDP"
   vpc_id      = aws_vpc.labs.id
 
-  # Rules use the standalone resources below so every direction is explicit.
-  ingress = []
-  egress  = []
-
   tags = { Name = "${var.project_name}-wireguard-edge" }
 }
 
@@ -221,8 +217,6 @@ resource "aws_security_group" "team_1_lab" {
   name        = "${var.project_name}-team1-lab"
   description = "Team-one HTTPS plus instructor-only private SSH"
   vpc_id      = aws_vpc.labs.id
-  ingress     = []
-  egress      = []
   tags        = { Name = "${var.project_name}-team1-lab", Team = "team1" }
 }
 
@@ -230,8 +224,6 @@ resource "aws_security_group" "team_2_lab" {
   name        = "${var.project_name}-team2-lab"
   description = "Team-two HTTPS plus instructor-only private SSH"
   vpc_id      = aws_vpc.labs.id
-  ingress     = []
-  egress      = []
   tags        = { Name = "${var.project_name}-team2-lab", Team = "team2" }
 }
 
@@ -352,4 +344,54 @@ resource "aws_vpc_security_group_egress_rule" "team_2_ntp" {
   from_port         = 123
   to_port           = 123
   cidr_ipv4         = "0.0.0.0/0"
+}
+
+# Keep rule ownership exclusive without mixing the legacy inline ingress/egress
+# fields with the standalone VPC security-group rule resources. This removes the
+# AWS-created default egress rule and makes any unmanaged console-added rule
+# visible as drift on the next plan.
+resource "aws_vpc_security_group_rules_exclusive" "wireguard_edge" {
+  security_group_id = aws_security_group.wireguard_edge.id
+  ingress_rule_ids = toset(concat(
+    [for rule in aws_vpc_security_group_ingress_rule.wireguard_public : rule.id],
+    [
+      aws_vpc_security_group_ingress_rule.edge_from_team_1.id,
+      aws_vpc_security_group_ingress_rule.edge_from_team_2.id,
+    ],
+  ))
+  egress_rule_ids = toset([
+    aws_vpc_security_group_egress_rule.edge_all.id,
+  ])
+}
+
+resource "aws_vpc_security_group_rules_exclusive" "team_1_lab" {
+  security_group_id = aws_security_group.team_1_lab.id
+  ingress_rule_ids = toset(concat(
+    [for rule in aws_vpc_security_group_ingress_rule.team_1_https : rule.id],
+    [aws_vpc_security_group_ingress_rule.team_1_instructor_ssh.id],
+  ))
+  egress_rule_ids = toset(concat(
+    [for rule in aws_vpc_security_group_egress_rule.team_1_web : rule.id],
+    [
+      aws_vpc_security_group_egress_rule.team_1_dns_udp.id,
+      aws_vpc_security_group_egress_rule.team_1_dns_tcp.id,
+      aws_vpc_security_group_egress_rule.team_1_ntp.id,
+    ],
+  ))
+}
+
+resource "aws_vpc_security_group_rules_exclusive" "team_2_lab" {
+  security_group_id = aws_security_group.team_2_lab.id
+  ingress_rule_ids = toset(concat(
+    [for rule in aws_vpc_security_group_ingress_rule.team_2_https : rule.id],
+    [aws_vpc_security_group_ingress_rule.team_2_instructor_ssh.id],
+  ))
+  egress_rule_ids = toset(concat(
+    [for rule in aws_vpc_security_group_egress_rule.team_2_web : rule.id],
+    [
+      aws_vpc_security_group_egress_rule.team_2_dns_udp.id,
+      aws_vpc_security_group_egress_rule.team_2_dns_tcp.id,
+      aws_vpc_security_group_egress_rule.team_2_ntp.id,
+    ],
+  ))
 }
