@@ -1,5 +1,6 @@
 # Full-semester learning expansion
 
+> Historical phase record. The current five-student AWS deployment and later-semester personal targets are documented in [OUTSIDERS-RELEASE.md](OUTSIDERS-RELEASE.md).
 ## Sources and scope
 
 The canonical local course is the 19-week Software Security sequence at baseline commit `353afa7`. `source-inventory.json` records the available README, worksheet, lecture and lesson-plan sources with hashes and heading inventories across all weeks. `public-crawl.json` records a read-only crawl of 58 public student-document URLs: all returned HTTP 200 on 2026-09-05. The crawl intentionally excludes instructor keys, admin pages and student records. Source availability does not imply every source agrees with every other source.

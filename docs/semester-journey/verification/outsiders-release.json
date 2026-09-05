@@ -1,0 +1,1013 @@
+{
+  "verified_at_utc": "2026-09-05T11:18:26.824437+00:00",
+  "runtime_commit": "f4b6102",
+  "automated_tests": {
+    "passed": 798,
+    "skipped": 1
+  },
+  "accounts_verified": 5,
+  "learning_rooms_per_account": 19,
+  "target_catalog": [
+    {
+      "team": 1,
+      "slot": 1,
+      "login": true,
+      "labs": {
+        "threat": 200,
+        "injection": 200,
+        "xss": 200,
+        "auth": 200,
+        "project": 200,
+        "api-bad": 200,
+        "api-good": 200,
+        "ai-bad": 200,
+        "ai-good": 200,
+        "ops-bad": 200,
+        "ops-good": 200
+      }
+    },
+    {
+      "team": 2,
+      "slot": 1,
+      "login": true,
+      "labs": {
+        "threat": 200,
+        "injection": 200,
+        "xss": 200,
+        "auth": 200,
+        "project": 200,
+        "api-bad": 200,
+        "api-good": 200,
+        "ai-bad": 200,
+        "ai-good": 200,
+        "ops-bad": 200,
+        "ops-good": 200
+      }
+    }
+  ],
+  "behavior": [
+    {
+      "team": 1,
+      "api_authorization_401_403_200": true,
+      "field_binding": true,
+      "ai_mock_refusal_and_html_escape": true,
+      "ops_fail_closed_and_allowed_admin": true
+    },
+    {
+      "team": 2,
+      "api_authorization_401_403_200": true,
+      "field_binding": true,
+      "ai_mock_refusal_and_html_escape": true,
+      "ops_fail_closed_and_allowed_admin": true
+    }
+  ],
+  "identity_boundaries": [
+    {
+      "team": 1,
+      "cookie_replay_denied": true,
+      "other_peer_login_denied": true
+    },
+    {
+      "team": 1,
+      "cross_team_tcp_denied": true
+    },
+    {
+      "team": 1,
+      "cross_team_tcp_denied": true
+    },
+    {
+      "team": 2,
+      "cookie_replay_denied": true,
+      "other_peer_login_denied": true
+    },
+    {
+      "team": 2,
+      "cross_team_tcp_denied": true
+    },
+    {
+      "team": 2,
+      "cross_team_tcp_denied": true
+    }
+  ],
+  "host_isolation": [
+    {
+      "team": 1,
+      "targets": [
+        {
+          "slot": 1,
+          "runtime_limits": true,
+          "outbound_denials": {
+            "internet": true,
+            "metadata": true,
+            "broker": true,
+            "host": true,
+            "other_slot": true,
+            "external_dns": true
+          }
+        },
+        {
+          "slot": 2,
+          "runtime_limits": true,
+          "outbound_denials": {
+            "internet": true,
+            "metadata": true,
+            "broker": true,
+            "host": true,
+            "other_slot": true,
+            "external_dns": true
+          }
+        },
+        {
+          "slot": 3,
+          "runtime_limits": true,
+          "outbound_denials": {
+            "internet": true,
+            "metadata": true,
+            "broker": true,
+            "host": true,
+            "other_slot": true,
+            "external_dns": true
+          }
+        }
+      ]
+    },
+    {
+      "team": 2,
+      "targets": [
+        {
+          "slot": 1,
+          "runtime_limits": true,
+          "outbound_denials": {
+            "internet": true,
+            "metadata": true,
+            "broker": true,
+            "host": true,
+            "other_slot": true,
+            "external_dns": true
+          }
+        },
+        {
+          "slot": 2,
+          "runtime_limits": true,
+          "outbound_denials": {
+            "internet": true,
+            "metadata": true,
+            "broker": true,
+            "host": true,
+            "other_slot": true,
+            "external_dns": true
+          }
+        }
+      ]
+    }
+  ],
+  "independent_reset": {
+    "before": [
+      {
+        "team": 1,
+        "slot": 1,
+        "created_id": 4
+      },
+      {
+        "team": 1,
+        "slot": 2,
+        "created_id": 4
+      },
+      {
+        "team": 1,
+        "slot": 3,
+        "created_id": 4
+      },
+      {
+        "team": 2,
+        "slot": 1,
+        "created_id": 4
+      },
+      {
+        "team": 2,
+        "slot": 2,
+        "created_id": 4
+      }
+    ],
+    "after": [
+      {
+        "team": 1,
+        "slot": 1,
+        "created_id": 4
+      },
+      {
+        "team": 1,
+        "slot": 2,
+        "created_id": 5
+      },
+      {
+        "team": 1,
+        "slot": 3,
+        "created_id": 5
+      },
+      {
+        "team": 2,
+        "slot": 1,
+        "created_id": 4
+      },
+      {
+        "team": 2,
+        "slot": 2,
+        "created_id": 5
+      }
+    ],
+    "independent_state_and_reset": true
+  },
+  "expiry": [
+    {
+      "expired_slot_removed_after_restart": true,
+      "other_slots_preserved": [
+        2,
+        3
+      ],
+      "team": 1
+    },
+    {
+      "expired_slot_removed_after_restart": true,
+      "other_slots_preserved": [
+        2
+      ],
+      "team": 2
+    }
+  ],
+  "concurrent_smoke": [
+    {
+      "team": 1,
+      "slot": 1,
+      "requests": 30,
+      "max_seconds": 0.246,
+      "median_seconds": 0.162
+    },
+    {
+      "team": 1,
+      "slot": 2,
+      "requests": 30,
+      "max_seconds": 0.24,
+      "median_seconds": 0.158
+    },
+    {
+      "team": 1,
+      "slot": 3,
+      "requests": 30,
+      "max_seconds": 0.246,
+      "median_seconds": 0.159
+    },
+    {
+      "team": 2,
+      "slot": 1,
+      "requests": 30,
+      "max_seconds": 1.221,
+      "median_seconds": 0.156
+    },
+    {
+      "team": 2,
+      "slot": 2,
+      "requests": 30,
+      "max_seconds": 0.311,
+      "median_seconds": 0.156
+    }
+  ],
+  "linked_resources": [
+    {
+      "team": 1,
+      "resources": [
+        {
+          "path": "/learn/software-security/week01-threat-modeling/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week01-threat-modeling/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week01-threat-modeling/template",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week01-threat-modeling/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week02-sdlc-tooling/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week02-sdlc-tooling/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week02-sdlc-tooling/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week03-cryptography/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week03-cryptography/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week03-cryptography/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week04-injection/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week04-injection/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week04-injection/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week05-xss-client-side/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week05-xss-client-side/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week05-xss-client-side/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week06-authn-authz/attack",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week06-authn-authz/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week06-authn-authz/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week06-authn-authz/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week07-review-midterm-prep/mock-ctf",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week07-review-midterm-prep/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week07-review-midterm-prep/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week08-midterm-written/exam",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week08-midterm-written/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week08-midterm-written/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week09-midterm-practical/ctf",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week09-midterm-practical/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week09-midterm-practical/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week10-api-security/attack",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week10-api-security/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week10-api-security/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week10-api-security/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week11-memory-safety-exploitation/memory-workshop",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week11-memory-safety-exploitation/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week11-memory-safety-exploitation/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week11-memory-safety-exploitation/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week12-supply-chain/dependency-confusion",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week12-supply-chain/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week12-supply-chain/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week12-supply-chain/verification-guide",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week12-supply-chain/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week13-cloud-container/harden",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week13-cloud-container/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week13-cloud-container/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week13-cloud-container/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week14-ai-llm-security/attack",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week14-ai-llm-security/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week14-ai-llm-security/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week14-ai-llm-security/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week15-devsecops-pipeline/pipeline",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week15-devsecops-pipeline/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week15-devsecops-pipeline/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week15-devsecops-pipeline/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week16-capstone/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week16-capstone/scrimmage",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week16-capstone/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week16-capstone/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week17-review-final-prep/mock-ctf",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week17-review-final-prep/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week17-review-final-prep/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week18-final-written/exam",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week18-final-written/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week18-final-written/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week19-final-ctf-capstone/ctf",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week19-final-ctf-capstone/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week19-final-ctf-capstone/slides",
+          "status": 200
+        },
+        {
+          "path": "/sim/aes-modes",
+          "status": 200
+        },
+        {
+          "path": "/sim/csrf-intent",
+          "status": 200
+        },
+        {
+          "path": "/sim/fuzz-verdict",
+          "status": 200
+        },
+        {
+          "path": "/sim/gate-check",
+          "status": 200
+        },
+        {
+          "path": "/sim/hash-crack",
+          "status": 200
+        },
+        {
+          "path": "/sim/iam-evaluation",
+          "status": 200
+        },
+        {
+          "path": "/sim/iam-scope",
+          "status": 200
+        },
+        {
+          "path": "/sim/jwt-forge",
+          "status": 200
+        },
+        {
+          "path": "/sim/mass-assign",
+          "status": 200
+        },
+        {
+          "path": "/sim/path-traversal",
+          "status": 200
+        },
+        {
+          "path": "/sim/prompt-guard",
+          "status": 200
+        },
+        {
+          "path": "/sim/resolver-confusion",
+          "status": 200
+        },
+        {
+          "path": "/sim/session-policy",
+          "status": 200
+        },
+        {
+          "path": "/sim/sqli-parse",
+          "status": 200
+        },
+        {
+          "path": "/sim/stack-frame",
+          "status": 200
+        },
+        {
+          "path": "/sim/stride-drill",
+          "status": 200
+        },
+        {
+          "path": "/sim/triage-drill",
+          "status": 200
+        },
+        {
+          "path": "/sim/trust-boundary",
+          "status": 200
+        },
+        {
+          "path": "/sim/xss-context",
+          "status": 200
+        },
+        {
+          "path": "/static/campus.css?v=1788605365",
+          "status": 200
+        },
+        {
+          "path": "/static/outsiders-mark.svg",
+          "status": 200
+        }
+      ]
+    },
+    {
+      "team": 2,
+      "resources": [
+        {
+          "path": "/learn/software-security/week01-threat-modeling/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week01-threat-modeling/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week01-threat-modeling/template",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week01-threat-modeling/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week02-sdlc-tooling/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week02-sdlc-tooling/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week02-sdlc-tooling/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week03-cryptography/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week03-cryptography/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week03-cryptography/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week04-injection/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week04-injection/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week04-injection/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week05-xss-client-side/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week05-xss-client-side/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week05-xss-client-side/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week06-authn-authz/attack",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week06-authn-authz/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week06-authn-authz/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week06-authn-authz/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week07-review-midterm-prep/mock-ctf",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week07-review-midterm-prep/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week07-review-midterm-prep/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week08-midterm-written/exam",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week08-midterm-written/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week08-midterm-written/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week09-midterm-practical/ctf",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week09-midterm-practical/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week09-midterm-practical/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week10-api-security/attack",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week10-api-security/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week10-api-security/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week10-api-security/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week11-memory-safety-exploitation/memory-workshop",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week11-memory-safety-exploitation/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week11-memory-safety-exploitation/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week11-memory-safety-exploitation/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week12-supply-chain/dependency-confusion",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week12-supply-chain/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week12-supply-chain/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week12-supply-chain/verification-guide",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week12-supply-chain/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week13-cloud-container/harden",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week13-cloud-container/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week13-cloud-container/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week13-cloud-container/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week14-ai-llm-security/attack",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week14-ai-llm-security/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week14-ai-llm-security/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week14-ai-llm-security/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week15-devsecops-pipeline/pipeline",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week15-devsecops-pipeline/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week15-devsecops-pipeline/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week15-devsecops-pipeline/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week16-capstone/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week16-capstone/scrimmage",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week16-capstone/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week16-capstone/worksheet",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week17-review-final-prep/mock-ctf",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week17-review-final-prep/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week17-review-final-prep/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week18-final-written/exam",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week18-final-written/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week18-final-written/slides",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week19-final-ctf-capstone/ctf",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week19-final-ctf-capstone/readme",
+          "status": 200
+        },
+        {
+          "path": "/learn/software-security/week19-final-ctf-capstone/slides",
+          "status": 200
+        },
+        {
+          "path": "/sim/aes-modes",
+          "status": 200
+        },
+        {
+          "path": "/sim/csrf-intent",
+          "status": 200
+        },
+        {
+          "path": "/sim/fuzz-verdict",
+          "status": 200
+        },
+        {
+          "path": "/sim/gate-check",
+          "status": 200
+        },
+        {
+          "path": "/sim/hash-crack",
+          "status": 200
+        },
+        {
+          "path": "/sim/iam-evaluation",
+          "status": 200
+        },
+        {
+          "path": "/sim/iam-scope",
+          "status": 200
+        },
+        {
+          "path": "/sim/jwt-forge",
+          "status": 200
+        },
+        {
+          "path": "/sim/mass-assign",
+          "status": 200
+        },
+        {
+          "path": "/sim/path-traversal",
+          "status": 200
+        },
+        {
+          "path": "/sim/prompt-guard",
+          "status": 200
+        },
+        {
+          "path": "/sim/resolver-confusion",
+          "status": 200
+        },
+        {
+          "path": "/sim/session-policy",
+          "status": 200
+        },
+        {
+          "path": "/sim/sqli-parse",
+          "status": 200
+        },
+        {
+          "path": "/sim/stack-frame",
+          "status": 200
+        },
+        {
+          "path": "/sim/stride-drill",
+          "status": 200
+        },
+        {
+          "path": "/sim/triage-drill",
+          "status": 200
+        },
+        {
+          "path": "/sim/trust-boundary",
+          "status": 200
+        },
+        {
+          "path": "/sim/xss-context",
+          "status": 200
+        },
+        {
+          "path": "/static/campus.css?v=1788606227",
+          "status": 200
+        },
+        {
+          "path": "/static/outsiders-mark.svg",
+          "status": 200
+        }
+      ]
+    }
+  ],
+  "ai": {
+    "provider_verified_on_both_hosts": true,
+    "source_linked_answers": true,
+    "reviewed_fallback_observed": true,
+    "model": "deepseek-v4-flash",
+    "questions_and_answers_omitted": true
+  },
+  "memory_snapshot_mib": {
+    "team1_available": 1117,
+    "team2_available": 1160
+  },
+  "cost_estimate_usd": {
+    "aws_730_hours": 58.742,
+    "aws_team_hosts_176_hours_edge_730": 29.49,
+    "combined_application_ai_monthly_reservation_cap": 10,
+    "exclusions": [
+      "tax",
+      "snapshots/backups",
+      "chargeable traffic"
+    ],
+    "schedule_activated": false
+  }
+}

@@ -1,5 +1,6 @@
 # Release verification — 2026-09-05
 
+> Historical phase record. The current five-student AWS deployment and later-semester personal targets are documented in [OUTSIDERS-RELEASE.md](OUTSIDERS-RELEASE.md).
 ## AWS content release — deployment task report
 
 The deployment owner, **Build immersive security labs**, reports that both private team hosts now run integrated commit `8d3e7a9a7e0a637fcdb805f6cce4e4a2b6255e8b`. This was a content-first rollout: only the existing learning service was rebuilt, its data volume was preserved, and pre-cutover backups remain on each host.
