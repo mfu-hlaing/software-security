@@ -1,0 +1,758 @@
+{
+  "name": "software-security-semester",
+  "services": {
+    "learning": {
+      "init": true,
+      "restart": "unless-stopped",
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "pids_limit": 128,
+      "cpus": "1.0",
+      "mem_limit": "512m",
+      "logging": {
+        "driver": "local",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777"
+      ],
+      "build": {
+        "context": "../..",
+        "dockerfile": "deploy/internal-labs/images/learning.Dockerfile"
+      },
+      "environment": {
+        "SECRET_KEY": "${SEMESTER_SECRET_KEY:?generate .env with setup.py}",
+        "INVITE_CODE": "",
+        "DB_PATH": "/data/semester.db",
+        "UPLOAD_DIR": "/data/uploads",
+        "COOKIE_SECURE": "1",
+        "SITE_ORIGIN": "https://${SEMESTER_LEARN_HOST:-learn.semester.localhost}:${SEMESTER_HTTPS_PORT:-9443}",
+        "SEMESTER_WEEK10_VULNERABLE_URL": "https://${SEMESTER_API_VULNERABLE_HOST:-api-vulnerable.semester.localhost}:${SEMESTER_HTTPS_PORT:-9443}",
+        "SEMESTER_WEEK10_DEFENDED_URL": "https://${SEMESTER_API_DEFENDED_HOST:-api-defended.semester.localhost}:${SEMESTER_HTTPS_PORT:-9443}",
+        "SEMESTER_WEEK14_VULNERABLE_URL": "https://${SEMESTER_AI_VULNERABLE_HOST:-ai-vulnerable.semester.localhost}:${SEMESTER_HTTPS_PORT:-9443}",
+        "SEMESTER_WEEK14_DEFENDED_URL": "https://${SEMESTER_AI_DEFENDED_HOST:-ai-defended.semester.localhost}:${SEMESTER_HTTPS_PORT:-9443}",
+        "SEMESTER_WEEK15_VULNERABLE_URL": "https://${SEMESTER_OPS_VULNERABLE_HOST:-ops-vulnerable.semester.localhost}:${SEMESTER_HTTPS_PORT:-9443}",
+        "SEMESTER_WEEK15_DEFENDED_URL": "https://${SEMESTER_OPS_DEFENDED_HOST:-ops-defended.semester.localhost}:${SEMESTER_HTTPS_PORT:-9443}"
+      },
+      "volumes": [
+        "learning_data:/data"
+      ],
+      "networks": [
+        "learning"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/',timeout=2)"
+        ],
+        "interval": "20s",
+        "timeout": "4s",
+        "retries": 3,
+        "start_period": "15s"
+      }
+    },
+    "api-vulnerable": {
+      "init": true,
+      "restart": "unless-stopped",
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "pids_limit": 64,
+      "cpus": "0.35",
+      "mem_limit": "160m",
+      "logging": {
+        "driver": "local",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777"
+      ],
+      "build": {
+        "context": "../..",
+        "dockerfile": "deploy/semester-labs/target.Dockerfile",
+        "args": {
+          "LAB_DIR": "labs/week10-api-security"
+        }
+      },
+      "environment": {
+        "FLASK_APP": "vulnerable_api",
+        "FLASK_DEBUG": "0"
+      },
+      "networks": [
+        "api-vulnerable"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/',timeout=2)"
+        ],
+        "interval": "20s",
+        "timeout": "4s",
+        "retries": 3,
+        "start_period": "15s"
+      }
+    },
+    "api-defended": {
+      "init": true,
+      "restart": "unless-stopped",
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "pids_limit": 64,
+      "cpus": "0.35",
+      "mem_limit": "160m",
+      "logging": {
+        "driver": "local",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777"
+      ],
+      "build": {
+        "context": "../..",
+        "dockerfile": "deploy/semester-labs/target.Dockerfile",
+        "args": {
+          "LAB_DIR": "labs/week10-api-security"
+        }
+      },
+      "environment": {
+        "FLASK_APP": "solution_api",
+        "FLASK_DEBUG": "0"
+      },
+      "networks": [
+        "api-defended"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/',timeout=2)"
+        ],
+        "interval": "20s",
+        "timeout": "4s",
+        "retries": 3,
+        "start_period": "15s"
+      }
+    },
+    "ai-vulnerable": {
+      "init": true,
+      "restart": "unless-stopped",
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "pids_limit": 64,
+      "cpus": "0.35",
+      "mem_limit": "160m",
+      "logging": {
+        "driver": "local",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777"
+      ],
+      "build": {
+        "context": "../..",
+        "dockerfile": "deploy/semester-labs/target.Dockerfile",
+        "args": {
+          "LAB_DIR": "labs/week14-ai-llm-security"
+        }
+      },
+      "environment": {
+        "FLASK_APP": "vulnerable_chatbot",
+        "FLASK_DEBUG": "0"
+      },
+      "networks": [
+        "ai-vulnerable"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/',timeout=2)"
+        ],
+        "interval": "20s",
+        "timeout": "4s",
+        "retries": 3,
+        "start_period": "15s"
+      }
+    },
+    "ai-defended": {
+      "init": true,
+      "restart": "unless-stopped",
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "pids_limit": 64,
+      "cpus": "0.35",
+      "mem_limit": "160m",
+      "logging": {
+        "driver": "local",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777"
+      ],
+      "build": {
+        "context": "../..",
+        "dockerfile": "deploy/semester-labs/target.Dockerfile",
+        "args": {
+          "LAB_DIR": "labs/week14-ai-llm-security"
+        }
+      },
+      "environment": {
+        "FLASK_APP": "guarded_chatbot",
+        "FLASK_DEBUG": "0"
+      },
+      "networks": [
+        "ai-defended"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/',timeout=2)"
+        ],
+        "interval": "20s",
+        "timeout": "4s",
+        "retries": 3,
+        "start_period": "15s"
+      }
+    },
+    "ops-vulnerable": {
+      "init": true,
+      "restart": "unless-stopped",
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "pids_limit": 64,
+      "cpus": "0.35",
+      "mem_limit": "160m",
+      "logging": {
+        "driver": "local",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777"
+      ],
+      "build": {
+        "context": "../..",
+        "dockerfile": "deploy/semester-labs/target.Dockerfile",
+        "args": {
+          "LAB_DIR": "labs/week15-devsecops-pipeline"
+        }
+      },
+      "environment": {
+        "FLASK_APP": "insecure_service",
+        "FLASK_DEBUG": "0"
+      },
+      "networks": [
+        "ops-vulnerable"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/',timeout=2)"
+        ],
+        "interval": "20s",
+        "timeout": "4s",
+        "retries": 3,
+        "start_period": "15s"
+      }
+    },
+    "ops-defended": {
+      "init": true,
+      "restart": "unless-stopped",
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "pids_limit": 64,
+      "cpus": "0.35",
+      "mem_limit": "160m",
+      "logging": {
+        "driver": "local",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777"
+      ],
+      "build": {
+        "context": "../..",
+        "dockerfile": "deploy/semester-labs/target.Dockerfile",
+        "args": {
+          "LAB_DIR": "labs/week15-devsecops-pipeline"
+        }
+      },
+      "environment": {
+        "FLASK_APP": "secure_service",
+        "FLASK_DEBUG": "0"
+      },
+      "networks": [
+        "ops-defended"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/',timeout=2)"
+        ],
+        "interval": "20s",
+        "timeout": "4s",
+        "retries": 3,
+        "start_period": "15s"
+      }
+    },
+    "learning-relay": {
+      "init": true,
+      "restart": "unless-stopped",
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "pids_limit": 48,
+      "cpus": "0.1",
+      "mem_limit": "32m",
+      "logging": {
+        "driver": "local",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,nodev,size=8m,mode=1777",
+        "/data:rw,noexec,nosuid,nodev,size=8m,mode=0700,uid=10001,gid=10001",
+        "/config:rw,noexec,nosuid,nodev,size=4m,mode=0700,uid=10001,gid=10001"
+      ],
+      "build": {
+        "context": "../..",
+        "dockerfile": "deploy/internal-labs/images/relay.Dockerfile"
+      },
+      "environment": {
+        "UPSTREAM": "learning:5000"
+      },
+      "networks": [
+        "ingress",
+        "learning"
+      ]
+    },
+    "api-vulnerable-relay": {
+      "init": true,
+      "restart": "unless-stopped",
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "pids_limit": 48,
+      "cpus": "0.1",
+      "mem_limit": "32m",
+      "logging": {
+        "driver": "local",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,nodev,size=8m,mode=1777",
+        "/data:rw,noexec,nosuid,nodev,size=8m,mode=0700,uid=10001,gid=10001",
+        "/config:rw,noexec,nosuid,nodev,size=4m,mode=0700,uid=10001,gid=10001"
+      ],
+      "build": {
+        "context": "../..",
+        "dockerfile": "deploy/internal-labs/images/relay.Dockerfile"
+      },
+      "environment": {
+        "UPSTREAM": "api-vulnerable:5000"
+      },
+      "networks": [
+        "ingress",
+        "api-vulnerable"
+      ]
+    },
+    "api-defended-relay": {
+      "init": true,
+      "restart": "unless-stopped",
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "pids_limit": 48,
+      "cpus": "0.1",
+      "mem_limit": "32m",
+      "logging": {
+        "driver": "local",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,nodev,size=8m,mode=1777",
+        "/data:rw,noexec,nosuid,nodev,size=8m,mode=0700,uid=10001,gid=10001",
+        "/config:rw,noexec,nosuid,nodev,size=4m,mode=0700,uid=10001,gid=10001"
+      ],
+      "build": {
+        "context": "../..",
+        "dockerfile": "deploy/internal-labs/images/relay.Dockerfile"
+      },
+      "environment": {
+        "UPSTREAM": "api-defended:5000"
+      },
+      "networks": [
+        "ingress",
+        "api-defended"
+      ]
+    },
+    "ai-vulnerable-relay": {
+      "init": true,
+      "restart": "unless-stopped",
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "pids_limit": 48,
+      "cpus": "0.1",
+      "mem_limit": "32m",
+      "logging": {
+        "driver": "local",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,nodev,size=8m,mode=1777",
+        "/data:rw,noexec,nosuid,nodev,size=8m,mode=0700,uid=10001,gid=10001",
+        "/config:rw,noexec,nosuid,nodev,size=4m,mode=0700,uid=10001,gid=10001"
+      ],
+      "build": {
+        "context": "../..",
+        "dockerfile": "deploy/internal-labs/images/relay.Dockerfile"
+      },
+      "environment": {
+        "UPSTREAM": "ai-vulnerable:5000"
+      },
+      "networks": [
+        "ingress",
+        "ai-vulnerable"
+      ]
+    },
+    "ai-defended-relay": {
+      "init": true,
+      "restart": "unless-stopped",
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "pids_limit": 48,
+      "cpus": "0.1",
+      "mem_limit": "32m",
+      "logging": {
+        "driver": "local",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,nodev,size=8m,mode=1777",
+        "/data:rw,noexec,nosuid,nodev,size=8m,mode=0700,uid=10001,gid=10001",
+        "/config:rw,noexec,nosuid,nodev,size=4m,mode=0700,uid=10001,gid=10001"
+      ],
+      "build": {
+        "context": "../..",
+        "dockerfile": "deploy/internal-labs/images/relay.Dockerfile"
+      },
+      "environment": {
+        "UPSTREAM": "ai-defended:5000"
+      },
+      "networks": [
+        "ingress",
+        "ai-defended"
+      ]
+    },
+    "ops-vulnerable-relay": {
+      "init": true,
+      "restart": "unless-stopped",
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "pids_limit": 48,
+      "cpus": "0.1",
+      "mem_limit": "32m",
+      "logging": {
+        "driver": "local",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,nodev,size=8m,mode=1777",
+        "/data:rw,noexec,nosuid,nodev,size=8m,mode=0700,uid=10001,gid=10001",
+        "/config:rw,noexec,nosuid,nodev,size=4m,mode=0700,uid=10001,gid=10001"
+      ],
+      "build": {
+        "context": "../..",
+        "dockerfile": "deploy/internal-labs/images/relay.Dockerfile"
+      },
+      "environment": {
+        "UPSTREAM": "ops-vulnerable:5000"
+      },
+      "networks": [
+        "ingress",
+        "ops-vulnerable"
+      ]
+    },
+    "ops-defended-relay": {
+      "init": true,
+      "restart": "unless-stopped",
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "pids_limit": 48,
+      "cpus": "0.1",
+      "mem_limit": "32m",
+      "logging": {
+        "driver": "local",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,nodev,size=8m,mode=1777",
+        "/data:rw,noexec,nosuid,nodev,size=8m,mode=0700,uid=10001,gid=10001",
+        "/config:rw,noexec,nosuid,nodev,size=4m,mode=0700,uid=10001,gid=10001"
+      ],
+      "build": {
+        "context": "../..",
+        "dockerfile": "deploy/internal-labs/images/relay.Dockerfile"
+      },
+      "environment": {
+        "UPSTREAM": "ops-defended:5000"
+      },
+      "networks": [
+        "ingress",
+        "ops-defended"
+      ]
+    },
+    "gateway": {
+      "init": true,
+      "restart": "unless-stopped",
+      "read_only": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "pids_limit": 64,
+      "cpus": "0.5",
+      "mem_limit": "128m",
+      "logging": {
+        "driver": "local",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777"
+      ],
+      "build": {
+        "context": "../..",
+        "dockerfile": "deploy/internal-labs/images/caddy.Dockerfile"
+      },
+      "ports": [
+        "${SEMESTER_BIND_ADDRESS:-127.0.0.1}:${SEMESTER_HTTPS_PORT:-9443}:8443"
+      ],
+      "volumes": [
+        "./Caddyfile:/etc/caddy/Caddyfile:ro",
+        "caddy_data:/data",
+        "caddy_config:/config"
+      ],
+      "networks": [
+        "ingress"
+      ],
+      "environment": {
+        "SEMESTER_LEARN_HOST": "${SEMESTER_LEARN_HOST:-learn.semester.localhost}",
+        "SEMESTER_API_VULNERABLE_HOST": "${SEMESTER_API_VULNERABLE_HOST:-api-vulnerable.semester.localhost}",
+        "SEMESTER_API_DEFENDED_HOST": "${SEMESTER_API_DEFENDED_HOST:-api-defended.semester.localhost}",
+        "SEMESTER_AI_VULNERABLE_HOST": "${SEMESTER_AI_VULNERABLE_HOST:-ai-vulnerable.semester.localhost}",
+        "SEMESTER_AI_DEFENDED_HOST": "${SEMESTER_AI_DEFENDED_HOST:-ai-defended.semester.localhost}",
+        "SEMESTER_OPS_VULNERABLE_HOST": "${SEMESTER_OPS_VULNERABLE_HOST:-ops-vulnerable.semester.localhost}",
+        "SEMESTER_OPS_DEFENDED_HOST": "${SEMESTER_OPS_DEFENDED_HOST:-ops-defended.semester.localhost}"
+      }
+    }
+  },
+  "networks": {
+    "ingress": {
+      "ipam": {
+        "config": [
+          {
+            "subnet": "172.29.0.0/24"
+          }
+        ]
+      }
+    },
+    "learning": {
+      "internal": true,
+      "ipam": {
+        "config": [
+          {
+            "subnet": "172.29.1.0/24"
+          }
+        ]
+      }
+    },
+    "api-vulnerable": {
+      "internal": true,
+      "ipam": {
+        "config": [
+          {
+            "subnet": "172.29.2.0/24"
+          }
+        ]
+      }
+    },
+    "api-defended": {
+      "internal": true,
+      "ipam": {
+        "config": [
+          {
+            "subnet": "172.29.3.0/24"
+          }
+        ]
+      }
+    },
+    "ai-vulnerable": {
+      "internal": true,
+      "ipam": {
+        "config": [
+          {
+            "subnet": "172.29.4.0/24"
+          }
+        ]
+      }
+    },
+    "ai-defended": {
+      "internal": true,
+      "ipam": {
+        "config": [
+          {
+            "subnet": "172.29.5.0/24"
+          }
+        ]
+      }
+    },
+    "ops-vulnerable": {
+      "internal": true,
+      "ipam": {
+        "config": [
+          {
+            "subnet": "172.29.6.0/24"
+          }
+        ]
+      }
+    },
+    "ops-defended": {
+      "internal": true,
+      "ipam": {
+        "config": [
+          {
+            "subnet": "172.29.7.0/24"
+          }
+        ]
+      }
+    }
+  },
+  "volumes": {
+    "learning_data": {},
+    "caddy_data": {},
+    "caddy_config": {}
+  }
+}

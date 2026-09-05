@@ -1,0 +1,8 @@
+*
+!labs/
+!labs/week10-api-security/
+!labs/week10-api-security/*.py
+!labs/week14-ai-llm-security/
+!labs/week14-ai-llm-security/*.py
+!labs/week15-devsecops-pipeline/
+!labs/week15-devsecops-pipeline/*.py
