@@ -104,11 +104,22 @@ resource "aws_iam_role_policy" "lab_bootstrap" {
       )
       Condition = {
         StringEquals = {
-          "ec2:ResourceTag/Project" = var.project_name
-          "ec2:ResourceTag/Role"    = "team-lab"
-          # The role can make only the fail-closed transition used by
-          # bootstrap; it cannot re-enable the endpoint later.
-          "ec2:MetadataHttpEndpoint" = "disabled"
+          "aws:ResourceTag/Project" = var.project_name
+          "aws:ResourceTag/Role"    = "team-lab"
+          # ModifyInstanceMetadataOptions exposes the requested setting as
+          # an EC2 attribute. Restrict the role to the fail-closed transition;
+          # it cannot re-enable the endpoint or change another IMDS option.
+          "ec2:Attribute/HttpEndpoint" = "disabled"
+        }
+        ArnLike = {
+          # This context key exists only for credentials delivered to an EC2
+          # instance, so the policy cannot be exercised by another role path.
+          "ec2:SourceInstanceARN" = format(
+            "arn:%s:ec2:%s:%s:instance/*",
+            data.aws_partition.current.partition,
+            var.aws_region,
+            data.aws_caller_identity.current.account_id,
+          )
         }
       }
     }]
